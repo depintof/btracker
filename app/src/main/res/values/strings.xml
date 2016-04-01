@@ -1,3 +1,13 @@
 <resources>
-    <string name="app_name">Test9</string>
+    <string name="app_name">BTracker</string>
+
+    <string name="action_settings">Ajustes</string>
+
+    <string name="current_location_item">Ubicación Actual</string>
+    <string name="notification_item">Notificaciones</string>
+    <string name="routes_item">Recorridos</string>
+    <string name="visited_places_item">Lugares Visitados</string>
+
+    <string name="log_out_item">Cerrar Sesión</string>
+    <string name="configuration_item">Configuración</string>
 </resources>
