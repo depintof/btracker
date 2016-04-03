@@ -8,16 +8,16 @@
             android:icon="@drawable/ic_home"
             android:title="@string/current_location_item" />
         <item
-            android:id="@+id/nav_productos"
-            android:icon="@drawable/ic_store"
+            android:id="@+id/nav_notificaciones"
+            android:icon="@drawable/ic_notifications_white"
             android:title="@string/notification_item" />
         <item
-            android:id="@+id/nav_ordenes"
-            android:icon="@drawable/ic_truck"
+            android:id="@+id/nav_recorridos"
+            android:icon="@drawable/ic_routes"
             android:title="@string/routes_item" />
         <item
             android:id="@+id/nav_facturas"
-            android:icon="@drawable/ic_file_document"
+            android:icon="@drawable/ic_visited_places"
             android:title="@string/visited_places_item" />
 
         <!-- Sección de configuración -->

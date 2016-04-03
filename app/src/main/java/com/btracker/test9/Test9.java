@@ -22,6 +22,8 @@ public class Test9 extends AppCompatActivity {
      */
     private String drawerTitle;
 
+    private Toolbar toolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,15 +50,15 @@ public class Test9 extends AppCompatActivity {
         if (ab != null) {
             // Poner ícono del drawer toggle
             ab.setHomeAsUpIndicator(R.drawable.ic_menu);
+            ab.setLogo(R.drawable.ic_action_descuentos);
             ab.setDisplayHomeAsUpEnabled(true);
         }
-
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (!drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            getMenuInflater().inflate(R.menu.nav_menu, menu);
+            getMenuInflater().inflate(R.menu.main_menu, menu);
             return true;
         }
         return super.onCreateOptionsMenu(menu);

@@ -8,6 +8,9 @@
     <string name="routes_item">Recorridos</string>
     <string name="visited_places_item">Lugares Visitados</string>
 
+    <string name="help_menu">Ayuda</string>
+    <string name="like_product">Me Gusta</string>
+
     <string name="log_out_item">Cerrar Sesión</string>
     <string name="configuration_item">Configuración</string>
 </resources>

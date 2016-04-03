@@ -1,0 +1,11 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item
+        android:id="@+id/description_menu_settings"
+        android:showAsAction="never"
+        android:title="@string/help_menu"/>
+    <item
+        android:id="@+id/product_like"
+        android:showAsAction="always"
+        android:icon="@drawable/like"
+        android:title="@string/like_product"/>
+</menu>
