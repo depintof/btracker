@@ -5,7 +5,8 @@
 
     <string name="current_location_item">Ubicación Actual</string>
     <string name="notification_item">Notificaciones</string>
-    <string name="routes_item">Recorridos</string>
+    <string name="deseos_item">Lista de Deseos</string>
+    <string name="compras_item">Compras</string>
     <string name="visited_places_item">Lugares Visitados</string>
 
     <string name="help_menu">Ayuda</string>

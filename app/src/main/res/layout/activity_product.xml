@@ -24,12 +24,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="50"
-            android:layout_gravity="center_horizontal"
+            android:layout_gravity="center"
             android:src="@drawable/camiseta2"
             android:scaleType="centerInside"
             android:adjustViewBounds="true"
             android:maxHeight="0dp"/>
-
 
         <LinearLayout
             android:id="@+id/descriptionLayout"
@@ -121,13 +120,19 @@
 
         </LinearLayout>
 
-        <Gallery
-            android:id="@+id/myGallery"
-            android:layout_width="match_parent"
+        <HorizontalScrollView
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="30">
 
-        </Gallery>
+            <LinearLayout
+                android:id="@+id/myGallery"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                />
+
+        </HorizontalScrollView>
 
     </LinearLayout>
 

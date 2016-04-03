@@ -12,9 +12,13 @@
             android:icon="@drawable/ic_notifications_white"
             android:title="@string/notification_item" />
         <item
-            android:id="@+id/nav_recorridos"
-            android:icon="@drawable/ic_routes"
-            android:title="@string/routes_item" />
+            android:id="@+id/nav_lista_deseos"
+            android:icon="@drawable/ic_favorite"
+            android:title="@string/deseos_item" />
+        <item
+            android:id="@+id/nav_compras"
+            android:icon="@drawable/ic_shopping_cart"
+            android:title="@string/compras_item" />
         <item
             android:id="@+id/nav_facturas"
             android:icon="@drawable/ic_visited_places"
