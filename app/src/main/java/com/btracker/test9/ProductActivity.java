@@ -1,14 +1,26 @@
 package com.btracker.test9;
 
+import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Paint;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
+import android.widget.Gallery;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class ProductActivity extends AppCompatActivity {
+
+    private Integer images[] = {R.drawable.pic1, R.drawable.pic2, R.drawable.pic3,R.drawable.pic4};
 
     TextView tvProducto;
     TextView tvDescripcion;
@@ -16,6 +28,7 @@ public class ProductActivity extends AppCompatActivity {
     TextView tvPrecioOriginal;
     TextView tvDescuento;
 
+    @SuppressWarnings("deprecation")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,6 +44,59 @@ public class ProductActivity extends AppCompatActivity {
         tvPrecioOriginal.setPaintFlags(tvPrecioOriginal.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
 
         setToolbar();
+
+        // Note that Gallery view is deprecated in Android 4.1---
+        Gallery gallery = (Gallery) findViewById(R.id.myGallery);
+        if (gallery != null) {
+            gallery.setAdapter(new ImageAdapter(this));
+            gallery.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+                    Toast.makeText(getBaseContext(), "pic" + (position + 1) + " selected",
+                            Toast.LENGTH_SHORT).show();
+                    // display the images selected
+                    ImageView imageView = (ImageView) findViewById(R.id.productImage);
+                    if (imageView != null) {
+                        imageView.setImageResource(images[position]);
+                    }
+                }
+            });
+        }
+    }
+
+    public class ImageAdapter extends BaseAdapter {
+        private Context context;
+        private int itemBackground;
+        public ImageAdapter(Context c)
+        {
+            context = c;
+            // sets a grey background; wraps around the images
+            TypedArray a =obtainStyledAttributes(R.styleable.MyGallery);
+            itemBackground = a.getResourceId(R.styleable.MyGallery_android_galleryItemBackground, 0);
+            a.recycle();
+        }
+        // returns the number of images
+        public int getCount() {
+            return images.length;
+        }
+        // returns the ID of an item
+        public Object getItem(int position) {
+            return position;
+        }
+        // returns the ID of an item
+        public long getItemId(int position) {
+            return position;
+        }
+        // returns an ImageView view
+        @SuppressWarnings("deprecation")
+        public View getView(int position, View convertView, ViewGroup parent) {
+            ImageView imageView = new ImageView(context);
+            imageView.setImageResource(images[position]);
+            imageView.setLayoutParams(new Gallery.LayoutParams(100, 100));
+            imageView.setAdjustViewBounds(true);
+            imageView.setMaxHeight(0);
+            imageView.setBackgroundResource(itemBackground);
+            return imageView;
+        }
     }
 
     private void setToolbar() {

@@ -24,7 +24,7 @@
             android:id="@+id/productImage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="60"
+            android:layout_weight="50"
             android:layout_gravity="center_horizontal"
             android:src="@drawable/camiseta2"
             android:scaleType="centerInside"
@@ -122,22 +122,13 @@
 
         </LinearLayout>
 
-        <LinearLayout
+        <Gallery
+            android:id="@+id/myGallery"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="20"
-            android:gravity="center">
+            android:layout_weight="30">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/prueba"
-                android:text="CARRETA"
-                android:textColor="@color/secondaryText"
-                android:maxLines="1"
-                android:gravity="center" />
-
-        </LinearLayout>
+        </Gallery>
 
     </LinearLayout>
 
