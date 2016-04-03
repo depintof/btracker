@@ -7,6 +7,8 @@
     <dimen name="header_height">192dp</dimen>
 
     <dimen name="profile_image_size">64dp</dimen>
+    <dimen name="loading_width">162dp</dimen>
+    <dimen name="loading_height">181dp</dimen>
 
     <dimen name="fab_margin">16dp</dimen>
 </resources>

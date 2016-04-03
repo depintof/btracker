@@ -1,5 +1,7 @@
 package com.btracker.test9;
 
+import android.content.Intent;
+import android.graphics.drawable.AnimationDrawable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -9,6 +11,8 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
 
 public class Test9 extends AppCompatActivity {
 
@@ -23,6 +27,16 @@ public class Test9 extends AppCompatActivity {
     private String drawerTitle;
 
     private Toolbar toolbar;
+
+    /**
+     * ImageView del buscador
+     */
+    private ImageView loadingView;
+
+    /**
+     * Animation del buscador
+     */
+    private AnimationDrawable loadingAnimation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +55,14 @@ public class Test9 extends AppCompatActivity {
         if (savedInstanceState == null) {
             // Seleccionar item
         }
+
+        loadingView = (ImageView) findViewById(R.id.loadingView);
+
+        // Obtener animación de loading
+        if (loadingView != null) {
+            loadingAnimation = (AnimationDrawable) loadingView.getBackground();
+        }
+        loadingAnimation.start();
     }
 
     private void setToolbar() {
@@ -72,6 +94,21 @@ public class Test9 extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    /** Método lanzado al terminar Loading **/
+    public void productDetail(View view) {
+        loadingAnimation.stop();
+
+        Intent detailIntent = new Intent(this, ProductActivity.class);
+        startActivity(detailIntent);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();  // Always call the superclass method first
+
+        loadingAnimation.start();
     }
 
 }

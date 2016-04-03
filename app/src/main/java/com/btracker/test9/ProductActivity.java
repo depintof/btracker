@@ -3,11 +3,14 @@ package com.btracker.test9;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Paint;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -27,6 +30,8 @@ public class ProductActivity extends AppCompatActivity {
     TextView tvPrecioConDescuento;
     TextView tvPrecioOriginal;
     TextView tvDescuento;
+    MenuItem favoriteMenu;
+    boolean favoriteFlag;
 
     @SuppressWarnings("deprecation")
     @Override
@@ -107,11 +112,36 @@ public class ProductActivity extends AppCompatActivity {
             // Poner ícono y logo del drawer toggle
             ab.setDisplayHomeAsUpEnabled(true);
         }
+        favoriteFlag = false;
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.product_menu, menu);
+        favoriteMenu = menu.findItem(R.id.product_like);
         return super.onCreateOptionsMenu(menu);
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                // app icon in action bar clicked; goto parent activity.
+                this.finish();
+                return true;
+            case R.id.product_like:
+                // app icon in action bar clicked; goto parent activity.
+                if(!favoriteFlag){
+                    favoriteMenu.setIcon(R.drawable.ic_favorite_pressed);
+                    favoriteFlag = true;
+                } else {
+                    favoriteMenu.setIcon(R.drawable.ic_favorite_unpressed);
+                    favoriteFlag = false;
+                }
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
 }

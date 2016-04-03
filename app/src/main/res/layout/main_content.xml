@@ -15,7 +15,20 @@
 
     <RelativeLayout
         android:id="@+id/main_content"
+        android:onClick="productDetail"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/loadingView"
+            android:background="@drawable/loading"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_width="@dimen/loading_width"
+            android:layout_height="@dimen/loading_height"
+            android:scaleType="centerInside"
+            android:adjustViewBounds="true"/>
+
+    </RelativeLayout>
 
 </LinearLayout>

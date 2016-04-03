@@ -7,7 +7,7 @@
     <item
         android:id="@+id/product_like"
         app:showAsAction="always"
-        android:icon="@drawable/ic_favorite"
+        android:icon="@drawable/ic_favorite_unpressed"
         android:title="@string/like_product"/>
     <item
         android:id="@+id/main_notifications"
