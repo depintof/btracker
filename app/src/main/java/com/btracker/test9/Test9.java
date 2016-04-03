@@ -48,7 +48,7 @@ public class Test9 extends AppCompatActivity {
         setSupportActionBar(toolbar);
         final ActionBar ab = getSupportActionBar();
         if (ab != null) {
-            // Poner ícono del drawer toggle
+            // Poner ícono y logo del drawer toggle
             ab.setHomeAsUpIndicator(R.drawable.ic_menu);
             ab.setLogo(R.drawable.ic_action_descuentos);
             ab.setDisplayHomeAsUpEnabled(true);

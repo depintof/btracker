@@ -1,11 +1,17 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/description_menu_settings"
         android:showAsAction="never"
         android:title="@string/help_menu"/>
     <item
         android:id="@+id/product_like"
-        android:showAsAction="always"
-        android:icon="@drawable/like"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_favorite"
         android:title="@string/like_product"/>
+    <item
+        android:id="@+id/main_notifications"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_notifications_white"
+        android:title="@string/notification_item"/>
 </menu>
