@@ -91,7 +91,7 @@ public class ProductActivity extends AppCompatActivity {
         public View getView(int position, View convertView, ViewGroup parent) {
             ImageView imageView = new ImageView(context);
             imageView.setImageResource(images[position]);
-            imageView.setLayoutParams(new Gallery.LayoutParams(100, 100));
+            imageView.setLayoutParams(new Gallery.LayoutParams(Gallery.LayoutParams.WRAP_CONTENT, Gallery.LayoutParams.MATCH_PARENT));
             imageView.setAdjustViewBounds(true);
             imageView.setMaxHeight(0);
             imageView.setBackgroundResource(itemBackground);
