@@ -1,7 +1,10 @@
 package com.btracker.test9;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -86,6 +89,11 @@ public class Test9 extends AppCompatActivity implements EventsListener {
         // Obtener listado de Beacons
         DatabaseConnectivity databaseConnectivity = new DatabaseConnectivity(this);
         databaseConnectivity.getBeaconsList(this);
+        // Obtener MAC y Confirmar Existencia
+        WifiManager manager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+        WifiInfo info = manager.getConnectionInfo();
+        String macAddress = info.getMacAddress();
+        databaseConnectivity.getCustomer(this,macAddress);
     }
 
     private void setToolbar() {
@@ -138,5 +146,11 @@ public class Test9 extends AppCompatActivity implements EventsListener {
         // Mensaje de prueba
         //Toast.makeText(this,beaconsList[0].getUuid(),Toast.LENGTH_LONG).show();
     }
+
+    @Override
+    public void customerResult(JSONObject jsonResult) {
+
+    }
+
 
 }

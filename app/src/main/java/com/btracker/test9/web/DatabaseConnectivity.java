@@ -49,4 +49,31 @@ public class DatabaseConnectivity {
                         )
                 );
     }
+
+    public void getCustomer(final Context context,String macAddress){
+        String requestURL = Cons.GET_CUSTOMER + Cons.QUESTION_MARK + Cons.MAC + Cons.EQUAL_MARK + macAddress;
+        // Petición GET
+        VolleySingleton.
+                getInstance(context).
+                addToRequestQueue(
+                        new JsonObjectRequest(
+                                Request.Method.GET,
+                                requestURL,
+                                (String)null,
+                                new Response.Listener<JSONObject>() {
+                                    @Override
+                                    public void onResponse(JSONObject response) {
+                                        // Procesar la respuesta Json
+                                        el.beaconsResult(response);
+                                    }
+                                },
+                                new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        Log.d(context.getClass().getSimpleName(),"Error Volley: " + error.getMessage());
+                                    }
+                                }
+                        )
+                );
+    }
 }

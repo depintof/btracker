@@ -3,6 +3,7 @@
     package="com.btracker.test9">
 
     <!-- Permiso para Uso de Internet -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <application

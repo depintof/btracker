@@ -25,14 +25,34 @@ public class Cons {
     private static final String IP = "http://btrackerws.exeamedia.com:";
 
     /**
-     * URLs del Web Service
+     * URLs del Web Service: Obtener Lista de Beacons
      */
     public static final String GET_ALL_BEACONS = IP + PUERTO_HOST + "/get_beacons.php";
+
+    /**
+     * URLs del Web Service: Obtener Dispositivo
+     */
+    public static final String GET_CUSTOMER = IP + PUERTO_HOST + "/get_customer.php";
+
+    /**
+     * Signo de consulta
+     */
+    public static final String QUESTION_MARK = "?";
+
+    /**
+     * Signo de igual
+     */
+    public static final String EQUAL_MARK = "=";
 
     /**
      * Clave para el valor extra que representa al identificador de una meta
      */
     public static final String EXTRA_ID = "IDEXTRA";
+
+    /*
+        Tag 'mac' para respuestas de web-services
+     */
+    public static final String MAC = "mac";
 
     /*
         Tag 'estado' para respuestas de web-services
