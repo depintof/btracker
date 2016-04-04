@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.btracker.test9"
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
@@ -28,4 +28,9 @@ dependencies {
     compile 'com.google.android.gms:play-services-appindexing:8.1.0'
     compile 'com.mcxiaoke.volley:library:1.0.+'
     compile 'com.google.code.gson:gson:2.3'
+
+    // add the following line, and replace "0.9.4" with the latest version
+    // of Estimote Android SDK; you'll find the latest version number on:
+    //   https://github.com/Estimote/Android-SDK/releases
+    compile 'com.estimote:sdk:0.9.4@aar'
 }

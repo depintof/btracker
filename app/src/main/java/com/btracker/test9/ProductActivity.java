@@ -25,9 +25,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.common.api.GoogleApiClient;
+import com.estimote.sdk.BeaconManager;
+import com.estimote.sdk.SystemRequirementsChecker;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,12 +43,8 @@ public class ProductActivity extends AppCompatActivity {
     ImageView displayImage;
     LinearLayout myGallery;
     MenuItem favoriteMenu;
+    com.estimote.sdk.Beacon beacon;
     boolean favoriteFlag;
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    private GoogleApiClient client;
 
     @SuppressWarnings("deprecation")
     @Override
@@ -57,9 +52,17 @@ public class ProductActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product);
 
+        //Beacon de notificación
+        beacon = getIntent().getParcelableExtra("ProductBeacon");
+        // TODO Crear método para obtener detalles del producto asociado al Beacon
+        //getProductDetails(beacon);
+
         // Relacion con Vistas
         tvProducto = (TextView) findViewById(R.id.producto);
         tvDescripcion = (TextView) findViewById(R.id.descripcion);
+        tvDescripcion.setText(beacon.getMacAddress().toString());
+        Log.e("Beacon Final Producto: ", beacon.getMacAddress().toString());
+
         tvPrecioConDescuento = (TextView) findViewById(R.id.precioConDescuento);
         tvPrecioOriginal = (TextView) findViewById(R.id.precioOriginal);
         tvDescuento = (TextView) findViewById(R.id.descuento);
@@ -100,67 +103,7 @@ public class ProductActivity extends AppCompatActivity {
             Log.e("GalleryScrollView", e.getMessage(), e);
         }
 
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
-
-    /*public class ImageAdapter extends BaseAdapter {
-        private Context context;
-        private int itemBackground;
-        public ImageAdapter(Context c)
-        {
-            context = c;
-            // sets a grey background; wraps around the images
-            TypedArray a =obtainStyledAttributes(R.styleable.MyGallery);
-            itemBackground = a.getResourceId(R.styleable.MyGallery_android_galleryItemBackground, 0);
-            a.recycle();
-        }
-        // returns the number of images
-        public int getCount() {
-            return images.length;
-        }
-        // returns the ID of an item
-        public Object getItem(int position) {
-            return position;
-        }
-        // returns the ID of an item
-        public long getItemId(int position) {
-            return position;
-        }
-        // returns an ImageView view
-        @SuppressWarnings("deprecation")
-        public View getView(int position, View convertView, ViewGroup parent) {
-            ImageView imageView = new ImageView(context);
-            imageView.setImageResource(images[position]);
-            imageView.setLayoutParams(new Gallery.LayoutParams(Gallery.LayoutParams.WRAP_CONTENT, Gallery.LayoutParams.MATCH_PARENT));
-            imageView.setAdjustViewBounds(true);
-            imageView.setMaxHeight(0);
-            //imageView.setBackgroundResource(itemBackground);
-            return imageView;
-        }
-    }
-
-    @SuppressWarnings("deprecation")
-    private void setGallery(){
-        // Note that Gallery view is deprecated in Android 4.1---
-        Gallery gallery = (Gallery) findViewById(R.id.myGallery);
-        if (gallery != null) {
-            gallery.setAdapter(new ImageAdapter(this));
-            gallery.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                    Toast.makeText(getBaseContext(), "pic" + (position + 1) + " selected",
-                            Toast.LENGTH_SHORT).show();
-                    // display the images selected
-                    ImageView imageView = (ImageView) findViewById(R.id.productImage);
-                    if (imageView != null) {
-                        imageView.setImageResource(images[position]);
-                    }
-                }
-            });
-        }
-    }*/
 
     private void setToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -178,6 +121,21 @@ public class ProductActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.product_menu, menu);
         favoriteMenu = menu.findItem(R.id.product_like);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();  // Always call the superclass method first
+        if(getIntent().getParcelableExtra("ProductBeacon") != null){
+        beacon = getIntent().getParcelableExtra("ProductBeacon");
+        // TODO Crear método para obtener detalles del producto asociado al Beacon
+        //getProductDetails(beacon);
+
+        // Relacion con Vistas
+        tvDescripcion.setText(beacon.getMacAddress().toString());
+        Log.e("Beacon Final RESUME: ", beacon.getMacAddress().toString());
+        }
+
     }
 
     @Override
@@ -202,43 +160,4 @@ public class ProductActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client.connect();
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "Product Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app deep link URI is correct.
-                Uri.parse("android-app://com.btracker.test9/http/host/path")
-        );
-        AppIndex.AppIndexApi.start(client, viewAction);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "Product Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app deep link URI is correct.
-                Uri.parse("android-app://com.btracker.test9/http/host/path")
-        );
-        AppIndex.AppIndexApi.end(client, viewAction);
-        client.disconnect();
-    }
 }

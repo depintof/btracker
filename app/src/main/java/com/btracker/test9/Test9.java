@@ -26,7 +26,14 @@ import com.btracker.test9.json.JsonResponseDecoder;
 import com.btracker.test9.web.DatabaseConnectivity;
 import com.btracker.test9.web.VolleySingleton;
 
+import com.estimote.sdk.BeaconManager;
+import com.estimote.sdk.Region;
+import com.estimote.sdk.SystemRequirementsChecker;
+
 import org.json.JSONObject;
+
+import java.util.List;
+import java.util.UUID;
 
 public class Test9 extends AppCompatActivity implements EventsListener {
 
@@ -57,6 +64,12 @@ public class Test9 extends AppCompatActivity implements EventsListener {
      */
     private Beacon[] beaconsList;
 
+    /*
+       Gestor de Beacons
+     */
+    private BeaconManager beaconManager;
+    private Region region;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,6 +99,22 @@ public class Test9 extends AppCompatActivity implements EventsListener {
         // Obtener listado de Beacons
         DatabaseConnectivity databaseConnectivity = new DatabaseConnectivity(this);
         databaseConnectivity.getBeaconsList(this);
+
+        // Instanciar gestor de Beacons
+        beaconManager = new BeaconManager(this);
+        beaconManager.setRangingListener(new BeaconManager.RangingListener() {
+            @Override
+            public void onBeaconsDiscovered(Region region, List<com.estimote.sdk.Beacon> list) {
+                if (!list.isEmpty()) {
+                    com.estimote.sdk.Beacon nearestBeacon = list.get(0);
+                    Log.e("Beacon encontrado: ",nearestBeacon.getMacAddress().toString());
+                    productDetail(nearestBeacon);
+                }
+            }
+        });
+        // TODO Definir región de escaneo según los resultados obtenidos en beaconsList
+        // También podría definirse en onResume(), donde se setea
+        region = new Region("ranged region", UUID.fromString("B9407F30-F5F8-466E-AFF9-25556B57FE6D"), null, null);
     }
 
     private void setToolbar() {
@@ -120,9 +149,11 @@ public class Test9 extends AppCompatActivity implements EventsListener {
     }
 
     /** Método lanzado al terminar Loading **/
-    public void productDetail(View view) {
+    // main_content.xml android:onClick="productDetail"
+    public void productDetail(com.estimote.sdk.Beacon beacon) {
         loadingAnimation.stop();
         Intent detailIntent = new Intent(this, ProductActivity.class);
+        detailIntent.putExtra("ProductBeacon",beacon);
         startActivity(detailIntent);
     }
 
@@ -130,6 +161,22 @@ public class Test9 extends AppCompatActivity implements EventsListener {
     public void onResume() {
         super.onResume();  // Always call the superclass method first
         loadingAnimation.start();
+
+        SystemRequirementsChecker.checkWithDefaultDialogs(this);
+
+        beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
+            @Override
+            public void onServiceReady() {
+                beaconManager.startRanging(region);
+            }
+        });
+    }
+
+    @Override
+    protected void onPause() {
+        beaconManager.stopRanging(region);
+
+        super.onPause();
     }
 
     @Override
