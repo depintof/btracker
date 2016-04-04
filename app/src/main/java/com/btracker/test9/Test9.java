@@ -9,12 +9,26 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
-public class Test9 extends AppCompatActivity {
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.btracker.test9.async.EventsListener;
+import com.btracker.test9.dto.Beacon;
+import com.btracker.test9.json.JsonResponseDecoder;
+import com.btracker.test9.web.DatabaseConnectivity;
+import com.btracker.test9.web.VolleySingleton;
+
+import org.json.JSONObject;
+
+public class Test9 extends AppCompatActivity implements EventsListener {
 
     /**
      * Instancia del drawer
@@ -37,6 +51,11 @@ public class Test9 extends AppCompatActivity {
      * Animation del buscador
      */
     private AnimationDrawable loadingAnimation;
+
+    /*
+       Lista de Beacons
+     */
+    private Beacon[] beaconsList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +82,10 @@ public class Test9 extends AppCompatActivity {
             loadingAnimation = (AnimationDrawable) loadingView.getBackground();
         }
         loadingAnimation.start();
+
+        // Obtener listado de Beacons
+        DatabaseConnectivity databaseConnectivity = new DatabaseConnectivity(this);
+        databaseConnectivity.getBeaconsList(this);
     }
 
     private void setToolbar() {
@@ -99,7 +122,6 @@ public class Test9 extends AppCompatActivity {
     /** Método lanzado al terminar Loading **/
     public void productDetail(View view) {
         loadingAnimation.stop();
-
         Intent detailIntent = new Intent(this, ProductActivity.class);
         startActivity(detailIntent);
     }
@@ -107,8 +129,14 @@ public class Test9 extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();  // Always call the superclass method first
-
         loadingAnimation.start();
+    }
+
+    @Override
+    public void beaconsResult(JSONObject jsonResponse) {
+        beaconsList = JsonResponseDecoder.beaconListResponse(jsonResponse);
+        // Mensaje de prueba
+        //Toast.makeText(this,beaconsList[0].getUuid(),Toast.LENGTH_LONG).show();
     }
 
 }
