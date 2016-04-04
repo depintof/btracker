@@ -25,6 +25,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.btracker.test9.async.EventsListener;
 import com.btracker.test9.dto.Beacon;
+import com.btracker.test9.dto.Customer;
 import com.btracker.test9.json.JsonResponseDecoder;
 import com.btracker.test9.web.DatabaseConnectivity;
 import com.btracker.test9.web.VolleySingleton;
@@ -59,6 +60,11 @@ public class Test9 extends AppCompatActivity implements EventsListener {
        Lista de Beacons
      */
     private Beacon[] beaconsList;
+
+    /*
+        Informacion del Cliente
+     */
+    private Customer customer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,9 +154,11 @@ public class Test9 extends AppCompatActivity implements EventsListener {
     }
 
     @Override
-    public void customerResult(JSONObject jsonResult) {
-
+    public void customerResult(JSONObject jsonResponse) {
+        customer = JsonResponseDecoder.customerResponse(jsonResponse);
+        if (customer != null) {
+            Toast.makeText(this,customer.getMac(),Toast.LENGTH_LONG).show();
+        }
     }
-
 
 }

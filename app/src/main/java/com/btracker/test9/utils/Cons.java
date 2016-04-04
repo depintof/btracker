@@ -65,6 +65,11 @@ public class Cons {
     public static final String BEACONS = "beacons";
 
     /*
+        Tag 'estado' para respuestas de web-services
+     */
+    public static final String CUSTOMERS = "customers";
+
+    /*
         Valor exitoso de la variable estado para respuestas de web-services
      */
     public static final String STATUS_SUCCESS = "1";

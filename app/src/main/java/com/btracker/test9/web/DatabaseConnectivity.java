@@ -64,7 +64,7 @@ public class DatabaseConnectivity {
                                     @Override
                                     public void onResponse(JSONObject response) {
                                         // Procesar la respuesta Json
-                                        el.beaconsResult(response);
+                                        el.customerResult(response);
                                     }
                                 },
                                 new Response.ErrorListener() {
