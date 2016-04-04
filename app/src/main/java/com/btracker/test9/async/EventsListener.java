@@ -9,4 +9,5 @@ import org.json.JSONObject;
  */
 public interface EventsListener {
     void beaconsResult(JSONObject jsonResult);
+    void customerResult(JSONObject jsonResult);
 }

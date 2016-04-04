@@ -1,7 +1,10 @@
 package com.btracker.test9;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -22,6 +25,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.btracker.test9.async.EventsListener;
 import com.btracker.test9.dto.Beacon;
+import com.btracker.test9.dto.Customer;
 import com.btracker.test9.json.JsonResponseDecoder;
 import com.btracker.test9.web.DatabaseConnectivity;
 import com.btracker.test9.web.VolleySingleton;
@@ -65,6 +69,11 @@ public class Test9 extends AppCompatActivity implements EventsListener {
     private Beacon[] beaconsList;
 
     /*
+        Informacion del Cliente
+     */
+    private Customer customer;
+
+    /*
        Gestor de Beacons
      */
     private BeaconManager beaconManager;
@@ -99,6 +108,11 @@ public class Test9 extends AppCompatActivity implements EventsListener {
         // Obtener listado de Beacons
         DatabaseConnectivity databaseConnectivity = new DatabaseConnectivity(this);
         databaseConnectivity.getBeaconsList(this);
+        // Obtener MAC y Confirmar Existencia
+        WifiManager manager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+        WifiInfo info = manager.getConnectionInfo();
+        String macAddress = info.getMacAddress();
+        databaseConnectivity.getCustomer(this,macAddress);
 
         // Instanciar gestor de Beacons
         beaconManager = new BeaconManager(this);
@@ -184,6 +198,14 @@ public class Test9 extends AppCompatActivity implements EventsListener {
         beaconsList = JsonResponseDecoder.beaconListResponse(jsonResponse);
         // Mensaje de prueba
         //Toast.makeText(this,beaconsList[0].getUuid(),Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void customerResult(JSONObject jsonResponse) {
+        customer = JsonResponseDecoder.customerResponse(jsonResponse);
+        if (customer != null) {
+            Toast.makeText(this,customer.getMac(),Toast.LENGTH_LONG).show();
+        }
     }
 
 }
