@@ -11,14 +11,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import com.btracker.test9.async.EventsListener;
+import com.btracker.test9.json.JsonResponseDecoder;
+import com.btracker.test9.web.DatabaseConnectivity;
 import com.estimote.sdk.Beacon;
 import com.estimote.sdk.BeaconManager;
 import com.estimote.sdk.Region;
 
+import org.json.JSONObject;
+
 import java.util.List;
 import java.util.UUID;
 
-public class MyApplication extends Application {
+public class MyApplication extends Application implements EventsListener {
 
     private BeaconManager beaconManager;
     private Beacon nearestBeacon;
@@ -50,15 +55,10 @@ public class MyApplication extends Application {
 //
             }
         });
-        beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
-            @Override
-            public void onServiceReady() {
-                beaconManager.startMonitoring(new Region("Beacon 1",
-                        UUID.fromString("B9407F30-F5F8-466E-AFF9-25556B57FE6D"), 54167, 16064));
-                beaconManager.startMonitoring(new Region("Beacon 2",
-                        UUID.fromString("B9407F30-F5F8-466E-AFF9-25556B57FE6D"), 60906, 40046));
-            }
-        });
+
+        // Obtener listado de Beacons
+        DatabaseConnectivity databaseConnectivity = new DatabaseConnectivity(this);
+        databaseConnectivity.getBeaconsList(this);
     }
 
     public void showNotification(String title, String message) {
@@ -83,5 +83,25 @@ public class MyApplication extends Application {
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(1, notification);
+    }
+
+    @Override
+    public void beaconsResult(JSONObject jsonResult) {
+        final com.btracker.test9.dto.Beacon[] beaconList = JsonResponseDecoder.beaconListResponse(jsonResult);
+        beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
+            @Override
+            public void onServiceReady() {
+                for(com.btracker.test9.dto.Beacon iteratorBeacon: beaconList)
+                if(iteratorBeacon.getUuid().equals("B9407F30-F5F8-466E-AFF9-25556B57FE6D")){
+                    beaconManager.startMonitoring(new Region("Beacon "+iteratorBeacon.getId(),
+                            UUID.fromString(iteratorBeacon.getUuid()), Integer.parseInt(iteratorBeacon.getMajor()), Integer.parseInt(iteratorBeacon.getMinor())));
+                }
+            }
+        });
+    }
+
+    @Override
+    public void customerResult(JSONObject jsonResult) {
+
     }
 }

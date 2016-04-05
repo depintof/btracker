@@ -5,31 +5,23 @@ import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ImageView;
-import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.btracker.test9.async.EventsListener;
 import com.btracker.test9.dto.Beacon;
 import com.btracker.test9.dto.Customer;
 import com.btracker.test9.json.JsonResponseDecoder;
 import com.btracker.test9.web.DatabaseConnectivity;
-import com.btracker.test9.web.VolleySingleton;
-
 import com.estimote.sdk.BeaconManager;
 import com.estimote.sdk.Region;
 import com.estimote.sdk.SystemRequirementsChecker;
@@ -126,9 +118,6 @@ public class Test9 extends AppCompatActivity implements EventsListener {
                 }
             }
         });
-        // TODO Definir región de escaneo según los resultados obtenidos en beaconsList
-        // También podría definirse en onResume(), donde se setea
-        region = new Region("ranged region", UUID.fromString("B9407F30-F5F8-466E-AFF9-25556B57FE6D"), null, null);
     }
 
     private void setToolbar() {
@@ -178,24 +167,34 @@ public class Test9 extends AppCompatActivity implements EventsListener {
 
         SystemRequirementsChecker.checkWithDefaultDialogs(this);
 
-        beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
-            @Override
-            public void onServiceReady() {
-                beaconManager.startRanging(region);
-            }
-        });
+        if(region!=null){
+            beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
+                @Override
+                public void onServiceReady() {
+                    beaconManager.startRanging(region);
+                }
+            });
+        }
     }
 
     @Override
     protected void onPause() {
-        beaconManager.stopRanging(region);
-
+        if(region!=null){
+            beaconManager.stopRanging(region);
+        }
         super.onPause();
     }
 
     @Override
     public void beaconsResult(JSONObject jsonResponse) {
         beaconsList = JsonResponseDecoder.beaconListResponse(jsonResponse);
+        region = new Region("Ranged Beacons Region", UUID.fromString(beaconsList[0].getUuid()), null, null);
+        beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
+            @Override
+            public void onServiceReady() {
+                beaconManager.startRanging(region);
+            }
+        });
         // Mensaje de prueba
         //Toast.makeText(this,beaconsList[0].getUuid(),Toast.LENGTH_LONG).show();
     }
@@ -203,9 +202,9 @@ public class Test9 extends AppCompatActivity implements EventsListener {
     @Override
     public void customerResult(JSONObject jsonResponse) {
         customer = JsonResponseDecoder.customerResponse(jsonResponse);
-        if (customer != null) {
-            Toast.makeText(this,customer.getMac(),Toast.LENGTH_LONG).show();
-        }
+//        if (customer != null) {
+//            Toast.makeText(this,customer.getMac(),Toast.LENGTH_LONG).show();
+//        }
     }
 
 }
