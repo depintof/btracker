@@ -1,9 +1,9 @@
 package com.btracker.test9.dto;
 
 /**
- * DTO for Beacon
+ * DTO for BeaconDTO
  */
-public class Beacon {
+public class BeaconDTO {
     /*
     Columnas
     */
@@ -15,7 +15,7 @@ public class Beacon {
     private String created;
     private String modified;
 
-    public Beacon(String idBeacon, String uuid, String major, String minor, String detectionRange, String created, String modified) {
+    public BeaconDTO(String idBeacon, String uuid, String major, String minor, String detectionRange, String created, String modified) {
         this.id = idBeacon;
         this.uuid = uuid;
         this.major = major;
@@ -57,9 +57,9 @@ public class Beacon {
      * Compara los atributos de dos beacons
      * @return true si son iguales, false si hay cambios
      */
-    public boolean compararCon(Beacon beacon) {
-        return this.uuid.compareTo(beacon.uuid) == 0 &&
-                this.major.compareTo(beacon.major) == 0 &&
-                this.minor.compareTo(beacon.minor) == 0;
+    public boolean compararCon(BeaconDTO beaconDTO) {
+        return this.uuid.compareTo(beaconDTO.uuid) == 0 &&
+                this.major.compareTo(beaconDTO.major) == 0 &&
+                this.minor.compareTo(beaconDTO.minor) == 0;
     }
 }

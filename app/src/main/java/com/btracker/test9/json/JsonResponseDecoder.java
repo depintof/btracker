@@ -1,6 +1,6 @@
 package com.btracker.test9.json;
 
-import com.btracker.test9.dto.Beacon;
+import com.btracker.test9.dto.BeaconDTO;
 import com.btracker.test9.dto.Customer;
 import com.btracker.test9.utils.Cons;
 import com.google.gson.Gson;
@@ -18,7 +18,7 @@ public class JsonResponseDecoder {
      * JSON -> BeaconsList
      * @param response Respuesta JSON
      */
-    public static Beacon[] beaconListResponse(JSONObject response) {
+    public static BeaconDTO[] beaconListResponse(JSONObject response) {
         try {
             Gson gson = new Gson();
             String status = response.getString(Cons.STATUS);
@@ -26,8 +26,8 @@ public class JsonResponseDecoder {
             switch (status) {
                 case Cons.STATUS_SUCCESS: // Respuesta exitosa
                     JSONArray mensaje = response.getJSONArray(Cons.BEACONS);
-                    Beacon[] beacons = gson.fromJson(mensaje.toString(), Beacon[].class);
-                    return beacons;
+                    BeaconDTO[] beaconDTOs = gson.fromJson(mensaje.toString(), BeaconDTO[].class);
+                    return beaconDTOs;
                 case Cons.STATUS_FAIL: // Respuesta fallida
                     return null;
             }

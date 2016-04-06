@@ -1,7 +1,7 @@
 package com.btracker.test9;
 
 /**
- * Principal Beacon finder
+ * Principal BeaconDTO finder
  */
 import android.app.Application;
 import android.app.Notification;
@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.btracker.test9.async.EventsListener;
+import com.btracker.test9.dto.BeaconDTO;
 import com.btracker.test9.json.JsonResponseDecoder;
 import com.btracker.test9.web.DatabaseConnectivity;
 import com.estimote.sdk.Beacon;
@@ -38,11 +39,11 @@ public class MyApplication extends Application implements EventsListener {
             public void onEnteredRegion(Region region, List<Beacon> list) {
                 if (!list.isEmpty()) {
                     nearestBeacon = list.get(0);
-                    Log.e("Beacon notificacion: ",nearestBeacon.getMacAddress().toString());
+                    Log.e("BeaconDTO notificacion: ",nearestBeacon.getMacAddress().toString());
                 }
                 showNotification(
                         region.getIdentifier(),
-                        "Current Beacon: "
+                        "Current BeaconDTO: "
                                 + "MAC: " + nearestBeacon.getMacAddress().toString()
                                 + "Minor: " + region.getMinor().toString());
             }
@@ -87,14 +88,14 @@ public class MyApplication extends Application implements EventsListener {
 
     @Override
     public void beaconsResult(JSONObject jsonResult) {
-        final com.btracker.test9.dto.Beacon[] beaconList = JsonResponseDecoder.beaconListResponse(jsonResult);
+        final BeaconDTO[] beaconDTOList = JsonResponseDecoder.beaconListResponse(jsonResult);
         beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
             @Override
             public void onServiceReady() {
-                for(com.btracker.test9.dto.Beacon iteratorBeacon: beaconList)
-                if(iteratorBeacon.getUuid().equals("B9407F30-F5F8-466E-AFF9-25556B57FE6D")){
-                    beaconManager.startMonitoring(new Region("Beacon "+iteratorBeacon.getId(),
-                            UUID.fromString(iteratorBeacon.getUuid()), Integer.parseInt(iteratorBeacon.getMajor()), Integer.parseInt(iteratorBeacon.getMinor())));
+                for(BeaconDTO iteratorBeaconDTO : beaconDTOList)
+                if(iteratorBeaconDTO.getUuid().equals("B9407F30-F5F8-466E-AFF9-25556B57FE6D")){
+                    beaconManager.startMonitoring(new Region("BeaconDTO "+ iteratorBeaconDTO.getId(),
+                            UUID.fromString(iteratorBeaconDTO.getUuid()), Integer.parseInt(iteratorBeaconDTO.getMajor()), Integer.parseInt(iteratorBeaconDTO.getMinor())));
                 }
             }
         });

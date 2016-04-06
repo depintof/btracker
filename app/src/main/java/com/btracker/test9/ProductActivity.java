@@ -52,16 +52,16 @@ public class ProductActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product);
 
-        //Beacon de notificación
+        //BeaconDTO de notificación
         beacon = getIntent().getParcelableExtra("ProductBeacon");
-        // TODO Crear método para obtener detalles del producto asociado al Beacon
+        // TODO Crear método para obtener detalles del producto asociado al BeaconDTO
         //getProductDetails(beacon);
 
         // Relacion con Vistas
         tvProducto = (TextView) findViewById(R.id.producto);
         tvDescripcion = (TextView) findViewById(R.id.descripcion);
         tvDescripcion.setText(beacon.getMacAddress().toString());
-        Log.e("Beacon Final Producto: ", beacon.getMacAddress().toString());
+        Log.e("BeaconDTO Final Producto: ", beacon.getMacAddress().toString());
 
         tvPrecioConDescuento = (TextView) findViewById(R.id.precioConDescuento);
         tvPrecioOriginal = (TextView) findViewById(R.id.precioOriginal);
@@ -128,12 +128,12 @@ public class ProductActivity extends AppCompatActivity {
         super.onResume();  // Always call the superclass method first
         if(getIntent().getParcelableExtra("ProductBeacon") != null){
         beacon = getIntent().getParcelableExtra("ProductBeacon");
-        // TODO Crear método para obtener detalles del producto asociado al Beacon
+        // TODO Crear método para obtener detalles del producto asociado al BeaconDTO
         //getProductDetails(beacon);
 
         // Relacion con Vistas
         tvDescripcion.setText(beacon.getMacAddress().toString());
-        Log.e("Beacon Final RESUME: ", beacon.getMacAddress().toString());
+        Log.e("BeaconDTO Final RESUME: ", beacon.getMacAddress().toString());
         }
 
     }

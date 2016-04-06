@@ -1,7 +1,5 @@
 package com.btracker.test9.async;
 
-import com.btracker.test9.dto.Beacon;
-
 import org.json.JSONObject;
 
 /**
