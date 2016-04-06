@@ -1,4 +1,4 @@
-package com.btracker.test9;
+package com.innovamos.btracker;
 
 /**
  * Principal BeaconDTO finder
@@ -11,10 +11,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.btracker.test9.async.EventsListener;
-import com.btracker.test9.dto.BeaconDTO;
-import com.btracker.test9.json.JsonResponseDecoder;
-import com.btracker.test9.web.DatabaseConnectivity;
+import com.innovamos.btracker.async.EventsListener;
+import com.innovamos.btracker.dto.BeaconDTO;
+import com.innovamos.btracker.json.JsonResponseDecoder;
+import com.innovamos.btracker.web.DatabaseConnectivity;
 import com.estimote.sdk.Beacon;
 import com.estimote.sdk.BeaconManager;
 import com.estimote.sdk.Region;

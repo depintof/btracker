@@ -1,8 +1,8 @@
-package com.btracker.test9.json;
+package com.innovamos.btracker.json;
 
-import com.btracker.test9.dto.BeaconDTO;
-import com.btracker.test9.dto.Customer;
-import com.btracker.test9.utils.Cons;
+import com.innovamos.btracker.dto.BeaconDTO;
+import com.innovamos.btracker.dto.Customer;
+import com.innovamos.btracker.utils.Cons;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;

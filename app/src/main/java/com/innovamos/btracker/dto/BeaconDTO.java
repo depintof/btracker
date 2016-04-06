@@ -1,4 +1,4 @@
-package com.btracker.test9.dto;
+package com.innovamos.btracker.dto;
 
 /**
  * DTO for BeaconDTO

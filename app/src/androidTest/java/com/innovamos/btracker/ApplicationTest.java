@@ -1,4 +1,4 @@
-package com.btracker.test9;
+package com.innovamos.btracker;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

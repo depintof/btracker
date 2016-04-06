@@ -1,12 +1,8 @@
-package com.btracker.test9;
+package com.innovamos.btracker;
 
-import android.content.Context;
-import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Paint;
-import android.net.Uri;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,18 +11,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.BaseAdapter;
-import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.estimote.sdk.BeaconManager;
-import com.estimote.sdk.SystemRequirementsChecker;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -133,7 +121,7 @@ public class ProductActivity extends AppCompatActivity {
 
         // Relacion con Vistas
         tvDescripcion.setText(beacon.getMacAddress().toString());
-        Log.e("BeaconDTO Final RESUME: ", beacon.getMacAddress().toString());
+        Log.e("Beacon Final RESUME: ", beacon.getMacAddress().toString());
         }
 
     }

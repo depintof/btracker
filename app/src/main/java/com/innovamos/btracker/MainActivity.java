@@ -1,4 +1,4 @@
-package com.btracker.test9;
+package com.innovamos.btracker;
 
 import android.content.Context;
 import android.content.Intent;
@@ -17,11 +17,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 
-import com.btracker.test9.async.EventsListener;
-import com.btracker.test9.dto.BeaconDTO;
-import com.btracker.test9.dto.Customer;
-import com.btracker.test9.json.JsonResponseDecoder;
-import com.btracker.test9.web.DatabaseConnectivity;
+import com.innovamos.btracker.async.EventsListener;
+import com.innovamos.btracker.dto.BeaconDTO;
+import com.innovamos.btracker.dto.Customer;
+import com.innovamos.btracker.json.JsonResponseDecoder;
+import com.innovamos.btracker.web.DatabaseConnectivity;
 import com.estimote.sdk.BeaconManager;
 import com.estimote.sdk.Region;
 import com.estimote.sdk.SystemRequirementsChecker;
@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements EventsListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_test9);
+        setContentView(R.layout.main_activity);
 
         /*
         Configuracion de interfaz principal: Barra superior, panel lateral izquierdo
