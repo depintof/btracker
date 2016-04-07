@@ -54,6 +54,11 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
     Beacon beacon;
 
     /*
+     * Información Quemada para Imágenes
+     */
+    String galleryDirectoryName = "products";
+
+    /*
      * Información de Base de Datos
      */
     BeaconDTO[] beaconsList;
@@ -94,6 +99,7 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
         // Configuración de la Galería
         //setGallery();
 
+        /*
         try {
             String galleryDirectoryName = "gallery";
             String[] listImages = getAssets().list(galleryDirectoryName);
@@ -120,6 +126,7 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
         } catch (IOException e) {
             Log.e("GalleryScrollView", e.getMessage(), e);
         }
+         */
 
 
         DatabaseConnectivity databaseConnectivity = new DatabaseConnectivity(this);
@@ -218,9 +225,54 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
         // Elegir un producto aletorio de la lista
         Random random = new Random();
         int randomInteger = random.nextInt(productList.length);
+        ProductDTO randomProduct = productList[randomInteger];
 
         // Publicar la información de ese producto en la pantalla
+        loadProductInformation(randomProduct);
 
+        // Cargar imagenes asociadas
+        loadGallery(productList,randomProduct);
+
+    }
+
+    private void loadProductInformation(ProductDTO product){
+        tvProducto.setText(product.getName());
+        tvDescripcion.setText(product.getDescription());
+        tvPrecioOriginal.setText(product.getPrice());
+        tvDescuento.setText(product.getDiscount()+" %");
+        try {
+            displayImage.setImageBitmap(BitmapFactory.decodeStream(getAssets().open(galleryDirectoryName+"/"+product.getLocalUri())));
+        } catch (IOException e) {
+            Log.e("GalleryScrollView", e.getMessage(), e);
+        }
+    }
+
+    private void loadGallery(ProductDTO[] productList,ProductDTO selectedProduct){
+        try {
+            for (ProductDTO iteratorProduct : productList) {
+                if(iteratorProduct.getId()!= selectedProduct.getId()){
+                    InputStream is = getAssets().open(galleryDirectoryName + "/" + iteratorProduct.getLocalUri());
+                    final Bitmap bitmap = BitmapFactory.decodeStream(is);
+
+                    ImageView imageView = new ImageView(getApplicationContext());
+                    imageView.setImageBitmap(bitmap);
+                    imageView.setLayoutParams(new ViewGroup.LayoutParams(400, 400));
+                    //imageView.setLayoutParams(new Gallery.LayoutParams(Gallery.LayoutParams.MATCH_PARENT, Gallery.LayoutParams.MATCH_PARENT));
+                    imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                    //imageView.setAdjustViewBounds(true);
+                    //imageView.setMaxHeight(0);
+                    imageView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            displayImage.setImageBitmap(bitmap);
+                        }
+                    });
+                    myGallery.addView(imageView);
+                }
+            }
+        } catch (IOException e) {
+            Log.e("GalleryScrollView", e.getMessage(), e);
+        }
     }
 
 }

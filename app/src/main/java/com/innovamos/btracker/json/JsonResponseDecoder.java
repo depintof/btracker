@@ -94,7 +94,7 @@ public class JsonResponseDecoder {
 
             switch (status) {
                 case Cons.STATUS_SUCCESS: // Respuesta exitosa
-                    JSONObject mensaje = response.getJSONObject(Cons.PRODUCTS);
+                    JSONArray mensaje = response.getJSONArray(Cons.PRODUCTS);
                     return gson.fromJson(mensaje.toString(), ProductDTO[].class);
                 case Cons.STATUS_FAIL: // Respuesta fallida
                     return null;

@@ -12,15 +12,18 @@ public class ProductDTO {
     private String name;
     private String description;
     private String localUri;
+
+    private String price;
     private String discount;
     private String created;
     private String modified;
 
-    public ProductDTO(String id, String name, String description, String localUri, String discount, String created, String modified) {
+    public ProductDTO(String id, String name, String description, String localUri, String price, String discount, String created, String modified) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.localUri = localUri;
+        this.price = price;
         this.discount = discount;
         this.created = created;
         this.modified = modified;
@@ -56,6 +59,14 @@ public class ProductDTO {
 
     public void setLocalUri(String localUri) {
         this.localUri = localUri;
+    }
+
+    public String getPrice() {
+        return price;
+    }
+
+    public void setPrice(String price) {
+        this.price = price;
     }
 
     public String getDiscount() {

@@ -42,7 +42,7 @@ public class Cons {
     /**
      * URLs del Web Service: Obtener Lista de Productos Asociados a una Zona
      */
-    public static final String GET_PRODUCTS_ZONE_LIST = IP + PUERTO_HOST + "/get_products_zone_list.php";
+    public static final String GET_PRODUCTS_ZONE_LIST = IP + PUERTO_HOST + "/get_products.php";
 
     /**
      * Signo de consulta
@@ -53,11 +53,6 @@ public class Cons {
      * Signo de igual
      */
     public static final String EQUAL_MARK = "=";
-
-    /**
-     * Clave para el valor extra que representa al identificador de una meta
-     */
-    public static final String EXTRA_ID = "IDEXTRA";
 
     /*
         Tag 'mac' para respuestas de web-services
