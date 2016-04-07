@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.estimote.sdk.Beacon;
 import com.innovamos.btracker.async.EventListener;
 import com.innovamos.btracker.dto.BeaconDTO;
+import com.innovamos.btracker.dto.ProductDTO;
 import com.innovamos.btracker.dto.ZoneDTO;
 import com.innovamos.btracker.json.JsonResponseDecoder;
 import com.innovamos.btracker.web.DatabaseConnectivity;
@@ -27,6 +28,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Random;
 
 public class ProductActivity extends AppCompatActivity implements EventListener{
 
@@ -56,8 +58,7 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
      */
     BeaconDTO[] beaconsList;
     ZoneDTO zone;
-
-
+    ProductDTO[] productList;
 
     @SuppressWarnings("deprecation")
     @Override
@@ -212,6 +213,13 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
 
     @Override
     public void productsZoneList(JSONObject jsonResult) {
+        productList = JsonResponseDecoder.productListResponse(jsonResult);
+
+        // Elegir un producto aletorio de la lista
+        Random random = new Random();
+        int randomInteger = random.nextInt(productList.length);
+
+        // Publicar la información de ese producto en la pantalla
 
     }
 
