@@ -16,13 +16,26 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.estimote.sdk.Beacon;
+import com.innovamos.btracker.async.EventListener;
+import com.innovamos.btracker.dto.BeaconDTO;
+import com.innovamos.btracker.dto.ZoneDTO;
+import com.innovamos.btracker.json.JsonResponseDecoder;
+import com.innovamos.btracker.web.DatabaseConnectivity;
+
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.io.InputStream;
 
-public class ProductActivity extends AppCompatActivity {
+public class ProductActivity extends AppCompatActivity implements EventListener{
 
     //private Integer images[] = {R.drawable.gafas, R.drawable.gorra, R.drawable.pantalon,R.drawable.pic4};
 
+    /*
+    Variables de Interfaz Gráfica
+     */
+    Toolbar toolbar;
     TextView tvProducto;
     TextView tvDescripcion;
     TextView tvPrecioConDescuento;
@@ -31,8 +44,20 @@ public class ProductActivity extends AppCompatActivity {
     ImageView displayImage;
     LinearLayout myGallery;
     MenuItem favoriteMenu;
-    com.estimote.sdk.Beacon beacon;
     boolean favoriteFlag;
+
+    /*
+     * Información de Bluetooth
+     */
+    Beacon beacon;
+
+    /*
+     * Información de Base de Datos
+     */
+    BeaconDTO[] beaconsList;
+    ZoneDTO zone;
+
+
 
     @SuppressWarnings("deprecation")
     @Override
@@ -40,28 +65,32 @@ public class ProductActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product);
 
-        //BeaconDTO de notificación
+        /*
+         * Carga de Datos para Despliegue en Pantalla
+         */
+        //Beacon Encontrado
         beacon = getIntent().getParcelableExtra("ProductBeacon");
-        // TODO Crear método para obtener detalles del producto asociado al BeaconDTO
-        //getProductDetails(beacon);
+        Log.e("Beacon Final Producto: ", beacon.getMacAddress().toString());
 
-        // Relacion con Vistas
+        /*
+         * Configuracion Interfaz Visual
+         */
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setToolbar();
+
         tvProducto = (TextView) findViewById(R.id.producto);
         tvDescripcion = (TextView) findViewById(R.id.descripcion);
-        tvDescripcion.setText(beacon.getMacAddress().toString());
-        Log.e("BeaconDTO Final Producto: ", beacon.getMacAddress().toString());
-
         tvPrecioConDescuento = (TextView) findViewById(R.id.precioConDescuento);
         tvPrecioOriginal = (TextView) findViewById(R.id.precioOriginal);
+        tvPrecioOriginal.setPaintFlags(tvPrecioOriginal.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         tvDescuento = (TextView) findViewById(R.id.descuento);
 
         displayImage = (ImageView) findViewById(R.id.productImage);
         myGallery = (LinearLayout) findViewById(R.id.myGallery);
 
-        tvPrecioOriginal.setPaintFlags(tvPrecioOriginal.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        tvDescripcion.setText(beacon.getMacAddress().toString());
 
-        setToolbar();
-
+        // Configuración de la Galería
         //setGallery();
 
         try {
@@ -91,17 +120,10 @@ public class ProductActivity extends AppCompatActivity {
             Log.e("GalleryScrollView", e.getMessage(), e);
         }
 
-    }
 
-    private void setToolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        final ActionBar ab = getSupportActionBar();
-        if (ab != null) {
-            // Poner ícono y logo del drawer toggle
-            ab.setDisplayHomeAsUpEnabled(true);
-        }
-        favoriteFlag = false;
+        DatabaseConnectivity databaseConnectivity = new DatabaseConnectivity(this);
+        databaseConnectivity.getBeaconsList(this);
+
     }
 
     @Override
@@ -116,14 +138,13 @@ public class ProductActivity extends AppCompatActivity {
         super.onResume();  // Always call the superclass method first
         if(getIntent().getParcelableExtra("ProductBeacon") != null){
         beacon = getIntent().getParcelableExtra("ProductBeacon");
-        // TODO Crear método para obtener detalles del producto asociado al BeaconDTO
-        //getProductDetails(beacon);
-
+        Log.e("Beacon Final RESUME: ", beacon.getMacAddress().toString());
         // Relacion con Vistas
         tvDescripcion.setText(beacon.getMacAddress().toString());
-        Log.e("Beacon Final RESUME: ", beacon.getMacAddress().toString());
-        }
 
+        // TODO Crear método para obtener detalles del producto asociado al BeaconDTO
+        //getProductDetails(beacon);
+        }
     }
 
     @Override
@@ -146,6 +167,52 @@ public class ProductActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void setToolbar() {
+        setSupportActionBar(toolbar);
+        final ActionBar ab = getSupportActionBar();
+        if (ab != null) {
+            // Poner ícono y logo del drawer toggle
+            ab.setDisplayHomeAsUpEnabled(true);
+        }
+        favoriteFlag = false;
+    }
+
+
+    @Override
+    public void beaconsListResult(JSONObject jsonResult) {
+        beaconsList = JsonResponseDecoder.beaconListResponse(jsonResult);
+        for(BeaconDTO iteratorBeacon: beaconsList){
+            if((iteratorBeacon.getUuid().equalsIgnoreCase(beacon.getProximityUUID().toString()))&&(iteratorBeacon.getMajor().equals(String.valueOf(beacon.getMajor())))&&(iteratorBeacon.getMinor().equals(String.valueOf(beacon.getMinor())))){
+                DatabaseConnectivity databaseConnectivity = new DatabaseConnectivity(this);
+                databaseConnectivity.getZone(this,iteratorBeacon.getId());
+                return;
+            }
+        }
+    }
+
+    @Override
+    public void customerResult(JSONObject jsonResult) {
+
+    }
+
+    @Override
+    public void zoneResult(JSONObject jsonResult) {
+        /*
+         * Consulta Listado de Productos
+         */
+        DatabaseConnectivity databaseConnectivity = new DatabaseConnectivity(this);
+        zone = JsonResponseDecoder.zoneResponse(jsonResult);
+        databaseConnectivity.getProductZoneList(this,zone.getId());
+
+        // Interfaz Gráfica
+        toolbar.setTitle(zone.getName());
+    }
+
+    @Override
+    public void productsZoneList(JSONObject jsonResult) {
+
     }
 
 }

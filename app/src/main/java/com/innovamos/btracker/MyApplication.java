@@ -11,7 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.innovamos.btracker.async.EventsListener;
+import com.innovamos.btracker.async.EventListener;
 import com.innovamos.btracker.dto.BeaconDTO;
 import com.innovamos.btracker.json.JsonResponseDecoder;
 import com.innovamos.btracker.web.DatabaseConnectivity;
@@ -24,7 +24,7 @@ import org.json.JSONObject;
 import java.util.List;
 import java.util.UUID;
 
-public class MyApplication extends Application implements EventsListener {
+public class MyApplication extends Application implements EventListener {
 
     private BeaconManager beaconManager;
     private Beacon nearestBeacon;
@@ -39,7 +39,7 @@ public class MyApplication extends Application implements EventsListener {
             public void onEnteredRegion(Region region, List<Beacon> list) {
                 if (!list.isEmpty()) {
                     nearestBeacon = list.get(0);
-                    Log.e("BeaconDTO notificacion: ",nearestBeacon.getMacAddress().toString());
+                    Log.e("Beacon notificacion: ",nearestBeacon.getMacAddress().toString());
                 }
                 showNotification(
                         region.getIdentifier(),
@@ -87,22 +87,32 @@ public class MyApplication extends Application implements EventsListener {
     }
 
     @Override
-    public void beaconsResult(JSONObject jsonResult) {
+    public void beaconsListResult(JSONObject jsonResult) {
         final BeaconDTO[] beaconDTOList = JsonResponseDecoder.beaconListResponse(jsonResult);
         beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
             @Override
             public void onServiceReady() {
-                for(BeaconDTO iteratorBeaconDTO : beaconDTOList)
-                if(iteratorBeaconDTO.getUuid().equals("B9407F30-F5F8-466E-AFF9-25556B57FE6D")){
-                    beaconManager.startMonitoring(new Region("BeaconDTO "+ iteratorBeaconDTO.getId(),
-                            UUID.fromString(iteratorBeaconDTO.getUuid()), Integer.parseInt(iteratorBeaconDTO.getMajor()), Integer.parseInt(iteratorBeaconDTO.getMinor())));
-                }
+                for (BeaconDTO iteratorBeaconDTO : beaconDTOList)
+                    if (iteratorBeaconDTO.getUuid().equals("B9407F30-F5F8-466E-AFF9-25556B57FE6D")) {
+                        beaconManager.startMonitoring(new Region("BeaconDTO " + iteratorBeaconDTO.getId(),
+                                UUID.fromString(iteratorBeaconDTO.getUuid()), Integer.parseInt(iteratorBeaconDTO.getMajor()), Integer.parseInt(iteratorBeaconDTO.getMinor())));
+                    }
             }
         });
     }
 
     @Override
     public void customerResult(JSONObject jsonResult) {
+
+    }
+
+    @Override
+    public void zoneResult(JSONObject jsonResult) {
+
+    }
+
+    @Override
+    public void productsZoneList(JSONObject jsonResult) {
 
     }
 }

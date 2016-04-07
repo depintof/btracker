@@ -35,6 +35,16 @@ public class Cons {
     public static final String GET_CUSTOMER = IP + PUERTO_HOST + "/get_customer.php";
 
     /**
+     * URLs del Web Service: Obtener la Zona Asociada a un Beacon
+     */
+    public static final String GET_ZONE = IP + PUERTO_HOST + "/get_zones.php";
+
+    /**
+     * URLs del Web Service: Obtener Lista de Productos Asociados a una Zona
+     */
+    public static final String GET_PRODUCTS_ZONE_LIST = IP + PUERTO_HOST + "/get_products_zone_list.php";
+
+    /**
      * Signo de consulta
      */
     public static final String QUESTION_MARK = "?";
@@ -55,12 +65,22 @@ public class Cons {
     public static final String MAC = "mac";
 
     /*
+        Tag 'beacon_id' para respuestas de web-services
+     */
+    public static final String BEACON_ID = "beacon_id";
+
+    /*
+        Tag 'zone_id' para respuestas de web-services
+     */
+    public static final String ZONE_ID = "zone_id";
+
+    /*
         Tag 'estado' para respuestas de web-services
      */
     public static final String STATUS = "estado";
 
     /*
-        Tag 'estado' para respuestas de web-services
+        Tag 'beacons' para respuestas de web-services
      */
     public static final String BEACONS = "beacons";
 
@@ -68,6 +88,16 @@ public class Cons {
         Tag 'estado' para respuestas de web-services
      */
     public static final String CUSTOMERS = "customers";
+
+    /*
+        Tag 'products' para respuestas de web-services
+     */
+    public static final String ZONES = "zones";
+
+    /*
+        Tag 'products' para respuestas de web-services
+     */
+    public static final String PRODUCTS = "products";
 
     /*
         Valor exitoso de la variable estado para respuestas de web-services

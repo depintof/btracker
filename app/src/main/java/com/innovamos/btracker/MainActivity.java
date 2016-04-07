@@ -17,9 +17,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 
-import com.innovamos.btracker.async.EventsListener;
+import com.estimote.sdk.Beacon;
+import com.innovamos.btracker.async.EventListener;
 import com.innovamos.btracker.dto.BeaconDTO;
-import com.innovamos.btracker.dto.Customer;
+import com.innovamos.btracker.dto.CustomerDTO;
 import com.innovamos.btracker.json.JsonResponseDecoder;
 import com.innovamos.btracker.web.DatabaseConnectivity;
 import com.estimote.sdk.BeaconManager;
@@ -31,8 +32,7 @@ import org.json.JSONObject;
 import java.util.List;
 import java.util.UUID;
 
-public class MainActivity extends AppCompatActivity implements EventsListener {
-
+public class MainActivity extends AppCompatActivity implements EventListener {
 
     /**
      * Interfaz principal
@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements EventsListener {
     // Lista de Beacons
     private BeaconDTO[] beaconsList;
     // Cliente loggeado
-    private Customer customer;
+    private CustomerDTO customerDTO;
 
     /*
      * Gestor de Beacons
@@ -117,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements EventsListener {
             public void onBeaconsDiscovered(Region region, List<com.estimote.sdk.Beacon> list) {
                 if (!list.isEmpty()) {
                     com.estimote.sdk.Beacon nearestBeacon = list.get(0);
-                    Log.e("BeaconDTO encontrado: ",nearestBeacon.getMacAddress().toString());
+                    Log.e("Beacon encontrado: ",nearestBeacon.getMacAddress().toString());
                     productDetail(nearestBeacon);
                 }
             }
@@ -183,7 +183,7 @@ public class MainActivity extends AppCompatActivity implements EventsListener {
 
     /** Método lanzado al terminar Loading **/
     // main_content.xml android:onClick="productDetail"
-    public void productDetail(com.estimote.sdk.Beacon beacon) {
+    public void productDetail(Beacon beacon) {
         loadingAnimation.stop();
         Intent detailIntent = new Intent(this, ProductActivity.class);
         detailIntent.putExtra("ProductBeacon",beacon);
@@ -192,7 +192,7 @@ public class MainActivity extends AppCompatActivity implements EventsListener {
 
     // Método que obtiene la respuesta de base de datos con la lista de beacons
     @Override
-    public void beaconsResult(JSONObject jsonResponse) {
+    public void beaconsListResult(JSONObject jsonResponse) {
         beaconsList = JsonResponseDecoder.beaconListResponse(jsonResponse);
         region = new Region("Ranged Beacons Region", UUID.fromString(beaconsList[0].getUuid()), null, null);
         beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
@@ -208,10 +208,20 @@ public class MainActivity extends AppCompatActivity implements EventsListener {
     // Método que obtiene la respuesta de base de datos con el usuario loggeado
     @Override
     public void customerResult(JSONObject jsonResponse) {
-        customer = JsonResponseDecoder.customerResponse(jsonResponse);
-        //if (customer != null) {
-        //    Toast.makeText(this,customer.getMac(),Toast.LENGTH_LONG).show();
+        customerDTO = JsonResponseDecoder.customerResponse(jsonResponse);
+        //if (customerDTO != null) {
+        //    Toast.makeText(this,customerDTO.getMac(),Toast.LENGTH_LONG).show();
         //}
+    }
+
+    @Override
+    public void zoneResult(JSONObject jsonResult) {
+
+    }
+
+    @Override
+    public void productsZoneList(JSONObject jsonResult) {
+
     }
 
 }

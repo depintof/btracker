@@ -1,7 +1,9 @@
 package com.innovamos.btracker.json;
 
 import com.innovamos.btracker.dto.BeaconDTO;
-import com.innovamos.btracker.dto.Customer;
+import com.innovamos.btracker.dto.CustomerDTO;
+import com.innovamos.btracker.dto.ProductDTO;
+import com.innovamos.btracker.dto.ZoneDTO;
 import com.innovamos.btracker.utils.Cons;
 import com.google.gson.Gson;
 
@@ -38,10 +40,10 @@ public class JsonResponseDecoder {
     }
 
     /**
-     * JSON -> Customer
+     * JSON -> CustomerDTO
      * @param response Respuesta JSON
      */
-    public static Customer customerResponse(JSONObject response) {
+    public static CustomerDTO customerResponse(JSONObject response) {
         try {
             Gson gson = new Gson();
             String status = response.getString(Cons.STATUS);
@@ -49,7 +51,51 @@ public class JsonResponseDecoder {
             switch (status) {
                 case Cons.STATUS_SUCCESS: // Respuesta exitosa
                     JSONObject mensaje = response.getJSONObject(Cons.CUSTOMERS);
-                    return gson.fromJson(mensaje.toString(), Customer.class);
+                    return gson.fromJson(mensaje.toString(), CustomerDTO.class);
+                case Cons.STATUS_FAIL: // Respuesta fallida
+                    return null;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * JSON -> ZoneDTO
+     * @param response Respuesta JSON
+     */
+    public static ZoneDTO zoneResponse(JSONObject response) {
+        try {
+            Gson gson = new Gson();
+            String status = response.getString(Cons.STATUS);
+
+            switch (status) {
+                case Cons.STATUS_SUCCESS: // Respuesta exitosa
+                    JSONObject mensaje = response.getJSONObject(Cons.ZONES);
+                    return gson.fromJson(mensaje.toString(), ZoneDTO.class);
+                case Cons.STATUS_FAIL: // Respuesta fallida
+                    return null;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * JSON -> ProductDTO
+     * @param response Respuesta JSON
+     */
+    public static ProductDTO[] productListResponse(JSONObject response) {
+        try {
+            Gson gson = new Gson();
+            String status = response.getString(Cons.STATUS);
+
+            switch (status) {
+                case Cons.STATUS_SUCCESS: // Respuesta exitosa
+                    JSONObject mensaje = response.getJSONObject(Cons.PRODUCTS);
+                    return gson.fromJson(mensaje.toString(), ProductDTO[].class);
                 case Cons.STATUS_FAIL: // Respuesta fallida
                     return null;
             }

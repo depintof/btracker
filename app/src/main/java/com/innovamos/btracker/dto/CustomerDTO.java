@@ -1,9 +1,9 @@
 package com.innovamos.btracker.dto;
 
 /**
- * DTO for Customer
+ * DTO for CustomerDTO
  */
-public class Customer {
+public class CustomerDTO {
 
     /*
     Columnas
@@ -13,7 +13,7 @@ public class Customer {
     private String created;
     private String modified;
 
-    public Customer(String idCustomer, String mac, String created, String modified) {
+    public CustomerDTO(String idCustomer, String mac, String created, String modified) {
         this.id = idCustomer;
         this.mac = mac;
         this.created = created;
@@ -40,7 +40,7 @@ public class Customer {
      * Compara los atributos de dos beacons
      * @return true si son iguales, false si hay cambios
      */
-    public boolean compararCon(Customer customer) {
-        return this.mac.compareTo(customer.mac) == 0;
+    public boolean compararCon(CustomerDTO customerDTO) {
+        return this.mac.compareTo(customerDTO.mac) == 0;
     }
 }
