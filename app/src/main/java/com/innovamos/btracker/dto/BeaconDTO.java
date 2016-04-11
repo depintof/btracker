@@ -11,7 +11,7 @@ public class BeaconDTO {
     private String uuid;
     private String major;
     private String minor;
-    private String detectionRange;
+    private String detection_range;
     private String created;
     private String modified;
 
@@ -20,7 +20,7 @@ public class BeaconDTO {
         this.uuid = uuid;
         this.major = major;
         this.minor = minor;
-        this.detectionRange = detectionRange;
+        this.detection_range = detectionRange;
         this.created = created;
         this.modified = modified;
     }
@@ -42,7 +42,7 @@ public class BeaconDTO {
     }
 
     public String getDetectionRange() {
-        return detectionRange;
+        return detection_range;
     }
 
     public String getCreated() {

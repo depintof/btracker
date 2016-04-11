@@ -42,7 +42,7 @@ public class Cons {
     /**
      * URLs del Web Service: Obtener Lista de Productos Asociados a una Zona
      */
-    public static final String GET_PRODUCTS_ZONE_LIST = IP + PUERTO_HOST + "/get_products.php";
+    public static final String GET_PRODUCTS_ZONE_LIST = IP + PUERTO_HOST + "/get_products_temp.php";
 
     /**
      * Signo de consulta

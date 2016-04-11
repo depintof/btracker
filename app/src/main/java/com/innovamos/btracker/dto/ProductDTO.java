@@ -11,7 +11,7 @@ public class ProductDTO {
     private String id;
     private String name;
     private String description;
-    private String localUri;
+    private String local_uri;
 
     private String price;
     private String discount;
@@ -22,7 +22,7 @@ public class ProductDTO {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.localUri = localUri;
+        this.local_uri = localUri;
         this.price = price;
         this.discount = discount;
         this.created = created;
@@ -54,11 +54,11 @@ public class ProductDTO {
     }
 
     public String getLocalUri() {
-        return localUri;
+        return local_uri;
     }
 
     public void setLocalUri(String localUri) {
-        this.localUri = localUri;
+        this.local_uri = localUri;
     }
 
     public String getPrice() {

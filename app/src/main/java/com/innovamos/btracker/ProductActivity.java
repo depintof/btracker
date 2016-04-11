@@ -3,15 +3,18 @@ package com.innovamos.btracker;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -252,19 +255,34 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
             for (ProductDTO iteratorProduct : productList) {
                 if(iteratorProduct.getId()!= selectedProduct.getId()){
                     InputStream is = getAssets().open(galleryDirectoryName + "/" + iteratorProduct.getLocalUri());
-                    final Bitmap bitmap = BitmapFactory.decodeStream(is);
 
-                    ImageView imageView = new ImageView(getApplicationContext());
-                    imageView.setImageBitmap(bitmap);
-                    imageView.setLayoutParams(new ViewGroup.LayoutParams(400, 400));
-                    //imageView.setLayoutParams(new Gallery.LayoutParams(Gallery.LayoutParams.MATCH_PARENT, Gallery.LayoutParams.MATCH_PARENT));
+                    //final Bitmap bitmap = BitmapFactory.decodeStream(is);
+                    //ImageView imageView = new ImageView(getApplicationContext());
+                    //imageView.setLayoutParams(new ViewGroup.LayoutParams(400, 400));
+
+                    final Drawable shownImage = Drawable.createFromStream(is,iteratorProduct.getLocalUri());
+                    ImageView imageView = new ImageView(this);
+                    //imageView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
+                    LinearLayout.LayoutParams vp = new LinearLayout.LayoutParams(320, LinearLayout.LayoutParams.WRAP_CONTENT);
+                    vp.gravity = Gravity.CENTER;
+                    imageView.setLayoutParams(vp);
+                    imageView.setMaxHeight(320);
+//                    imageView.setMaxWidth(384);
+                    imageView.setAdjustViewBounds(true);
+
                     imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                    //imageView.setAdjustViewBounds(true);
-                    //imageView.setMaxHeight(0);
+
+
+                    //imageView.setImageBitmap(bitmap);
+
+                    imageView.setImageDrawable(shownImage);
+                    imageView.setMinimumWidth(imageView.getHeight());
+
                     imageView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            displayImage.setImageBitmap(bitmap);
+//                            displayImage.setImageBitmap(bitmap);
+                            displayImage.setImageDrawable(shownImage);
                         }
                     });
                     myGallery.addView(imageView);
