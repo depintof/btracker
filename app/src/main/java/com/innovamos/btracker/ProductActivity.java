@@ -241,8 +241,8 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
     private void loadProductInformation(ProductDTO product){
         tvProducto.setText(product.getName());
         tvDescripcion.setText(product.getDescription());
-        tvPrecioOriginal.setText(product.getPrice());
-        tvDescuento.setText(product.getDiscount()+" %");
+        tvPrecioOriginal.setText("$"+product.getPrice());
+        tvDescuento.setText(product.getDiscount()+"%");
         try {
             displayImage.setImageBitmap(BitmapFactory.decodeStream(getAssets().open(galleryDirectoryName+"/"+product.getLocalUri())));
         } catch (IOException e) {
