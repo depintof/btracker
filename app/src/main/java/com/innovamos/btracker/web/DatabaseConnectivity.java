@@ -12,6 +12,9 @@ import com.innovamos.btracker.utils.Cons;
 
 import org.json.JSONObject;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Methods for CRUD on Database
  */
@@ -129,5 +132,42 @@ public class DatabaseConnectivity {
                                 }
                         )
                 );
+    }
+
+    public void createProductPurchase(final Context context,JSONObject jsonObjectPurchase){
+        VolleySingleton.getInstance(context).addToRequestQueue(
+                new JsonObjectRequest(
+                        Request.Method.POST,
+                        Cons.INSERT_PRODUCT_PURCHASE,
+                        jsonObjectPurchase,
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                // Procesar la respuesta del servidor
+                                //procesarRespuesta(response);
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Log.d(context.getClass().getSimpleName(), "Error Volley: " + error.getMessage());
+                            }
+                        }
+
+                ) {
+                    @Override
+                    public Map<String, String> getHeaders() {
+                        Map<String, String> headers = new HashMap<String, String>();
+                        headers.put("Content-Type", "application/json; charset=utf-8");
+                        headers.put("Accept", "application/json");
+                        return headers;
+                    }
+
+                    @Override
+                    public String getBodyContentType() {
+                        return "application/json; charset=utf-8" + getParamsEncoding();
+                    }
+                }
+        );
     }
 }

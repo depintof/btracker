@@ -9,10 +9,13 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.util.Log;
 
 import com.innovamos.btracker.async.EventListener;
 import com.innovamos.btracker.dto.BeaconDTO;
+import com.innovamos.btracker.dto.CustomerDTO;
 import com.innovamos.btracker.json.JsonResponseDecoder;
 import com.innovamos.btracker.web.DatabaseConnectivity;
 import com.estimote.sdk.Beacon;
@@ -60,6 +63,8 @@ public class MyApplication extends Application implements EventListener {
         // Obtener listado de Beacons
         DatabaseConnectivity databaseConnectivity = new DatabaseConnectivity(this);
         databaseConnectivity.getBeaconsList(this);
+
+
     }
 
     public void showNotification(String title, String message) {

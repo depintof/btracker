@@ -1,9 +1,13 @@
 package com.innovamos.btracker;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,8 +26,10 @@ import android.widget.TextView;
 import com.estimote.sdk.Beacon;
 import com.innovamos.btracker.async.EventListener;
 import com.innovamos.btracker.dto.BeaconDTO;
+import com.innovamos.btracker.dto.CustomerDTO;
 import com.innovamos.btracker.dto.ProductDTO;
 import com.innovamos.btracker.dto.ZoneDTO;
+import com.innovamos.btracker.json.JsonMessageEncoder;
 import com.innovamos.btracker.json.JsonResponseDecoder;
 import com.innovamos.btracker.web.DatabaseConnectivity;
 
@@ -47,6 +53,7 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
     TextView tvPrecioOriginal;
     TextView tvDescuento;
     ImageView displayImage;
+    FloatingActionButton fab;
     LinearLayout myGallery;
     MenuItem favoriteMenu;
     boolean favoriteFlag;
@@ -67,6 +74,9 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
     BeaconDTO[] beaconsList;
     ZoneDTO zone;
     ProductDTO[] productList;
+    ProductDTO mainProduct;
+
+    private CustomerDTO customer;
 
     @SuppressWarnings("deprecation")
     @Override
@@ -93,48 +103,24 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
         tvPrecioOriginal = (TextView) findViewById(R.id.precioOriginal);
         tvPrecioOriginal.setPaintFlags(tvPrecioOriginal.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         tvDescuento = (TextView) findViewById(R.id.descuento);
-
+        setFloatingActionButton();
         displayImage = (ImageView) findViewById(R.id.productImage);
         myGallery = (LinearLayout) findViewById(R.id.myGallery);
 
         tvDescripcion.setText(beacon.getMacAddress().toString());
 
-        // Configuración de la Galería
-        //setGallery();
-
         /*
-        try {
-            String galleryDirectoryName = "gallery";
-            String[] listImages = getAssets().list(galleryDirectoryName);
-            for (String imageName : listImages) {
-                InputStream is = getAssets().open(galleryDirectoryName + "/" + imageName);
-                final Bitmap bitmap = BitmapFactory.decodeStream(is);
-
-                ImageView imageView = new ImageView(getApplicationContext());
-                imageView.setImageBitmap(bitmap);
-                imageView.setLayoutParams(new ViewGroup.LayoutParams(400, 400));
-                //imageView.setLayoutParams(new Gallery.LayoutParams(Gallery.LayoutParams.MATCH_PARENT, Gallery.LayoutParams.MATCH_PARENT));
-                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                //imageView.setAdjustViewBounds(true);
-                //imageView.setMaxHeight(0);
-                imageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        displayImage.setImageBitmap(bitmap);
-                    }
-                });
-
-                myGallery.addView(imageView);
-            }
-        } catch (IOException e) {
-            Log.e("GalleryScrollView", e.getMessage(), e);
-        }
+            Consulta de toda la lista de beacons
          */
-
-
         DatabaseConnectivity databaseConnectivity = new DatabaseConnectivity(this);
         databaseConnectivity.getBeaconsList(this);
 
+        // Obtener dato de Usuario
+        // Obtener MAC y Confirmar Existencia
+        WifiManager manager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+        WifiInfo info = manager.getConnectionInfo();
+        String macAddress = info.getMacAddress();
+        databaseConnectivity.getCustomer(this, macAddress);
     }
 
     @Override
@@ -162,11 +148,11 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                // app icon in action bar clicked; goto parent activity.
+                // If App icon in action bar clicked; goto parent activity.
                 this.finish();
                 return true;
             case R.id.product_like:
-                // app icon in action bar clicked; goto parent activity.
+                // Favorite Icon
                 if (!favoriteFlag) {
                     favoriteMenu.setIcon(R.drawable.ic_favorite_pressed);
                     favoriteFlag = true;
@@ -174,6 +160,8 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
                     favoriteMenu.setIcon(R.drawable.ic_favorite_unpressed);
                     favoriteFlag = false;
                 }
+                // TODO Publicar dato de like del producto en base de datos
+
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -190,6 +178,17 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
         favoriteFlag = false;
     }
 
+    private void setFloatingActionButton(){
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                // TODO Publicar dato de compra/redención del producto en base de datos
+                DatabaseConnectivity databaseConnectivity = new DatabaseConnectivity(ProductActivity.this);
+                databaseConnectivity.createProductPurchase(ProductActivity.this,JsonMessageEncoder.encodeProductLike(customer.getId(),mainProduct.getId()));
+            }
+        });
+    }
 
     @Override
     public void beaconsListResult(JSONObject jsonResult) {
@@ -205,7 +204,7 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
 
     @Override
     public void customerResult(JSONObject jsonResult) {
-
+        customer = JsonResponseDecoder.customerResponse(jsonResult);
     }
 
     @Override
@@ -215,7 +214,7 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
          */
         DatabaseConnectivity databaseConnectivity = new DatabaseConnectivity(this);
         zone = JsonResponseDecoder.zoneResponse(jsonResult);
-        databaseConnectivity.getProductZoneList(this,zone.getId());
+        databaseConnectivity.getProductZoneList(this, zone.getId());
 
         // Interfaz Gráfica
         toolbar.setTitle(zone.getName());
@@ -232,6 +231,9 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
 
         // Publicar la información de ese producto en la pantalla
         loadProductInformation(randomProduct);
+
+        // Guardar este como el producto principal
+        mainProduct = randomProduct;
 
         // Cargar imagenes asociadas
         loadGallery(productList,randomProduct);
@@ -252,28 +254,19 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
 
     private void loadGallery(ProductDTO[] productList,ProductDTO selectedProduct){
         try {
-            for (ProductDTO iteratorProduct : productList) {
+            for (final ProductDTO iteratorProduct : productList) {
                 if(iteratorProduct.getId()!= selectedProduct.getId()){
                     InputStream is = getAssets().open(galleryDirectoryName + "/" + iteratorProduct.getLocalUri());
 
-                    //final Bitmap bitmap = BitmapFactory.decodeStream(is);
-                    //ImageView imageView = new ImageView(getApplicationContext());
-                    //imageView.setLayoutParams(new ViewGroup.LayoutParams(400, 400));
-
                     final Drawable shownImage = Drawable.createFromStream(is,iteratorProduct.getLocalUri());
                     ImageView imageView = new ImageView(this);
-                    //imageView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
                     LinearLayout.LayoutParams vp = new LinearLayout.LayoutParams(320, LinearLayout.LayoutParams.WRAP_CONTENT);
                     vp.gravity = Gravity.CENTER;
                     imageView.setLayoutParams(vp);
                     imageView.setMaxHeight(320);
-//                    imageView.setMaxWidth(384);
                     imageView.setAdjustViewBounds(true);
 
                     imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-
-
-                    //imageView.setImageBitmap(bitmap);
 
                     imageView.setImageDrawable(shownImage);
                     imageView.setMinimumWidth(imageView.getHeight());
@@ -281,8 +274,8 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
                     imageView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-//                            displayImage.setImageBitmap(bitmap);
-                            displayImage.setImageDrawable(shownImage);
+                            loadProductInformation(iteratorProduct);
+                            mainProduct = iteratorProduct;
                         }
                     });
                     myGallery.addView(imageView);

@@ -45,6 +45,11 @@ public class Cons {
     public static final String GET_PRODUCTS_ZONE_LIST = IP + PUERTO_HOST + "/get_products_temp.php";
 
     /**
+     * URLs del Web Service: Insertar Campo con Compra de Producto
+     */
+    public static final String INSERT_PRODUCT_PURCHASE = IP + PUERTO_HOST + "/insert_product_purchase.php";
+
+    /**
      * Signo de consulta
      */
     public static final String QUESTION_MARK = "?";
@@ -103,4 +108,14 @@ public class Cons {
         Valor fallido de la variable estado para respuestas de web-services
      */
     public static final String STATUS_FAIL  = "2";
+
+
+
+    /******** COLUMNAS DE LIKE AL PRODUCTO ***********/
+    /*
+        ID Customer
+     */
+    public static final String ID  = "2";
+
+
 }
