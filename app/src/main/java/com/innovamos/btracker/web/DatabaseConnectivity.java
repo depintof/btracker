@@ -2,6 +2,7 @@ package com.innovamos.btracker.web;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -120,7 +121,7 @@ public class DatabaseConnectivity {
                                 new Response.Listener<JSONObject>() {
                                     @Override
                                     public void onResponse(JSONObject response) {
-                                        // Procesar la respuesta Json
+                                        // Enviar respuesta JSON por Interfaz
                                         el.productsZoneList(response);
                                     }
                                 },
@@ -134,40 +135,84 @@ public class DatabaseConnectivity {
                 );
     }
 
-    public void createProductPurchase(final Context context,JSONObject jsonObjectPurchase){
-        VolleySingleton.getInstance(context).addToRequestQueue(
-                new JsonObjectRequest(
-                        Request.Method.POST,
-                        Cons.INSERT_PRODUCT_PURCHASE,
-                        jsonObjectPurchase,
-                        new Response.Listener<JSONObject>() {
-                            @Override
-                            public void onResponse(JSONObject response) {
-                                // Procesar la respuesta del servidor
-                                //procesarRespuesta(response);
-                            }
-                        },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                Log.d(context.getClass().getSimpleName(), "Error Volley: " + error.getMessage());
-                            }
-                        }
+    public void createProductLike(final Context context,String idCustomer, String idProduct){
+        String requestURL = Cons.INSERT_PRODUCT_LIKE + Cons.QUESTION_MARK + Cons.CUSTOMER_ID + Cons.EQUAL_MARK + idCustomer + Cons.AND + Cons.PRODUCT_ID + Cons.EQUAL_MARK + idProduct;
+        // Petición GET
+        VolleySingleton.
+                getInstance(context).
+                addToRequestQueue(
+                        new JsonObjectRequest(
+                                Request.Method.GET,
+                                requestURL,
+                                (String) null,
+                                new Response.Listener<JSONObject>() {
+                                    @Override
+                                    public void onResponse(JSONObject response) {
+                                        // Procesar la respuesta Json
+                                        el.insertProductLike(response);
+                                    }
+                                },
+                                new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        Log.d(context.getClass().getSimpleName(), "Error Volley: " + error.getMessage());
+                                    }
+                                }
+                        )
+                );
+    }
 
-                ) {
-                    @Override
-                    public Map<String, String> getHeaders() {
-                        Map<String, String> headers = new HashMap<String, String>();
-                        headers.put("Content-Type", "application/json; charset=utf-8");
-                        headers.put("Accept", "application/json");
-                        return headers;
-                    }
+    public void getProductsLike(final Context context,String idCustomer){
+        String requestURL = Cons.GET_PRODUCTS_LIKE + Cons.QUESTION_MARK + Cons.CUSTOMER_ID + Cons.EQUAL_MARK + idCustomer;
+        // Petición GET
+        VolleySingleton.
+                getInstance(context).
+                addToRequestQueue(
+                        new JsonObjectRequest(
+                                Request.Method.GET,
+                                requestURL,
+                                (String) null,
+                                new Response.Listener<JSONObject>() {
+                                    @Override
+                                    public void onResponse(JSONObject response) {
+                                        // Procesar la respuesta Json
+                                        el.productsLikeList(response);
+                                    }
+                                },
+                                new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        Log.d(context.getClass().getSimpleName(), "Error Volley: " + error.getMessage());
+                                    }
+                                }
+                        )
+                );
+    }
 
-                    @Override
-                    public String getBodyContentType() {
-                        return "application/json; charset=utf-8" + getParamsEncoding();
-                    }
-                }
-        );
+    public void deleteProductLike(final Context context,String idCustomer, String idProduct){
+        String requestURL = Cons.DELETE_PRODUCT_LIKE + Cons.QUESTION_MARK + Cons.CUSTOMER_ID + Cons.EQUAL_MARK + idCustomer + Cons.AND + Cons.PRODUCT_ID + Cons.EQUAL_MARK + idProduct;
+        // Petición GET
+        VolleySingleton.
+                getInstance(context).
+                addToRequestQueue(
+                        new JsonObjectRequest(
+                                Request.Method.GET,
+                                requestURL,
+                                (String) null,
+                                new Response.Listener<JSONObject>() {
+                                    @Override
+                                    public void onResponse(JSONObject response) {
+                                        // Procesar la respuesta Json
+                                        el.deleteProductLike(response);
+                                    }
+                                },
+                                new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        Log.d(context.getClass().getSimpleName(), "Error Volley: " + error.getMessage());
+                                    }
+                                }
+                        )
+                );
     }
 }

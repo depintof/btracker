@@ -1,12 +1,8 @@
 package com.innovamos.btracker;
 
-import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -17,19 +13,17 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.estimote.sdk.Beacon;
 import com.innovamos.btracker.async.EventListener;
 import com.innovamos.btracker.dto.BeaconDTO;
-import com.innovamos.btracker.dto.CustomerDTO;
+import com.innovamos.btracker.dto.CustomerProductsDTO;
 import com.innovamos.btracker.dto.ProductDTO;
 import com.innovamos.btracker.dto.ZoneDTO;
-import com.innovamos.btracker.json.JsonMessageEncoder;
 import com.innovamos.btracker.json.JsonResponseDecoder;
 import com.innovamos.btracker.web.DatabaseConnectivity;
 
@@ -56,7 +50,7 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
     FloatingActionButton fab;
     LinearLayout myGallery;
     MenuItem favoriteMenu;
-    boolean favoriteFlag;
+    boolean favoriteFlag = false;
 
     /*
      * Información de Bluetooth
@@ -75,8 +69,9 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
     ZoneDTO zone;
     ProductDTO[] productList;
     ProductDTO mainProduct;
+    CustomerProductsDTO[] productsLikeList;
 
-    private CustomerDTO customer;
+    private String customerId;
 
     @SuppressWarnings("deprecation")
     @Override
@@ -88,7 +83,9 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
          * Carga de Datos para Despliegue en Pantalla
          */
         //Beacon Encontrado
-        beacon = getIntent().getParcelableExtra("ProductBeacon");
+        Bundle extras = getIntent().getExtras();
+        beacon = extras.getParcelable("ProductBeacon");
+        customerId = extras.getString("Customer");
         Log.e("Beacon Final Producto: ", beacon.getMacAddress().toString());
 
         /*
@@ -115,12 +112,14 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
         DatabaseConnectivity databaseConnectivity = new DatabaseConnectivity(this);
         databaseConnectivity.getBeaconsList(this);
 
+        /*
+            Consulta de toda la lista de productos con like
+         */
+        databaseConnectivity.getProductsLike(this, customerId);
+
         // Obtener dato de Usuario
         // Obtener MAC y Confirmar Existencia
-        WifiManager manager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-        WifiInfo info = manager.getConnectionInfo();
-        String macAddress = info.getMacAddress();
-        databaseConnectivity.getCustomer(this, macAddress);
+        //databaseConnectivity.getCustomer(this, MainActivity.getMacAddr());
     }
 
     @Override
@@ -134,13 +133,16 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
     public void onResume() {
         super.onResume();  // Always call the superclass method first
         if(getIntent().getParcelableExtra("ProductBeacon") != null){
-        beacon = getIntent().getParcelableExtra("ProductBeacon");
-        Log.e("Beacon Final RESUME: ", beacon.getMacAddress().toString());
-        // Relacion con Vistas
-        tvDescripcion.setText(beacon.getMacAddress().toString());
+            beacon = getIntent().getParcelableExtra("ProductBeacon");
+            Log.e("Beacon Final RESUME: ", beacon.getMacAddress().toString());
+            // Relacion con Vistas
+            tvDescripcion.setText(beacon.getMacAddress().toString());
 
-        // TODO Crear método para obtener detalles del producto asociado al BeaconDTO
-        //getProductDetails(beacon);
+            // TODO Crear método para obtener detalles del producto asociado al BeaconDTO
+            //getProductDetails(beacon);
+        }
+        if(getIntent().getParcelableExtra("Customer") != null){
+            customerId = getIntent().getParcelableExtra("Customer");
         }
     }
 
@@ -152,16 +154,14 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
                 this.finish();
                 return true;
             case R.id.product_like:
-                // Favorite Icon
-                if (!favoriteFlag) {
-                    favoriteMenu.setIcon(R.drawable.ic_favorite_pressed);
-                    favoriteFlag = true;
-                } else {
-                    favoriteMenu.setIcon(R.drawable.ic_favorite_unpressed);
-                    favoriteFlag = false;
+                DatabaseConnectivity databaseConnectivity = new DatabaseConnectivity(this);
+                if(favoriteFlag){
+                    databaseConnectivity.deleteProductLike(this,customerId,mainProduct.getId());
                 }
-                // TODO Publicar dato de like del producto en base de datos
-
+                else{
+                    // TODO Publicar dato de like del producto en base de datos
+                    databaseConnectivity.createProductLike(this, customerId, mainProduct.getId());
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -183,9 +183,7 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
         fab.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                // TODO Publicar dato de compra/redención del producto en base de datos
-                DatabaseConnectivity databaseConnectivity = new DatabaseConnectivity(ProductActivity.this);
-                databaseConnectivity.createProductPurchase(ProductActivity.this,JsonMessageEncoder.encodeProductLike(customer.getId(),mainProduct.getId()));
+                //TODO publicar compra del producto
             }
         });
     }
@@ -204,7 +202,7 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
 
     @Override
     public void customerResult(JSONObject jsonResult) {
-        customer = JsonResponseDecoder.customerResponse(jsonResult);
+        //customer = JsonResponseDecoder.customerResponse(jsonResult);
     }
 
     @Override
@@ -235,9 +233,54 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
         // Guardar este como el producto principal
         mainProduct = randomProduct;
 
-        // Cargar imagenes asociadas
-        loadGallery(productList,randomProduct);
+        for(CustomerProductsDTO iterator: productsLikeList){
+            if(iterator.getProduct_id().equals(mainProduct.getId())){
+                favoriteMenu.setIcon(R.drawable.ic_favorite_pressed);
+                favoriteFlag = true;
+            }
+        }
+        // Favorite Icon
+        if (!favoriteFlag) {
+            favoriteMenu.setIcon(R.drawable.ic_favorite_unpressed);
+            favoriteFlag = false;
+        }
 
+        // Cargar imagenes asociadas
+        loadGallery(productList, randomProduct);
+    }
+
+    @Override
+    public void productsLikeList(JSONObject jsonResult) {
+        productsLikeList = JsonResponseDecoder.productsLikeListResponse(jsonResult);
+
+    }
+
+    @Override
+    public void insertProductLike(JSONObject jsonResult) {
+        if(JsonResponseDecoder.insertProductLikeResponse(jsonResult)!=null){
+            Toast.makeText(this,"Este producto se agregó a tu lista de favoritos",Toast.LENGTH_LONG).show();
+            favoriteMenu.setIcon(R.drawable.ic_favorite_pressed);
+            favoriteFlag = true;
+        }
+        else{
+            Toast.makeText(this,"Algo ocurrió mal",Toast.LENGTH_SHORT).show();
+            favoriteMenu.setIcon(R.drawable.ic_favorite_unpressed);
+            favoriteFlag = false;
+        }
+    }
+
+    @Override
+    public void deleteProductLike(JSONObject jsonResult) {
+        if(JsonResponseDecoder.deleteProductLikeResponse(jsonResult)!=null){
+            Toast.makeText(this,"Se eliminó el producto de tu lista de favoritos",Toast.LENGTH_SHORT).show();
+            favoriteMenu.setIcon(R.drawable.ic_favorite_unpressed);
+            favoriteFlag = false;
+        }
+        else{
+            Toast.makeText(this,"Algo ocurrió mal",Toast.LENGTH_SHORT).show();
+            favoriteMenu.setIcon(R.drawable.ic_favorite_pressed);
+            favoriteFlag = true;
+        }
     }
 
     private void loadProductInformation(ProductDTO product){
@@ -246,7 +289,7 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
         tvPrecioOriginal.setText("$"+product.getPrice());
         tvDescuento.setText(product.getDiscount()+"%");
         try {
-            displayImage.setImageBitmap(BitmapFactory.decodeStream(getAssets().open(galleryDirectoryName+"/"+product.getLocalUri())));
+            displayImage.setImageBitmap(BitmapFactory.decodeStream(getAssets().open(galleryDirectoryName+"/"+product.getPicture())));
         } catch (IOException e) {
             Log.e("GalleryScrollView", e.getMessage(), e);
         }
@@ -256,9 +299,9 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
         try {
             for (final ProductDTO iteratorProduct : productList) {
                 if(iteratorProduct.getId()!= selectedProduct.getId()){
-                    InputStream is = getAssets().open(galleryDirectoryName + "/" + iteratorProduct.getLocalUri());
+                    InputStream is = getAssets().open(galleryDirectoryName + "/" + iteratorProduct.getPicture());
 
-                    final Drawable shownImage = Drawable.createFromStream(is,iteratorProduct.getLocalUri());
+                    final Drawable shownImage = Drawable.createFromStream(is,iteratorProduct.getPicture());
                     ImageView imageView = new ImageView(this);
                     LinearLayout.LayoutParams vp = new LinearLayout.LayoutParams(320, LinearLayout.LayoutParams.WRAP_CONTENT);
                     vp.gravity = Gravity.CENTER;

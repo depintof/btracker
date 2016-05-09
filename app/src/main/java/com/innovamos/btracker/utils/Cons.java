@@ -4,16 +4,8 @@ package com.innovamos.btracker.utils;
  * Cons File
  */
 public class Cons {
-    /**
-     * Transición Home -> Detalle
-     */
-    public static final int CODIGO_DETALLE = 100;
 
-    /**
-     * Transición Detalle -> Actualización
-     */
-    public static final int CODIGO_ACTUALIZACION = 101;
-
+    /***** GENERALES *****/
     /**
      * Puerto para la conexión.
      */
@@ -24,6 +16,7 @@ public class Cons {
      */
     private static final String IP = "http://btrackerws.exeamedia.com:";
 
+    /***** URL´s *****/
     /**
      * URLs del Web Service: Obtener Lista de Beacons
      */
@@ -50,6 +43,22 @@ public class Cons {
     public static final String INSERT_PRODUCT_PURCHASE = IP + PUERTO_HOST + "/insert_product_purchase.php";
 
     /**
+     * URLs del Web Service: Insertar Campo con Like de Producto
+     */
+    public static final String INSERT_PRODUCT_LIKE = IP + PUERTO_HOST + "/set_customers_products.php";
+
+    /**
+     * URLs del Web Service: Obtener Lista de Productos con Like
+     */
+    public static final String GET_PRODUCTS_LIKE = IP + PUERTO_HOST + "/get_customers_products.php";
+
+    /**
+     * URLs del Web Service: Eliminar Producto con Like
+     */
+    public static final String DELETE_PRODUCT_LIKE = IP + PUERTO_HOST + "/del_customers_products.php";
+
+    /***** SIMBOLOS DE CONSULTA *****/
+    /**
      * Signo de consulta
      */
     public static final String QUESTION_MARK = "?";
@@ -59,6 +68,12 @@ public class Cons {
      */
     public static final String EQUAL_MARK = "=";
 
+    /**
+     * Signo para agregar parámetros
+     */
+    public static final String AND = "&&";
+
+    /***** TAGS DE CONSULTAS *****/
     /*
         Tag 'mac' para respuestas de web-services
      */
@@ -85,12 +100,12 @@ public class Cons {
     public static final String BEACONS = "beacons";
 
     /*
-        Tag 'estado' para respuestas de web-services
+        Tag 'customers' para respuestas de web-services
      */
     public static final String CUSTOMERS = "customers";
 
     /*
-        Tag 'products' para respuestas de web-services
+        Tag 'zones' para respuestas de web-services
      */
     public static final String ZONES = "zones";
 
@@ -100,6 +115,22 @@ public class Cons {
     public static final String PRODUCTS = "products";
 
     /*
+        Tag 'customer_id' para respuestas de web-services
+     */
+    public static final String CUSTOMER_ID = "customer_id";
+
+    /*
+        Tag 'product_id' para respuestas de web-services
+     */
+    public static final String PRODUCT_ID = "product_id";
+
+    /*
+        Tag 'customersProducts' para respuestas de web-services
+     */
+    public static final String PRODUCTS_LIKES = "customersProducts";
+
+    /***** ESTADOS RESPUESTAS *****/
+    /*
         Valor exitoso de la variable estado para respuestas de web-services
      */
     public static final String STATUS_SUCCESS = "1";
@@ -108,14 +139,5 @@ public class Cons {
         Valor fallido de la variable estado para respuestas de web-services
      */
     public static final String STATUS_FAIL  = "2";
-
-
-
-    /******** COLUMNAS DE LIKE AL PRODUCTO ***********/
-    /*
-        ID Customer
-     */
-    public static final String ID  = "2";
-
 
 }

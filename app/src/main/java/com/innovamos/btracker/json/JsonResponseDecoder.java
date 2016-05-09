@@ -2,6 +2,7 @@ package com.innovamos.btracker.json;
 
 import com.innovamos.btracker.dto.BeaconDTO;
 import com.innovamos.btracker.dto.CustomerDTO;
+import com.innovamos.btracker.dto.CustomerProductsDTO;
 import com.innovamos.btracker.dto.ProductDTO;
 import com.innovamos.btracker.dto.ZoneDTO;
 import com.innovamos.btracker.utils.Cons;
@@ -104,4 +105,73 @@ public class JsonResponseDecoder {
         }
         return null;
     }
+
+    /**
+     * JSON -> ProductDTO
+     * @param response Respuesta JSON
+     */
+    public static CustomerProductsDTO[] productsLikeListResponse(JSONObject response) {
+        try {
+            Gson gson = new Gson();
+            String status = response.getString(Cons.STATUS);
+
+            switch (status) {
+                case Cons.STATUS_SUCCESS: // Respuesta exitosa
+                    JSONArray mensaje = response.getJSONArray(Cons.PRODUCTS_LIKES);
+                    return gson.fromJson(mensaje.toString(), CustomerProductsDTO[].class);
+                case Cons.STATUS_FAIL: // Respuesta fallida
+                    return null;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * JSON -> String
+     * @param response Respuesta JSON
+     */
+    public static String insertProductLikeResponse(JSONObject response) {
+        try {
+            Gson gson = new Gson();
+            String status = response.getString(Cons.STATUS);
+
+            switch (status) {
+                case Cons.STATUS_SUCCESS: // Respuesta exitosa
+//                    JSONObject mensaje = response.getJSONObject(Cons.PRODUCTS_LIKES);
+//                    return gson.fromJson(mensaje.toString(), CustomerProductsDTO.class);
+                    return "Prueba";
+                case Cons.STATUS_FAIL: // Respuesta fallida
+                    return null;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * JSON -> String
+     * @param response Respuesta JSON
+     */
+    public static String deleteProductLikeResponse(JSONObject response) {
+        try {
+            Gson gson = new Gson();
+            String status = response.getString(Cons.STATUS);
+
+            switch (status) {
+                case Cons.STATUS_SUCCESS: // Respuesta exitosa
+//                    JSONObject mensaje = response.getJSONObject(Cons.PRODUCTS_LIKES);
+//                    return gson.fromJson(mensaje.toString(), CustomerProductsDTO.class);
+                    return "Prueba";
+                case Cons.STATUS_FAIL: // Respuesta fallida
+                    return null;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }

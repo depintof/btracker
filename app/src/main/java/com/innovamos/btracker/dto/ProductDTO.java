@@ -11,22 +11,30 @@ public class ProductDTO {
     private String id;
     private String name;
     private String description;
-    private String local_uri;
-
     private String price;
     private String discount;
+    private String terms;
+    private String picture;
+    private String picture_dir;
+    private String status;
+
     private String created;
     private String modified;
+    private String type;
 
-    public ProductDTO(String id, String name, String description, String localUri, String price, String discount, String created, String modified) {
+    public ProductDTO(String id, String name, String description, String price, String discount, String terms, String picture, String pictureDir, String status, String created, String modified, String type) {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.local_uri = localUri;
         this.price = price;
         this.discount = discount;
+        this.terms = terms;
+        this.picture = picture;
+        this.picture_dir = pictureDir;
+        this.status = status;
         this.created = created;
         this.modified = modified;
+        this.type = type;
     }
 
     public String getId() {
@@ -53,14 +61,6 @@ public class ProductDTO {
         this.description = description;
     }
 
-    public String getLocalUri() {
-        return local_uri;
-    }
-
-    public void setLocalUri(String localUri) {
-        this.local_uri = localUri;
-    }
-
     public String getPrice() {
         return price;
     }
@@ -75,6 +75,46 @@ public class ProductDTO {
 
     public void setDiscount(String discount) {
         this.discount = discount;
+    }
+
+    public String getTerms() {
+        return terms;
+    }
+
+    public void setTerms(String terms) {
+        this.terms = terms;
+    }
+
+    public String getPicture() {
+        return picture;
+    }
+
+    public void setPicture(String picture) {
+        this.picture = picture;
+    }
+
+    public String getPicture_dir() {
+        return picture_dir;
+    }
+
+    public void setPicture_dir(String picture_dir) {
+        this.picture_dir = picture_dir;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getCreated() {

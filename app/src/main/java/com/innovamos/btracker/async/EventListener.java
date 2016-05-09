@@ -10,4 +10,7 @@ public interface EventListener {
     void customerResult(JSONObject jsonResult);
     void zoneResult(JSONObject jsonResult);
     void productsZoneList(JSONObject jsonResult);
+    void productsLikeList(JSONObject jsonResult);
+    void insertProductLike(JSONObject jsonResult);
+    void deleteProductLike(JSONObject jsonResult);
 }

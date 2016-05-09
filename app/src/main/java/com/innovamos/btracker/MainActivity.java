@@ -6,6 +6,7 @@ import android.graphics.drawable.AnimationDrawable;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -29,6 +30,8 @@ import com.estimote.sdk.SystemRequirementsChecker;
 
 import org.json.JSONObject;
 
+import java.net.NetworkInterface;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -102,10 +105,7 @@ public class MainActivity extends AppCompatActivity implements EventListener {
         DatabaseConnectivity databaseConnectivity = new DatabaseConnectivity(this);
         databaseConnectivity.getBeaconsList(this);
         // Obtener MAC y Confirmar Existencia
-        WifiManager manager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-        WifiInfo info = manager.getConnectionInfo();
-        String macAddress = info.getMacAddress();
-        databaseConnectivity.getCustomer(this,macAddress);
+        databaseConnectivity.getCustomer(this,getMacAddr());
 
         /*
         Configuración de búsqueda inicial de beacons
@@ -116,9 +116,9 @@ public class MainActivity extends AppCompatActivity implements EventListener {
             @Override
             public void onBeaconsDiscovered(Region region, List<com.estimote.sdk.Beacon> list) {
                 if (!list.isEmpty()) {
-                    com.estimote.sdk.Beacon nearestBeacon = list.get(0);
+                    Beacon nearestBeacon = list.get(0);
                     Log.e("Beacon encontrado: ",nearestBeacon.getMacAddress().toString());
-                    productDetail(nearestBeacon);
+                    productDetail(nearestBeacon,customerDTO);
                 }
             }
         });
@@ -183,10 +183,11 @@ public class MainActivity extends AppCompatActivity implements EventListener {
 
     /** Método lanzado al terminar Loading **/
     // main_content.xml android:onClick="productDetail"
-    public void productDetail(Beacon beacon) {
+    public void productDetail(Beacon beacon, CustomerDTO customerDTO) {
         loadingAnimation.stop();
         Intent detailIntent = new Intent(this, ProductActivity.class);
         detailIntent.putExtra("ProductBeacon",beacon);
+        detailIntent.putExtra("Customer", customerDTO.getId());
         startActivity(detailIntent);
     }
 
@@ -222,6 +223,48 @@ public class MainActivity extends AppCompatActivity implements EventListener {
     @Override
     public void productsZoneList(JSONObject jsonResult) {
 
+    }
+
+    @Override
+    public void productsLikeList(JSONObject jsonResult) {
+
+    }
+
+    @Override
+    public void insertProductLike(JSONObject jsonResult) {
+
+    }
+
+    @Override
+    public void deleteProductLike(JSONObject jsonResult) {
+
+    }
+
+    // Método que obtiene la MAC del dispositivo movil
+    public static String getMacAddr() {
+        try {
+            List<NetworkInterface> all = Collections.list(NetworkInterface.getNetworkInterfaces());
+            for (NetworkInterface nif : all) {
+                if (!nif.getName().equalsIgnoreCase("wlan0")) continue;
+
+                byte[] macBytes = nif.getHardwareAddress();
+                if (macBytes == null) {
+                    return "";
+                }
+
+                StringBuilder res1 = new StringBuilder();
+                for (byte b : macBytes) {
+                    res1.append(Integer.toHexString(b & 0xFF) + ":");
+                }
+
+                if (res1.length() > 0) {
+                    res1.deleteCharAt(res1.length() - 1);
+                }
+                return res1.toString();
+            }
+        } catch (Exception ex) {
+        }
+        return "02:00:00:00:00:00";
     }
 
 }

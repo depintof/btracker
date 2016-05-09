@@ -120,4 +120,19 @@ public class MyApplication extends Application implements EventListener {
     public void productsZoneList(JSONObject jsonResult) {
 
     }
+
+    @Override
+    public void productsLikeList(JSONObject jsonResult) {
+
+    }
+
+    @Override
+    public void insertProductLike(JSONObject jsonResult) {
+
+    }
+
+    @Override
+    public void deleteProductLike(JSONObject jsonResult) {
+
+    }
 }
