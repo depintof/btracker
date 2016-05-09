@@ -240,6 +240,21 @@ public class MainActivity extends AppCompatActivity implements EventListener {
 
     }
 
+    @Override
+    public void purchasedProductsList(JSONObject jsonResult) {
+
+    }
+
+    @Override
+    public void insertProductPurchase(JSONObject jsonResult) {
+
+    }
+
+    @Override
+    public void deleteProductPurchase(JSONObject jsonResult) {
+
+    }
+
     // Método que obtiene la MAC del dispositivo movil
     public static String getMacAddr() {
         try {

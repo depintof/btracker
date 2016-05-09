@@ -4,6 +4,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -23,6 +24,7 @@ import com.innovamos.btracker.async.EventListener;
 import com.innovamos.btracker.dto.BeaconDTO;
 import com.innovamos.btracker.dto.CustomerProductsDTO;
 import com.innovamos.btracker.dto.ProductDTO;
+import com.innovamos.btracker.dto.PurchasesDTO;
 import com.innovamos.btracker.dto.ZoneDTO;
 import com.innovamos.btracker.json.JsonResponseDecoder;
 import com.innovamos.btracker.web.DatabaseConnectivity;
@@ -51,6 +53,7 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
     LinearLayout myGallery;
     MenuItem favoriteMenu;
     boolean favoriteFlag = false;
+    boolean purchasedFlag = false;
 
     /*
      * Información de Bluetooth
@@ -70,6 +73,7 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
     ProductDTO[] productList;
     ProductDTO mainProduct;
     CustomerProductsDTO[] productsLikeList;
+    PurchasesDTO[] purchasedProductsList;
 
     private String customerId;
 
@@ -112,10 +116,7 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
         DatabaseConnectivity databaseConnectivity = new DatabaseConnectivity(this);
         databaseConnectivity.getBeaconsList(this);
 
-        /*
-            Consulta de toda la lista de productos con like
-         */
-        databaseConnectivity.getProductsLike(this, customerId);
+
 
         // Obtener dato de Usuario
         // Obtener MAC y Confirmar Existencia
@@ -159,7 +160,6 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
                     databaseConnectivity.deleteProductLike(this,customerId,mainProduct.getId());
                 }
                 else{
-                    // TODO Publicar dato de like del producto en base de datos
                     databaseConnectivity.createProductLike(this, customerId, mainProduct.getId());
                 }
                 return true;
@@ -176,6 +176,7 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
             ab.setDisplayHomeAsUpEnabled(true);
         }
         favoriteFlag = false;
+        purchasedFlag = false;
     }
 
     private void setFloatingActionButton(){
@@ -183,7 +184,14 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
         fab.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                //TODO publicar compra del producto
+                DatabaseConnectivity databaseConnectivity = new DatabaseConnectivity(ProductActivity.this);
+                if(purchasedFlag){
+                    databaseConnectivity.deleteProductPurchase(ProductActivity.this, mainProduct.getId(), customerId);
+                }
+                else{
+                    // TODO Arreglar con el valor aplicando el descuento
+                    databaseConnectivity.createProductPurchase(ProductActivity.this, mainProduct.getId(), customerId, mainProduct.getPrice());
+                }
             }
         });
     }
@@ -233,17 +241,16 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
         // Guardar este como el producto principal
         mainProduct = randomProduct;
 
-        for(CustomerProductsDTO iterator: productsLikeList){
-            if(iterator.getProduct_id().equals(mainProduct.getId())){
-                favoriteMenu.setIcon(R.drawable.ic_favorite_pressed);
-                favoriteFlag = true;
-            }
-        }
-        // Favorite Icon
-        if (!favoriteFlag) {
-            favoriteMenu.setIcon(R.drawable.ic_favorite_unpressed);
-            favoriteFlag = false;
-        }
+        DatabaseConnectivity databaseConnectivity = new DatabaseConnectivity(this);
+        /*
+            Consulta de toda la lista de productos con like
+         */
+        databaseConnectivity.getProductsLike(this, customerId);
+
+        /*
+            Consulta de toda la lista de productos comprados
+         */
+        databaseConnectivity.getPurchasedProducts(this, customerId);
 
         // Cargar imagenes asociadas
         loadGallery(productList, randomProduct);
@@ -252,11 +259,17 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
     @Override
     public void productsLikeList(JSONObject jsonResult) {
         productsLikeList = JsonResponseDecoder.productsLikeListResponse(jsonResult);
-
+        // Cargar icono de like
+        setLikeIcon();
     }
 
     @Override
     public void insertProductLike(JSONObject jsonResult) {
+        /*
+            Actualizar Lista de Productos para UI
+         */
+        DatabaseConnectivity databaseConnectivity = new DatabaseConnectivity(this);
+        databaseConnectivity.getProductsLike(this, customerId);
         if(JsonResponseDecoder.insertProductLikeResponse(jsonResult)!=null){
             Toast.makeText(this,"Este producto se agregó a tu lista de favoritos",Toast.LENGTH_LONG).show();
             favoriteMenu.setIcon(R.drawable.ic_favorite_pressed);
@@ -271,6 +284,8 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
 
     @Override
     public void deleteProductLike(JSONObject jsonResult) {
+        DatabaseConnectivity databaseConnectivity = new DatabaseConnectivity(this);
+        databaseConnectivity.getProductsLike(this,customerId);
         if(JsonResponseDecoder.deleteProductLikeResponse(jsonResult)!=null){
             Toast.makeText(this,"Se eliminó el producto de tu lista de favoritos",Toast.LENGTH_SHORT).show();
             favoriteMenu.setIcon(R.drawable.ic_favorite_unpressed);
@@ -283,11 +298,53 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
         }
     }
 
+    @Override
+    public void purchasedProductsList(JSONObject jsonResult) {
+        purchasedProductsList = JsonResponseDecoder.purchasedProductsResponse(jsonResult);
+        // Cargar ícono de compra
+        setPurchaseIcon();
+    }
+
+    @Override
+    public void insertProductPurchase(JSONObject jsonResult) {
+         /*
+            Actualizar Lista de Productos para UI
+         */
+        DatabaseConnectivity databaseConnectivity = new DatabaseConnectivity(this);
+        databaseConnectivity.getPurchasedProducts(this, customerId);
+        if(JsonResponseDecoder.insertProductPurchaseResponse(jsonResult)!=null){
+            Toast.makeText(this,"Reclama tu producto en la caja principal",Toast.LENGTH_LONG).show();
+            fab.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_remove_shopping_cart_white_24dp));
+            purchasedFlag = true;
+        }
+        else{
+            Toast.makeText(this,"Algo ocurrió mal",Toast.LENGTH_SHORT).show();
+            fab.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_shopping_cart_white_24dp));
+            purchasedFlag = false;
+        }
+    }
+
+    @Override
+    public void deleteProductPurchase(JSONObject jsonResult) {
+        DatabaseConnectivity databaseConnectivity = new DatabaseConnectivity(this);
+        databaseConnectivity.getPurchasedProducts(this, customerId);
+        if(JsonResponseDecoder.deleteProductPurchaseResponse(jsonResult)!=null){
+            Toast.makeText(this,"Esta compra ha sido eliminada",Toast.LENGTH_SHORT).show();
+            fab.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_shopping_cart_white_24dp));
+            purchasedFlag = false;
+        }
+        else{
+            Toast.makeText(this,"Algo ocurrió mal",Toast.LENGTH_SHORT).show();
+            fab.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_remove_shopping_cart_white_24dp));
+            purchasedFlag = true;
+        }
+    }
+
     private void loadProductInformation(ProductDTO product){
         tvProducto.setText(product.getName());
         tvDescripcion.setText(product.getDescription());
         tvPrecioOriginal.setText("$"+product.getPrice());
-        tvDescuento.setText(product.getDiscount()+"%");
+        tvDescuento.setText(product.getDiscount() + "%");
         try {
             displayImage.setImageBitmap(BitmapFactory.decodeStream(getAssets().open(galleryDirectoryName+"/"+product.getPicture())));
         } catch (IOException e) {
@@ -319,6 +376,8 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
                         public void onClick(View view) {
                             loadProductInformation(iteratorProduct);
                             mainProduct = iteratorProduct;
+                            setLikeIcon();
+                            setPurchaseIcon();
                         }
                     });
                     myGallery.addView(imageView);
@@ -326,6 +385,40 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
             }
         } catch (IOException e) {
             Log.e("GalleryScrollView", e.getMessage(), e);
+        }
+    }
+
+    private void setLikeIcon(){
+        favoriteFlag = false;
+        if(productsLikeList!=null){
+            for(CustomerProductsDTO iterator: productsLikeList){
+                if(iterator.getProduct_id().equals(mainProduct.getId())){
+                    favoriteMenu.setIcon(R.drawable.ic_favorite_pressed);
+                    favoriteFlag = true;
+                }
+            }
+        }
+        // Favorite Icon
+        if (!favoriteFlag) {
+            favoriteMenu.setIcon(R.drawable.ic_favorite_unpressed);
+            favoriteFlag = false;
+        }
+    }
+
+    private void setPurchaseIcon(){
+        purchasedFlag = false;
+        if(purchasedProductsList!=null){
+            for(PurchasesDTO iterator: purchasedProductsList){
+                if(iterator.getIdProduct().equals(mainProduct.getId())){
+                    fab.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.ic_remove_shopping_cart_white_24dp));
+                    purchasedFlag = true;
+                }
+            }
+        }
+        // Purchase Icon
+        if(!purchasedFlag){
+            fab.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.ic_shopping_cart_white_24dp));
+            purchasedFlag = false;
         }
     }
 

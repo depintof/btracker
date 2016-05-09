@@ -40,7 +40,17 @@ public class Cons {
     /**
      * URLs del Web Service: Insertar Campo con Compra de Producto
      */
-    public static final String INSERT_PRODUCT_PURCHASE = IP + PUERTO_HOST + "/insert_product_purchase.php";
+    public static final String INSERT_PRODUCT_PURCHASE = IP + PUERTO_HOST + "/set_product_purchase.php";
+
+    /**
+     * URLs del Web Service: Obtener Lista de Productos Comprados
+     */
+    public static final String GET_PURCHASED_PRODUCTS = IP + PUERTO_HOST + "/get_purchased_products.php";
+
+    /**
+     * URLs del Web Service: Eliminar Producto Comprado
+     */
+    public static final String DELETE_PRODUCT_PURCHASE = IP + PUERTO_HOST + "/del_product_purchase.php";
 
     /**
      * URLs del Web Service: Insertar Campo con Like de Producto
@@ -128,6 +138,16 @@ public class Cons {
         Tag 'customersProducts' para respuestas de web-services
      */
     public static final String PRODUCTS_LIKES = "customersProducts";
+
+    /*
+        Tag 'purchases' para respuestas de web-services
+     */
+    public static final String PURCHASES = "purchases";
+
+    /*
+        Tag 'price' para respuestas de web-services
+     */
+    public static final String PRICE = "price";
 
     /***** ESTADOS RESPUESTAS *****/
     /*

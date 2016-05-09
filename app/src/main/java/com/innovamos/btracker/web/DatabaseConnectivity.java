@@ -215,4 +215,85 @@ public class DatabaseConnectivity {
                         )
                 );
     }
+
+    public void createProductPurchase(final Context context, String idProduct, String idCustomer, String price){
+        String requestURL = Cons.INSERT_PRODUCT_PURCHASE + Cons.QUESTION_MARK + Cons.PRODUCT_ID + Cons.EQUAL_MARK + idProduct + Cons.AND + Cons.CUSTOMER_ID + Cons.EQUAL_MARK + idCustomer + Cons.AND + Cons.PRICE + Cons.EQUAL_MARK + price;
+        // Petición GET
+        VolleySingleton.
+                getInstance(context).
+                addToRequestQueue(
+                        new JsonObjectRequest(
+                                Request.Method.GET,
+                                requestURL,
+                                (String) null,
+                                new Response.Listener<JSONObject>() {
+                                    @Override
+                                    public void onResponse(JSONObject response) {
+                                        // Procesar la respuesta Json
+                                        el.insertProductPurchase(response);
+                                    }
+                                },
+                                new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        Log.d(context.getClass().getSimpleName(), "Error Volley: " + error.getMessage());
+                                    }
+                                }
+                        )
+                );
+    }
+
+    public void getPurchasedProducts(final Context context,String idCustomer){
+        String requestURL = Cons.GET_PURCHASED_PRODUCTS + Cons.QUESTION_MARK + Cons.CUSTOMER_ID + Cons.EQUAL_MARK + idCustomer;
+        // Petición GET
+        VolleySingleton.
+                getInstance(context).
+                addToRequestQueue(
+                        new JsonObjectRequest(
+                                Request.Method.GET,
+                                requestURL,
+                                (String) null,
+                                new Response.Listener<JSONObject>() {
+                                    @Override
+                                    public void onResponse(JSONObject response) {
+                                        // Procesar la respuesta Json
+                                        el.purchasedProductsList(response);
+                                    }
+                                },
+                                new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        Log.d(context.getClass().getSimpleName(), "Error Volley: " + error.getMessage());
+                                    }
+                                }
+                        )
+                );
+    }
+
+    public void deleteProductPurchase(final Context context, String idProduct, String idCustomer){
+        String requestURL = Cons.DELETE_PRODUCT_PURCHASE + Cons.QUESTION_MARK + Cons.PRODUCT_ID + Cons.EQUAL_MARK + idProduct + Cons.AND + Cons.CUSTOMER_ID + Cons.EQUAL_MARK + idCustomer;
+        // Petición GET
+        VolleySingleton.
+                getInstance(context).
+                addToRequestQueue(
+                        new JsonObjectRequest(
+                                Request.Method.GET,
+                                requestURL,
+                                (String) null,
+                                new Response.Listener<JSONObject>() {
+                                    @Override
+                                    public void onResponse(JSONObject response) {
+                                        // Procesar la respuesta Json
+                                        el.deleteProductPurchase(response);
+                                    }
+                                },
+                                new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        Log.d(context.getClass().getSimpleName(), "Error Volley: " + error.getMessage());
+                                    }
+                                }
+                        )
+                );
+    }
 }
