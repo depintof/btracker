@@ -3,7 +3,7 @@
 
     <string name="action_settings">Ajustes</string>
 
-    <string name="current_location_item">Ubicación Actual</string>
+    <string name="home_item">Inicio</string>
     <string name="notification_item">Notificaciones</string>
     <string name="deseos_item">Lista de Deseos</string>
     <string name="compras_item">Compras</string>
@@ -14,4 +14,7 @@
 
     <string name="log_out_item">Cerrar Sesión</string>
     <string name="configuration_item">Configuración</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
