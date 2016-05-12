@@ -135,4 +135,19 @@ public class MyApplication extends Application implements EventListener {
     public void deleteProductLike(JSONObject jsonResult) {
 
     }
+
+    @Override
+    public void purchasedProductsList(JSONObject jsonResult) {
+
+    }
+
+    @Override
+    public void insertProductPurchase(JSONObject jsonResult) {
+
+    }
+
+    @Override
+    public void deleteProductPurchase(JSONObject jsonResult) {
+
+    }
 }

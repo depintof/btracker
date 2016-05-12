@@ -13,4 +13,7 @@ public interface EventListener {
     void productsLikeList(JSONObject jsonResult);
     void insertProductLike(JSONObject jsonResult);
     void deleteProductLike(JSONObject jsonResult);
+    void purchasedProductsList(JSONObject jsonResult);
+    void insertProductPurchase(JSONObject jsonResult);
+    void deleteProductPurchase(JSONObject jsonResult);
 }
