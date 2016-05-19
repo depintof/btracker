@@ -347,11 +347,6 @@ public class MainActivity extends AppCompatActivity implements EventListener {
 
     }
 
-<<<<<<< HEAD
-    /**
-     * Método que obtiene la MAC del dispositivo movil
-     */
-=======
     @Override
     public void purchasedProductsList(JSONObject jsonResult) {
 
@@ -368,7 +363,6 @@ public class MainActivity extends AppCompatActivity implements EventListener {
     }
 
     // Método que obtiene la MAC del dispositivo movil
->>>>>>> 7c1d1265ccb804139cd8d68058179b4bc885dc90
     public static String getMacAddr() {
         try {
             List<NetworkInterface> all = Collections.list(NetworkInterface.getNetworkInterfaces());
