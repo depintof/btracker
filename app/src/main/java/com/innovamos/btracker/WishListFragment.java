@@ -16,7 +16,6 @@ import android.widget.TextView;
 import com.innovamos.btracker.adapter.LikedProductsArrayAdapter;
 import com.innovamos.btracker.dto.CustomerProductsDTO;
 import com.innovamos.btracker.dto.ProductDTO;
-import com.innovamos.btracker.dummy.DummyContent;
 
 import java.util.Arrays;
 import java.util.List;
