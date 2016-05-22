@@ -67,6 +67,16 @@ public class Cons {
      */
     public static final String DELETE_PRODUCT_LIKE = IP + PUERTO_HOST + "/del_customers_products.php";
 
+    /**
+     * URLs del Web Service: Obtener Lista de Visitas del Usuario
+     */
+    public static final String GET_CUSTOMER_VISITS = IP + PUERTO_HOST + "/get_customer_visits.php";
+
+    /**
+     * URLs del Web Service: Obtener Lista de Visitas del Usuario
+     */
+    public static final String GET_CUSTOMER_NOTIFICATIONS = IP + PUERTO_HOST + "/get_customer_notifications.php";
+
     /***** SIMBOLOS DE CONSULTA *****/
     /**
      * Signo de consulta
@@ -148,6 +158,16 @@ public class Cons {
         Tag 'price' para respuestas de web-services
      */
     public static final String PRICE = "price";
+
+    /*
+        Tag 'visits' para respuestas de web-services
+     */
+    public static final String VISITS = "visits";
+
+    /*
+        Tag 'notifications' para respuestas de web-services
+     */
+    public static final String NOTIFICATIONS = "notifications";
 
     /***** ESTADOS RESPUESTAS *****/
     /*

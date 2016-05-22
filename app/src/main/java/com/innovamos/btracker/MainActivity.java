@@ -21,8 +21,11 @@ import com.innovamos.btracker.dto.BeaconDTO;
 import com.innovamos.btracker.dto.CustomerDTO;
 import com.innovamos.btracker.dto.CustomerProductsDTO;
 import com.innovamos.btracker.dto.PurchasesDTO;
+import com.innovamos.btracker.dto.VisitsDTO;
+import com.innovamos.btracker.fragments.NotificationsListFragment;
 import com.innovamos.btracker.fragments.PurchasedListFragment;
 import com.innovamos.btracker.fragments.StartFragment;
+import com.innovamos.btracker.fragments.VisitsListFragment;
 import com.innovamos.btracker.fragments.WishListFragment;
 import com.innovamos.btracker.json.JsonResponseDecoder;
 import com.innovamos.btracker.web.DatabaseConnectivity;
@@ -57,6 +60,10 @@ public class MainActivity extends AppCompatActivity implements EventListener {
     private CustomerProductsDTO[] wishedProductsList;
     // Lista de productos comprados
     private PurchasesDTO[] purchasedProductsList;
+    // Lista de visitas realizadas por el usuario
+    private VisitsDTO[] customerVisitsList;
+    // Lista de notificaciones recibidas por el usuario
+    private VisitsDTO[] customerNotificationsList;
 
     /*
      * Gestor de Beacons
@@ -163,6 +170,10 @@ public class MainActivity extends AppCompatActivity implements EventListener {
             databaseConnectivity.getProductsLike(this, customerDTO.getId());
             // Obtener lista de productos comprados
             databaseConnectivity.getPurchasedProducts(this, customerDTO.getId());
+            // Obtener lista de visitas realizadas por el cliente
+            databaseConnectivity.getCustomerVisits(this, customerDTO.getId());
+            // Obtener lista de notificationes no vistas por el cliente
+            databaseConnectivity.getCustomerNotifications(this, customerDTO.getId());
         }
     }
 
@@ -208,10 +219,10 @@ public class MainActivity extends AppCompatActivity implements EventListener {
             selectedFragment = PurchasedListFragment.newInstance(purchasedProductsList);
         }
         if (title.equals(getString(R.string.visited_places_item))) {
-            selectedFragment = new WishListFragment();
+            selectedFragment = VisitsListFragment.newInstance(customerVisitsList);
         }
         if (title.equals(getString(R.string.notification_item))) {
-            selectedFragment = new WishListFragment();
+            selectedFragment = NotificationsListFragment.newInstance(customerNotificationsList);
         }
         if (title.equals(getString(R.string.log_out_item))) {
             android.os.Process.killProcess(android.os.Process.myPid());
@@ -228,10 +239,8 @@ public class MainActivity extends AppCompatActivity implements EventListener {
     }
 
     private void showNotifications() {
-        //TODO Create the proper fragment here
-        Fragment notificationsFragment = new WishListFragment();
-
-        fragmentManager.beginTransaction().replace(R.id.main_container, notificationsFragment).commit();
+        // Cargar el fragmento de notificaciones
+        fragmentManager.beginTransaction().replace(R.id.main_container, NotificationsListFragment.newInstance(customerNotificationsList)).commit();
         // Cerrar menu lateral
         drawerLayout.closeDrawers();
         // Setear título actual
@@ -327,6 +336,10 @@ public class MainActivity extends AppCompatActivity implements EventListener {
             databaseConnectivity.getProductsLike(this,customerDTO.getId());
             // Obtener lista de productos comprados
             databaseConnectivity.getPurchasedProducts(this, customerDTO.getId());
+            // Obtener lista de visitas realizadas por el cliente
+            databaseConnectivity.getCustomerVisits(this, customerDTO.getId());
+            // Obtener lista de notificationes no vistas por el cliente
+            databaseConnectivity.getCustomerNotifications(this, customerDTO.getId());
         }
         else{
             Toast.makeText(this,"Couldn´t find any user", Toast.LENGTH_LONG).show();
@@ -371,5 +384,15 @@ public class MainActivity extends AppCompatActivity implements EventListener {
     @Override
     public void deleteProductPurchase(JSONObject jsonResult) {
 
+    }
+
+    @Override
+    public void customerVisitsList(JSONObject jsonResult) {
+        customerVisitsList = JsonResponseDecoder.visitsListResponse(jsonResult);
+    }
+
+    @Override
+    public void customerNotificationsList(JSONObject jsonResult) {
+        customerNotificationsList = JsonResponseDecoder.notificationsListResponse(jsonResult);
     }
 }
