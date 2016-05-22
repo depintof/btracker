@@ -45,28 +45,28 @@
 
                 <ImageView
                     android:id="@+id/imageView"
-                    android:layout_width="96dp"
-                    android:layout_height="48dp"
-                    android:paddingRight="24dp"
+                    android:layout_width="100dp"
+                    android:layout_height="65dp"
                     android:src="@drawable/etiquetasinbordes"
                     android:layout_alignParentTop="true"
                     android:layout_alignParentRight="true"
-                    android:layout_alignParentEnd="true" />
+                    android:layout_alignParentEnd="true"
+                    android:contentDescription="Descuento" />
 
                 <TextView
                     android:id="@+id/descuento"
-                    android:layout_width="96dp"
-                    android:layout_height="48dp"
-                    android:paddingRight="24dp"
+                    android:layout_width="100dp"
+                    android:layout_height="65dp"
                     android:gravity="center|top"
                     android:textColor="@color/textIcons"
-                    android:textSize="12dp"
+                    android:textSize="16sp"
                     android:text="10%"
                     android:textStyle="bold"
                     android:paddingTop="12dp"
                     android:layout_alignParentTop="true"
                     android:layout_alignParentRight="true"
-                    android:layout_alignParentEnd="true" />
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentStart="false" />
 
             </RelativeLayout>
 
@@ -74,35 +74,43 @@
                 android:id="@+id/descriptionLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/info_padding"
-                android:paddingBottom="@dimen/info_padding"
-                android:paddingLeft="24dp"
-                android:paddingRight="48dp"
                 android:orientation="vertical"
                 android:background="@color/lightPrimaryColorOpacity"
                 android:layout_gravity="center"
-                android:gravity="center">
+                android:gravity="center"
+                android:measureWithLargestChild="false"
+                android:paddingBottom="20dp"
+                android:paddingTop="@dimen/info_padding"
+                android:paddingRight="@dimen/info_padding"
+                android:paddingLeft="@dimen/info_padding">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/producto"
                         android:text="PRODUCTO"
-                        android:maxLines="2"
+                        android:maxLines="@integer/description_title_lines"
                         android:textStyle="bold"
                         android:textSize="22sp"
                         android:textColor="@color/primaryText"
-                        android:gravity="right"/>
+                        android:gravity="right"
+                        android:minLines="@integer/description_title_lines"
+                        android:ellipsize="marquee"
+                        android:elegantTextHeight="false"
+                        android:password="false"
+                        android:phoneNumber="false" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/descripcion"
-                        android:text="DESCRIPCION"
-                        android:maxLines="2"
+                        android:maxLines="@integer/description_lines"
                         android:textSize="16sp"
                         android:textColor="@color/primaryText"
-                        android:gravity="right" />
+                        android:gravity="right"
+                        android:enabled="false"
+                        android:minLines="@integer/description_lines"
+                        android:ellipsize="end" />
 
                     <TextView
                         android:layout_width="match_parent"
@@ -137,7 +145,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    />
+                    android:longClickable="false"
+                    android:showDividers="end"
+                    android:paddingEnd="5dp" />
 
             </HorizontalScrollView>
 
