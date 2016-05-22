@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -16,11 +17,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.estimote.sdk.Beacon;
 import com.innovamos.btracker.async.EventListener;
 import com.innovamos.btracker.dto.BeaconDTO;
 import com.innovamos.btracker.dto.CustomerDTO;
+import com.innovamos.btracker.dto.CustomerProductsDTO;
 import com.innovamos.btracker.json.JsonResponseDecoder;
 import com.innovamos.btracker.web.DatabaseConnectivity;
 import com.estimote.sdk.BeaconManager;
@@ -41,18 +44,17 @@ public class MainActivity extends AppCompatActivity implements EventListener {
      */
     // Instancia del drawer
     private DrawerLayout drawerLayout;
-
-    // Imagen de carga
-    private ImageView loadingView;
-    // Animation del Buscador
-    private AnimationDrawable loadingAnimation;
+    // Instancia del panel lateral
+    private NavigationView navigationView;
 
     // Fragmentos
-    private Fragment fragment = null;
     private FragmentManager fragmentManager;
 
     // Cliente loggeado
     private CustomerDTO customerDTO;
+
+    // Lista de productos deseados
+    private CustomerProductsDTO[] wishedProductsList;
 
     /*
      * Gestor de Beacons
@@ -67,13 +69,10 @@ public class MainActivity extends AppCompatActivity implements EventListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
 
-        Fragment startFragment = StartFragment.newInstance();
-
-        this.fragmentManager = getSupportFragmentManager();
-        this.fragmentManager
-                .beginTransaction()
-                .replace(R.id.main_content, startFragment)
-                .commit();
+        // Instancia de Fragmentos
+        fragmentManager = getSupportFragmentManager();
+        // Crear fragmento en el contenedor principal (sobre el que se colocan todos los fragmentos
+        fragmentManager.beginTransaction().add(R.id.main_container, new StartFragment()).commit();
 
         /*
         Configuracion de interfaz principal: Barra superior, panel lateral izquierdo
@@ -83,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements EventListener {
 
         // Configurar acciones del panel lateral izquierdo
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         if (navigationView != null) {
             setupDrawerContent(navigationView);
         }
@@ -92,19 +91,8 @@ public class MainActivity extends AppCompatActivity implements EventListener {
             // Seleccionar item
         }*/
 
-        /* Configuración de la imagen de carga */
-        loadingView = (ImageView) findViewById(R.id.loadingView);
-
-        /* Obtener animación de loading */
-        if (loadingView != null) {
-            loadingAnimation = (AnimationDrawable) loadingView.getBackground();
-        }
-        loadingAnimation.start();
-
-
         /* Configuración de las instancias de comunicación a base de datos:
            Lista de Beacons y Confirmar existencia de usuario */
-
         DatabaseConnectivity databaseConnectivity = new DatabaseConnectivity(this);
 
         // Obtener listado de Beacons
@@ -127,94 +115,6 @@ public class MainActivity extends AppCompatActivity implements EventListener {
             }
             }
         });
-    }
-
-    private void setupDrawerContent(NavigationView navigationView) {
-        navigationView.setNavigationItemSelectedListener(
-            new NavigationView.OnNavigationItemSelectedListener() {
-
-                @Override
-                public boolean onNavigationItemSelected(MenuItem menuItem) {
-                    // Marcar item presionado
-                    menuItem.setChecked(true);
-                    // Crear nuevo fragmento
-                    String title = menuItem.getTitle().toString();
-                    selectItem(title);
-                    return true;
-                }
-            }
-        );
-    }
-
-    /**
-     * Método que abre un fragment cuando el usuario presiona una acción del menú
-     * @param title Titulo del fragmento
-     */
-    private void selectItem(String title) {
-        if (title.equals(getString(R.string.home_item))) {
-            fragment = StartFragment.newInstance();
-            loadingAnimation.start();
-            loadingView.setVisibility(View.VISIBLE);
-            title = getString(R.string.app_name);
-        }
-        if (title.equals(getString(R.string.deseos_item))) {
-            fragment = WishListFragment.newInstance(title);
-            loadingAnimation.stop();
-            loadingView.setVisibility(View.INVISIBLE);
-        }
-        if (title.equals(getString(R.string.compras_item))) {
-            fragment = WishListFragment.newInstance(title);
-            loadingAnimation.stop();
-            loadingView.setVisibility(View.INVISIBLE);
-        }
-        if (title.equals(getString(R.string.visited_places_item))) {
-            fragment = WishListFragment.newInstance(title);
-            loadingAnimation.stop();
-            loadingView.setVisibility(View.INVISIBLE);
-        }
-        if (title.equals(getString(R.string.notification_item))) {
-            fragment = WishListFragment.newInstance(title);
-            loadingAnimation.stop();
-            loadingView.setVisibility(View.INVISIBLE);
-        }
-        if (title.equals(getString(R.string.log_out_item))) {
-            android.os.Process.killProcess(android.os.Process.myPid());
-            System.exit(1);
-        }
-
-        if (fragment != null) {
-
-            this.fragmentManager
-                .beginTransaction()
-                .replace(R.id.main_content, fragment)
-                .commit();
-
-            // Cerrar menu lateral
-            drawerLayout.closeDrawers();
-
-            setTitle(title); // Setear título actual
-        }
-    }
-
-    private void showNotifications() {
-        //TODO Select the current item in the menu
-        this.fragment = WishListFragment.newInstance(getString(R.string.notification_item));
-        loadingAnimation.stop();
-        loadingView.setVisibility(View.INVISIBLE);
-
-        if (fragment != null) {
-
-            this.fragmentManager
-                    .beginTransaction()
-                    .replace(R.id.main_content, fragment)
-                    .commit();
-
-            // Cerrar menu lateral
-            drawerLayout.closeDrawers();
-
-            setTitle(getString(R.string.notification_item)); // Setear título actual
-
-        }
     }
 
     @Override
@@ -242,7 +142,6 @@ public class MainActivity extends AppCompatActivity implements EventListener {
     @Override
     public void onResume() {
         super.onResume();  // Always call the superclass method first
-        loadingAnimation.start();
 
         SystemRequirementsChecker.checkWithDefaultDialogs(this);
 
@@ -264,6 +163,74 @@ public class MainActivity extends AppCompatActivity implements EventListener {
         super.onPause();
     }
 
+    private void setupDrawerContent(NavigationView navigationView) {
+        navigationView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(MenuItem menuItem) {
+                        // Marcar item presionado
+                        menuItem.setChecked(true);
+                        // Crear nuevo fragmento
+                        String title = menuItem.getTitle().toString();
+                        selectItem(title);
+                        return true;
+                    }
+                }
+        );
+    }
+
+    /**
+     * Método que abre un fragment cuando el usuario presiona una acción del menú
+     * @param title Titulo del fragmento
+     */
+    private void selectItem(String title) {
+        Fragment selectedFragment = null;
+
+        if (title.equals(getString(R.string.home_item))) {
+            selectedFragment = StartFragment.newInstance();
+            title = getString(R.string.app_name);
+        }
+        if (title.equals(getString(R.string.deseos_item))) {
+            selectedFragment = WishListFragment.newInstance(wishedProductsList);
+        }
+        if (title.equals(getString(R.string.compras_item))) {
+            selectedFragment = new WishListFragment();
+        }
+        if (title.equals(getString(R.string.visited_places_item))) {
+            selectedFragment = new WishListFragment();
+        }
+        if (title.equals(getString(R.string.notification_item))) {
+            selectedFragment = new WishListFragment();
+        }
+        if (title.equals(getString(R.string.log_out_item))) {
+            android.os.Process.killProcess(android.os.Process.myPid());
+            System.exit(1);
+        }
+
+        if (selectedFragment != null) {
+            fragmentManager.beginTransaction().replace(R.id.main_container, selectedFragment).commit();
+            // Cerrar menu lateral
+            drawerLayout.closeDrawers();
+            // Setear título actual
+            setTitle(title);
+        }
+    }
+
+    private void showNotifications() {
+        //TODO Create the proper fragment here
+        Fragment notificationsFragment = new WishListFragment();
+
+        if (notificationsFragment != null) {
+            fragmentManager.beginTransaction().replace(R.id.main_container, notificationsFragment).commit();
+            // Cerrar menu lateral
+            drawerLayout.closeDrawers();
+            // Setear título actual
+            setTitle(getString(R.string.notification_item));
+            // Fijar item de notificaciones como seleccionado
+            navigationView.setCheckedItem(R.id.nav_notificaciones);
+        }
+    }
+
     // Método para configurar la toolbar
     private void setToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -283,83 +250,10 @@ public class MainActivity extends AppCompatActivity implements EventListener {
      * @param customerDTO Cliente
      */
     public void productDetail(Beacon beacon, CustomerDTO customerDTO) {
-        loadingAnimation.stop();
         Intent detailIntent = new Intent(this, ProductActivity.class);
-        detailIntent.putExtra("ProductBeacon",beacon);
+        detailIntent.putExtra("ProductBeacon", beacon);
         detailIntent.putExtra("Customer", customerDTO.getId());
         startActivity(detailIntent);
-    }
-
-    /**
-     * Método que obtiene la respuesta de base de datos con la lista de beacons
-     * @param jsonResponse Objeto JSON a decodificar
-     */
-    @Override
-    public void beaconsListResult(JSONObject jsonResponse) {
-        BeaconDTO[] beaconsList = JsonResponseDecoder.beaconListResponse(jsonResponse);
-        if (beaconsList != null) {
-            region = new Region("Ranged Beacons Region", UUID.fromString(beaconsList[0].getUuid()), null, null);
-        }
-        beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
-            @Override
-            public void onServiceReady() {
-                beaconManager.startRanging(region);
-            }
-        });
-        // Mensaje de prueba
-        //Toast.makeText(this,beaconsList[0].getUuid(),Toast.LENGTH_LONG).show();
-    }
-
-    /**
-     * Método que obtiene la respuesta de base de datos con el usuario loggeado
-     * @param jsonResponse Objeto JSON a decodificar
-     */
-    @Override
-    public void customerResult(JSONObject jsonResponse) {
-        customerDTO = JsonResponseDecoder.customerResponse(jsonResponse);
-        //if (customerDTO != null) {
-        //    Toast.makeText(this,customerDTO.getMac(),Toast.LENGTH_LONG).show();
-        //}
-    }
-
-    @Override
-    public void zoneResult(JSONObject jsonResult) {
-
-    }
-
-    @Override
-    public void productsZoneList(JSONObject jsonResult) {
-
-    }
-
-    @Override
-    public void productsLikeList(JSONObject jsonResult) {
-
-    }
-
-    @Override
-    public void insertProductLike(JSONObject jsonResult) {
-
-    }
-
-    @Override
-    public void deleteProductLike(JSONObject jsonResult) {
-
-    }
-
-    @Override
-    public void purchasedProductsList(JSONObject jsonResult) {
-
-    }
-
-    @Override
-    public void insertProductPurchase(JSONObject jsonResult) {
-
-    }
-
-    @Override
-    public void deleteProductPurchase(JSONObject jsonResult) {
-
     }
 
     // Método que obtiene la MAC del dispositivo movil
@@ -391,4 +285,79 @@ public class MainActivity extends AppCompatActivity implements EventListener {
         return null;
     }
 
+    /**
+     * Método que obtiene la respuesta de base de datos con la lista de beacons
+     * @param jsonResponse Objeto JSON a decodificar
+     */
+    @Override
+    public void beaconsListResult(JSONObject jsonResponse) {
+        BeaconDTO[] beaconsList = JsonResponseDecoder.beaconListResponse(jsonResponse);
+        if (beaconsList != null) {
+            region = new Region("Ranged Beacons Region", UUID.fromString(beaconsList[0].getUuid()), null, null);
+        }
+        beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
+            @Override
+            public void onServiceReady() {
+                beaconManager.startRanging(region);
+            }
+        });
+        // Mensaje de prueba
+        //Toast.makeText(this,beaconsList[0].getUuid(),Toast.LENGTH_LONG).show();
+    }
+
+    /**
+     * Método que obtiene la respuesta de base de datos con el usuario loggeado
+     * @param jsonResponse Objeto JSON a decodificar
+     */
+    @Override
+    public void customerResult(JSONObject jsonResponse) {
+        customerDTO = JsonResponseDecoder.customerResponse(jsonResponse);
+        if(customerDTO!=null){
+            DatabaseConnectivity databaseConnectivity = new DatabaseConnectivity(this);
+            databaseConnectivity.getProductsLike(this,customerDTO.getId());
+        }
+        else{
+            Toast.makeText(this,"Couldn´t find any user", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    public void zoneResult(JSONObject jsonResult) {
+
+    }
+
+    @Override
+    public void productsZoneList(JSONObject jsonResult) {
+
+    }
+
+    @Override
+    public void productsLikeList(JSONObject jsonResult) {
+        wishedProductsList = JsonResponseDecoder.productsLikeListResponse(jsonResult);
+    }
+
+    @Override
+    public void insertProductLike(JSONObject jsonResult) {
+
+    }
+
+    @Override
+    public void deleteProductLike(JSONObject jsonResult) {
+
+    }
+
+    @Override
+    public void purchasedProductsList(JSONObject jsonResult) {
+
+    }
+
+    @Override
+    public void insertProductPurchase(JSONObject jsonResult) {
+
+    }
+
+    @Override
+    public void deleteProductPurchase(JSONObject jsonResult) {
+
+    }
 }
