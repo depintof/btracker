@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.innovamos.btracker.R;
 import com.innovamos.btracker.dto.CustomerProductsDTO;
 
 import java.util.List;
@@ -32,19 +33,24 @@ public class LikedProductsArrayAdapter<T> extends ArrayAdapter<T> {
         if (null == convertView) {
             //Si no existe, entonces inflarlo con two_line_list_item.xml
             listItemView = inflater.inflate(
-                    android.R.layout.two_line_list_item,
+                    R.layout.wish_list_view,
                     parent,
                     false);
         }
 
         //Obteniendo instancias de los text views
-        TextView titulo = (TextView)listItemView.findViewById(android.R.id.text1);
-        TextView subtitulo = (TextView)listItemView.findViewById(android.R.id.text2);
+        TextView productName = (TextView)listItemView.findViewById(R.id.productItem);
+        TextView productDescription = (TextView)listItemView.findViewById(R.id.descriptionItem);
+        TextView discountPrice = (TextView)listItemView.findViewById(R.id.discountPriceItem);
+        TextView discountAmount = (TextView)listItemView.findViewById(R.id.discountAmountItem);
 
-        //Obteniendo instancia de la Tarea en la posición actual
+        //Obteniendo instancia del producto en la posición actual
         CustomerProductsDTO item = (CustomerProductsDTO)getItem(position);
-        titulo.setText(item.getName());
-        subtitulo.setText(item.getDescription());
+
+        // Fijando valores a los componentes de la lista
+        productName.setText(item.getName());
+        productDescription.setText(item.getDescription());
+        discountPrice.setText( item.get );
 
         //Devolver al ListView la fila creada
         return listItemView;
