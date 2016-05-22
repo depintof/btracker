@@ -43,6 +43,8 @@ public class StartFragment extends Fragment implements FragmentCommunicator {
     // Animation del Buscador
     private AnimationDrawable loadingAnimation;
 
+    public boolean firstTime = true;
+
     public Context context;
 
     /*
@@ -80,9 +82,12 @@ public class StartFragment extends Fragment implements FragmentCommunicator {
             @Override
             public void onBeaconsDiscovered(Region region, List<Beacon> list) {
                 if (!list.isEmpty()) {
-                    Beacon nearestBeacon = list.get(0);
-                    Log.e("Beacon encontrado: ", nearestBeacon.getMacAddress().toString());
-                    productDetail(nearestBeacon, customerDTO);
+                    if(firstTime){
+                        Beacon nearestBeacon = list.get(0);
+                        Log.e("Beacon encontrado: ", nearestBeacon.getMacAddress().toString());
+                        productDetail(nearestBeacon, customerDTO);
+                        firstTime = false;
+                    }
                 }
             }
         });
@@ -110,6 +115,7 @@ public class StartFragment extends Fragment implements FragmentCommunicator {
         super.onStop();
         loadingAnimation.stop();
         loadingView.setVisibility(View.INVISIBLE);
+        firstTime = true;
     }
 
     @Override
