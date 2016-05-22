@@ -46,7 +46,7 @@ public class MyApplication extends Application implements EventListener {
                 }
                 showNotification(
                         region.getIdentifier(),
-                        "Current BeaconDTO: "
+                        "Current Beacon: "
                                 + "MAC: " + nearestBeacon.getMacAddress().toString()
                                 + "Minor: " + region.getMinor().toString());
             }

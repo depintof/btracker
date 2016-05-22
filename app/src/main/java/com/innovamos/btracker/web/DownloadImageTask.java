@@ -23,7 +23,7 @@ public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
     }
 
     protected void onPreExecute() {
-        mDialog = ProgressDialog.show(this.context, "Por favor espere...", "Obteniendo información...", true);
+        //mDialog = ProgressDialog.show(this.context, "Por favor espere...", "Obteniendo información...", true);
     }
 
 
@@ -45,6 +45,6 @@ public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         //set image of your imageview
         bmImage.setImageBitmap(result);
         //close
-        mDialog.dismiss();
+        // mDialog.dismiss();
     }
 }
