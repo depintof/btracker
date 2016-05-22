@@ -78,6 +78,7 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
     ProductDTO mainProduct;
     CustomerProductsDTO[] productsLikeList;
     PurchasesDTO[] purchasedProductsList;
+    DownloadImageTask loadMainImageTask;
 
     private String customerId;
 
@@ -113,8 +114,9 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
         setFloatingActionButton();
         displayImage = (ImageView) findViewById(R.id.productImage);
         myGallery = (LinearLayout) findViewById(R.id.myGallery);
+        tvDescripcion.setText(R.string.loading);
 
-        //tvDescripcion.setText(beacon.getMacAddress().toString());
+        // tvDescripcion.setText(beacon.getMacAddress().toString());
 
         /*
             Consulta de toda la lista de beacons
@@ -137,7 +139,7 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
             beacon = getIntent().getParcelableExtra("ProductBeacon");
             Log.e("Beacon Final RESUME: ", beacon.getMacAddress().toString());
             // Relacion con Vistas
-            tvDescripcion.setText(beacon.getMacAddress().toString());
+            //tvDescripcion.setText(beacon.getMacAddress().toString());
 
             // TODO Crear método para obtener detalles del producto asociado al BeaconDTO
             //getProductDetails(beacon);
@@ -366,7 +368,11 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
         // Set the picture of the main product
         String url = product.getPictureURL();
         if (url != null) {
-            new DownloadImageTask(displayImage, this).execute(url);
+            if (loadMainImageTask != null) {
+                loadMainImageTask.cancel(true);
+            }
+            loadMainImageTask = new DownloadImageTask(displayImage, this);
+            loadMainImageTask.execute(url);
         }
         else {
             Bitmap noPicture = BitmapFactory.decodeResource(this.getResources(), R.drawable.no_picture);
