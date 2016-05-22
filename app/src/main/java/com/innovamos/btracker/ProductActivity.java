@@ -3,7 +3,6 @@ package com.innovamos.btracker;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Paint;
-import android.graphics.drawable.Drawable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
@@ -38,7 +37,6 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Objects;
 import java.util.Random;
 
 public class ProductActivity extends AppCompatActivity implements EventListener{
@@ -80,6 +78,7 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
     ProductDTO mainProduct;
     CustomerProductsDTO[] productsLikeList;
     PurchasesDTO[] purchasedProductsList;
+    DownloadImageTask loadMainImageTask;
 
     private String customerId;
 
@@ -115,20 +114,15 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
         setFloatingActionButton();
         displayImage = (ImageView) findViewById(R.id.productImage);
         myGallery = (LinearLayout) findViewById(R.id.myGallery);
+        tvDescripcion.setText(R.string.loading);
 
-        tvDescripcion.setText(beacon.getMacAddress().toString());
+        // tvDescripcion.setText(beacon.getMacAddress().toString());
 
         /*
             Consulta de toda la lista de beacons
          */
         DatabaseConnectivity databaseConnectivity = new DatabaseConnectivity(this);
         databaseConnectivity.getBeaconsList(this);
-
-
-
-        // Obtener dato de Usuario
-        // Obtener MAC y Confirmar Existencia
-        //databaseConnectivity.getCustomer(this, MainActivity.getMacAddr());
     }
 
     @Override
@@ -145,7 +139,7 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
             beacon = getIntent().getParcelableExtra("ProductBeacon");
             Log.e("Beacon Final RESUME: ", beacon.getMacAddress().toString());
             // Relacion con Vistas
-            tvDescripcion.setText(beacon.getMacAddress().toString());
+            //tvDescripcion.setText(beacon.getMacAddress().toString());
 
             // TODO Crear método para obtener detalles del producto asociado al BeaconDTO
             //getProductDetails(beacon);
@@ -371,46 +365,70 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
         tvDescuento.setText(product.getDiscount() + "%");
         tvPrecioConDescuento.setText("$" + product.getFinalPrice());
 
-
+        // Set the picture of the main product
         String url = product.getPictureURL();
-        new DownloadImageTask(displayImage, this).execute(url);
+        if (url != null) {
+            if (loadMainImageTask != null) {
+                loadMainImageTask.cancel(true);
+            }
+            loadMainImageTask = new DownloadImageTask(displayImage, this);
+            loadMainImageTask.execute(url);
+        }
+        else {
+            Bitmap noPicture = BitmapFactory.decodeResource(this.getResources(), R.drawable.no_picture);
+            displayImage.setImageBitmap(noPicture);
+        }
     }
 
-    private void loadGallery(ProductDTO[] productList,ProductDTO selectedProduct){
+    private ImageView loadProductPicture(final ImageView imageView, final ProductDTO product) {
+        LinearLayout.LayoutParams vp = new LinearLayout.LayoutParams(320, LinearLayout.LayoutParams.WRAP_CONTENT);
+        vp.gravity = Gravity.CENTER;
+        imageView.setLayoutParams(vp);
+        imageView.setMaxHeight(320);
+        imageView.setAdjustViewBounds(true);
+        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        imageView.setMinimumWidth(imageView.getHeight());
+
+        // Set the picture of each product
+        String url = product.getPictureURL();
+        if (url != null) {
+            new DownloadImageTask(imageView, this).execute(url);
+        }
+        else {
+            Bitmap noPicture = BitmapFactory.decodeResource(this.getResources(), R.drawable.no_picture);
+            imageView.setImageBitmap(noPicture);
+        }
+
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                loadProductInformation(product);
+                myGallery.removeView(imageView);
+                loadProductPicture(imageView, mainProduct);
+                mainProduct = product;
+                myGallery.addView(imageView);
+                myGallery.setDividerPadding(10);
+
+                setLikeIcon();
+                setPurchaseIcon();
+            }
+        });
+
+        return imageView;
+    }
+
+    private void loadGallery(final ProductDTO[] productList, final ProductDTO selectedProduct){
         try {
             for (final ProductDTO iteratorProduct : productList) {
-                if(!iteratorProduct.getId().equals(selectedProduct.getId())){
-                    InputStream is = getAssets().open(galleryDirectoryName + "/" + iteratorProduct.getPicture());
+                if (!iteratorProduct.getId().equals(selectedProduct.getId())) {
 
-                    //final Drawable shownImage = Drawable.createFromStream(is,iteratorProduct.getPicture());
                     ImageView imageView = new ImageView(this);
-                    LinearLayout.LayoutParams vp = new LinearLayout.LayoutParams(320, LinearLayout.LayoutParams.WRAP_CONTENT);
-                    vp.gravity = Gravity.CENTER;
-                    imageView.setLayoutParams(vp);
-                    imageView.setMaxHeight(320);
-                    imageView.setAdjustViewBounds(true);
+                    imageView = loadProductPicture(imageView, iteratorProduct);
 
-                    imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-
-                    //imageView.setImageDrawable(shownImage);
-                    imageView.setMinimumWidth(imageView.getHeight());
-
-                    String url = iteratorProduct.getPictureURL();
-                    new DownloadImageTask(imageView, this).execute(url);
-
-                    imageView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            loadProductInformation(iteratorProduct);
-                            mainProduct = iteratorProduct;
-                            setLikeIcon();
-                            setPurchaseIcon();
-                        }
-                    });
                     myGallery.addView(imageView);
                 }
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             Log.e("GalleryScrollView", e.getMessage(), e);
         }
     }
@@ -448,45 +466,4 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
             purchasedFlag = false;
         }
     }
-    
-    private void downloadFile(String fileurl,ImageView img)
-    {
-        Bitmap bmImg;
-        URL url =null;
-        try {
-            url= new URL(fileurl);
-        }
-        catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            HttpURLConnection conn= null;
-            if (url != null) {
-                conn = (HttpURLConnection)url.openConnection();
-            }
-            if (conn != null) {
-                conn.setDoInput(true);
-                conn.connect();
-                int length = conn.getContentLength();
-                int[] bitmapData =new int[length];
-                byte[] bitmapData2 =new byte[length];
-                InputStream is = conn.getInputStream();
-                BitmapFactory.Options options = new BitmapFactory.Options();
-                bmImg = BitmapFactory.decodeStream(is,null,options);
-
-                img.setImageBitmap(bmImg);
-            }
-
-            //dialog.dismiss();
-        }
-        catch(IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            // Toast.makeText(PhotoRating.this, "Connection Problem. Try Again.", Toast.LENGTH_SHORT).show();
-        }
-
-
-    }
-
 }
