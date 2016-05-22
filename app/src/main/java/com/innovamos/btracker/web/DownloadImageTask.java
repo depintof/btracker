@@ -9,6 +9,7 @@ import android.util.Log;
 import android.widget.ImageView;
 
 import com.innovamos.btracker.MainActivity;
+import com.innovamos.btracker.R;
 
 import java.io.InputStream;
 
@@ -24,6 +25,8 @@ public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
 
     protected void onPreExecute() {
         //mDialog = ProgressDialog.show(this.context, "Por favor espere...", "Obteniendo información...", true);
+        Bitmap loading = BitmapFactory.decodeResource(context.getResources(), R.drawable.loading_picture);
+        bmImage.setImageBitmap(loading);
     }
 
 
