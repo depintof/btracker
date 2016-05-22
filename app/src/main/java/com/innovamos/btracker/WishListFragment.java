@@ -10,9 +10,16 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
+import com.innovamos.btracker.adapter.LikedProductsArrayAdapter;
+import com.innovamos.btracker.dto.CustomerProductsDTO;
+import com.innovamos.btracker.dto.ProductDTO;
 import com.innovamos.btracker.dummy.DummyContent;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * A fragment representing a list of Items.
@@ -25,10 +32,13 @@ import com.innovamos.btracker.dummy.DummyContent;
  */
 public class WishListFragment extends Fragment implements AbsListView.OnItemClickListener {
 
-    public static final String ARG_SECTION_TITLE = "";
+    // Lista de productos deseados, recibida desde la actividad principal
+    private static CustomerProductsDTO[] wishedProductsList;
 
-    private String title;
-    private OnFragmentInteractionListener mListener;
+    // Lista visual
+    ListView wishListView;
+
+    //private OnFragmentInteractionListener mListener;
 
     /**
      * The fragment's ListView/GridView.
@@ -39,14 +49,12 @@ public class WishListFragment extends Fragment implements AbsListView.OnItemClic
      * The Adapter which will be used to populate the ListView/GridView with
      * Views.
      */
-    private ListAdapter mAdapter;
+    //private ListAdapter mAdapter;
 
     // TODO: Rename and change types of parameters
-    public static WishListFragment newInstance(String title) {
+    public static WishListFragment newInstance(CustomerProductsDTO[] wishedProductsList) {
         WishListFragment fragment = new WishListFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_SECTION_TITLE, title);
-        fragment.setArguments(args);
+        WishListFragment.wishedProductsList = wishedProductsList;
         return fragment;
     }
 
@@ -61,26 +69,29 @@ public class WishListFragment extends Fragment implements AbsListView.OnItemClic
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getArguments() != null) {
-            title = getArguments().getString(ARG_SECTION_TITLE);
-        }
-
         // TODO: Change Adapter to display your content
-        mAdapter = new ArrayAdapter<DummyContent.DummyItem>(getActivity(),
-                android.R.layout.simple_list_item_1, android.R.id.text1, DummyContent.ITEMS);
+        //mAdapter = new ArrayAdapter<ProductDTO>(getActivity(),
+                //android.R.layout.simple_list_item_1, android.R.id.text1, DummyContent.ITEMS);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_wishlist, container, false);
+        View view = inflater.inflate(R.layout.fragment_wishlist_list, container, false);
+        for(CustomerProductsDTO customerProductsDTO: wishedProductsList){
+            customerProductsDTO.getDescription();
+        }
+
+        wishListView = (ListView)view.findViewById(R.id.wishlist);
+        ArrayAdapter likedProductsAdapter = new LikedProductsArrayAdapter(getContext(), Arrays.asList(wishedProductsList));
+        wishListView.setAdapter(likedProductsAdapter);
 
         // Set the adapter
-        mListView = (AbsListView) view.findViewById(android.R.id.list);
-        ((AdapterView<ListAdapter>) mListView).setAdapter(mAdapter);
+        //mListView = (AbsListView) view.findViewById(android.R.id.list);
+        //((AdapterView<ListAdapter>) mListView).setAdapter(mAdapter);
 
         // Set OnItemClickListener so we can be notified on item clicks
-        mListView.setOnItemClickListener(this);
+        //mListView.setOnItemClickListener(this);
 
         return view;
     }
@@ -99,16 +110,16 @@ public class WishListFragment extends Fragment implements AbsListView.OnItemClic
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+        //mListener = null;
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        if (null != mListener) {
+        //if (null != mListener) {
             // Notify the active callbacks interface (the activity, if the
             // fragment is attached to one) that an item has been selected.
-            mListener.onFragmentInteraction(DummyContent.ITEMS.get(position).id);
-        }
+            //mListener.onFragmentInteraction(DummyContent.ITEMS.get(position).getId());
+        //}
     }
 
     /**
@@ -136,7 +147,7 @@ public class WishListFragment extends Fragment implements AbsListView.OnItemClic
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        public void onFragmentInteraction(String id);
+        void onFragmentInteraction(String id);
     }
 
 }

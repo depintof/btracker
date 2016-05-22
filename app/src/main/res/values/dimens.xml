@@ -11,5 +11,7 @@
     <dimen name="loading_height">181dp</dimen>
 
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="general_margin">16dp</dimen>
+    <dimen name="general_padding">16dp</dimen>
     <dimen name="info_padding">24dp</dimen>
 </resources>
