@@ -26,7 +26,7 @@
             </intent-filter>
         </activity>
         <activity android:name="com.innovamos.btracker.ProductActivity"
-            android:screenOrientation="landscape"
+            android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation|screenSize"/>
         <!-- ATTENTION: This was auto-generated to add Google Play services to your project for
              App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->

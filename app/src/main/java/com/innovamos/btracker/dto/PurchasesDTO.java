@@ -12,9 +12,12 @@ public class PurchasesDTO {
     private String product_id;
     private String customer_id;
     private String date;
-    private String price;
+    private double price;
+    private String name;
+    private double discount;
+    private String description;
 
-    public PurchasesDTO(String id, String idProduct, String idCustomer, String date, String price) {
+    public PurchasesDTO(String id, String idProduct, String idCustomer, String date, double price) {
         this.id = id;
         this.product_id = idProduct;
         this.customer_id = idCustomer;
@@ -54,11 +57,36 @@ public class PurchasesDTO {
         this.date = date;
     }
 
-    public String getPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(String price) {
+    public void setPrice(double price) {
         this.price = price;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public double getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(double discount) {
+        this.discount = discount;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
 }
