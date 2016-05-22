@@ -1,5 +1,6 @@
 package com.innovamos.btracker;
 
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
@@ -28,11 +29,16 @@ import com.innovamos.btracker.dto.PurchasesDTO;
 import com.innovamos.btracker.dto.ZoneDTO;
 import com.innovamos.btracker.json.JsonResponseDecoder;
 import com.innovamos.btracker.web.DatabaseConnectivity;
+import com.innovamos.btracker.web.DownloadImageTask;
 
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Objects;
 import java.util.Random;
 
 public class ProductActivity extends AppCompatActivity implements EventListener{
@@ -102,7 +108,9 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
         tvDescripcion = (TextView) findViewById(R.id.descripcion);
         tvPrecioConDescuento = (TextView) findViewById(R.id.precioConDescuento);
         tvPrecioOriginal = (TextView) findViewById(R.id.precioOriginal);
-        tvPrecioOriginal.setPaintFlags(tvPrecioOriginal.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        if (tvPrecioOriginal != null) {
+            tvPrecioOriginal.setPaintFlags(tvPrecioOriginal.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        }
         tvDescuento = (TextView) findViewById(R.id.descuento);
         setFloatingActionButton();
         displayImage = (ImageView) findViewById(R.id.productImage);
@@ -190,7 +198,7 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
                 }
                 else{
                     // TODO Arreglar con el valor aplicando el descuento
-                    databaseConnectivity.createProductPurchase(ProductActivity.this, mainProduct.getId(), customerId, mainProduct.getPrice());
+                    databaseConnectivity.createProductPurchase(ProductActivity.this, mainProduct.getId(), customerId, mainProduct.getFinalPrice());
                 }
             }
         });
@@ -199,11 +207,13 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
     @Override
     public void beaconsListResult(JSONObject jsonResult) {
         beaconsList = JsonResponseDecoder.beaconListResponse(jsonResult);
-        for(BeaconDTO iteratorBeacon: beaconsList){
-            if((iteratorBeacon.getUuid().equalsIgnoreCase(beacon.getProximityUUID().toString()))&&(iteratorBeacon.getMajor().equals(String.valueOf(beacon.getMajor())))&&(iteratorBeacon.getMinor().equals(String.valueOf(beacon.getMinor())))){
-                DatabaseConnectivity databaseConnectivity = new DatabaseConnectivity(this);
-                databaseConnectivity.getZone(this,iteratorBeacon.getId());
-                return;
+        if (beaconsList != null) {
+            for(BeaconDTO iteratorBeacon: beaconsList){
+                if((iteratorBeacon.getUuid().equalsIgnoreCase(beacon.getProximityUUID().toString()))&&(iteratorBeacon.getMajor().equals(String.valueOf(beacon.getMajor())))&&(iteratorBeacon.getMinor().equals(String.valueOf(beacon.getMinor())))){
+                    DatabaseConnectivity databaseConnectivity = new DatabaseConnectivity(this);
+                    databaseConnectivity.getZone(this,iteratorBeacon.getId());
+                    return;
+                }
             }
         }
     }
@@ -220,10 +230,14 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
          */
         DatabaseConnectivity databaseConnectivity = new DatabaseConnectivity(this);
         zone = JsonResponseDecoder.zoneResponse(jsonResult);
-        databaseConnectivity.getProductZoneList(this, zone.getId());
+        if (zone != null) {
+            databaseConnectivity.getProductZoneList(this, zone.getId());
+        }
 
         // Interfaz Gráfica
-        toolbar.setTitle(zone.getName());
+        if (zone != null) {
+            toolbar.setTitle(zone.getName());
+        }
     }
 
     @Override
@@ -285,7 +299,7 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
     @Override
     public void deleteProductLike(JSONObject jsonResult) {
         DatabaseConnectivity databaseConnectivity = new DatabaseConnectivity(this);
-        databaseConnectivity.getProductsLike(this,customerId);
+        databaseConnectivity.getProductsLike(this, customerId);
         if(JsonResponseDecoder.deleteProductLikeResponse(jsonResult)!=null){
             Toast.makeText(this,"Se eliminó el producto de tu lista de favoritos",Toast.LENGTH_SHORT).show();
             favoriteMenu.setIcon(R.drawable.ic_favorite_unpressed);
@@ -343,22 +357,22 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
     private void loadProductInformation(ProductDTO product){
         tvProducto.setText(product.getName());
         tvDescripcion.setText(product.getDescription());
-        tvPrecioOriginal.setText("$"+product.getPrice());
+        tvPrecioOriginal.setText("$" + product.getPrice());
         tvDescuento.setText(product.getDiscount() + "%");
-        try {
-            displayImage.setImageBitmap(BitmapFactory.decodeStream(getAssets().open(galleryDirectoryName+"/"+product.getPicture())));
-        } catch (IOException e) {
-            Log.e("GalleryScrollView", e.getMessage(), e);
-        }
+        tvPrecioConDescuento.setText("$" + product.getFinalPrice());
+
+
+        String url = product.getPictureURL();
+        new DownloadImageTask(displayImage, this).execute(url);
     }
 
     private void loadGallery(ProductDTO[] productList,ProductDTO selectedProduct){
         try {
             for (final ProductDTO iteratorProduct : productList) {
-                if(iteratorProduct.getId()!= selectedProduct.getId()){
+                if(!Objects.equals(iteratorProduct.getId(), selectedProduct.getId())){
                     InputStream is = getAssets().open(galleryDirectoryName + "/" + iteratorProduct.getPicture());
 
-                    final Drawable shownImage = Drawable.createFromStream(is,iteratorProduct.getPicture());
+                    //final Drawable shownImage = Drawable.createFromStream(is,iteratorProduct.getPicture());
                     ImageView imageView = new ImageView(this);
                     LinearLayout.LayoutParams vp = new LinearLayout.LayoutParams(320, LinearLayout.LayoutParams.WRAP_CONTENT);
                     vp.gravity = Gravity.CENTER;
@@ -368,8 +382,11 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
 
                     imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
-                    imageView.setImageDrawable(shownImage);
+                    //imageView.setImageDrawable(shownImage);
                     imageView.setMinimumWidth(imageView.getHeight());
+
+                    String url = iteratorProduct.getPictureURL();
+                    new DownloadImageTask(imageView, this).execute(url);
 
                     imageView.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -410,16 +427,56 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
         if(purchasedProductsList!=null){
             for(PurchasesDTO iterator: purchasedProductsList){
                 if(iterator.getIdProduct().equals(mainProduct.getId())){
-                    fab.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.ic_remove_shopping_cart_white_24dp));
+                    fab.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_remove_shopping_cart_white_24dp));
                     purchasedFlag = true;
                 }
             }
         }
         // Purchase Icon
         if(!purchasedFlag){
-            fab.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.ic_shopping_cart_white_24dp));
+            fab.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_shopping_cart_white_24dp));
             purchasedFlag = false;
         }
+    }
+    
+    private void downloadFile(String fileurl,ImageView img)
+    {
+        Bitmap bmImg;
+        URL url =null;
+        try {
+            url= new URL(fileurl);
+        }
+        catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            HttpURLConnection conn= null;
+            if (url != null) {
+                conn = (HttpURLConnection)url.openConnection();
+            }
+            if (conn != null) {
+                conn.setDoInput(true);
+                conn.connect();
+                int length = conn.getContentLength();
+                int[] bitmapData =new int[length];
+                byte[] bitmapData2 =new byte[length];
+                InputStream is = conn.getInputStream();
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                bmImg = BitmapFactory.decodeStream(is,null,options);
+
+                img.setImageBitmap(bmImg);
+            }
+
+            //dialog.dismiss();
+        }
+        catch(IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            // Toast.makeText(PhotoRating.this, "Connection Problem. Try Again.", Toast.LENGTH_SHORT).show();
+        }
+
+
     }
 
 }
