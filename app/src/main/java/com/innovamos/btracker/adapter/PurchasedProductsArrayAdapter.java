@@ -1,6 +1,5 @@
 package com.innovamos.btracker.adapter;
 
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,12 +9,12 @@ import android.widget.TextView;
 
 import com.innovamos.btracker.R;
 import com.innovamos.btracker.dto.CustomerProductsDTO;
+import com.innovamos.btracker.dto.PurchasesDTO;
 
 import java.util.List;
 
-public class LikedProductsArrayAdapter<T> extends ArrayAdapter<T> {
-
-    public LikedProductsArrayAdapter(Context context, List<T> objects) {
+public class PurchasedProductsArrayAdapter<T> extends ArrayAdapter {
+    public PurchasedProductsArrayAdapter(Context context, List<T> objects) {
         super(context, 0, objects);
     }
 
@@ -33,7 +32,7 @@ public class LikedProductsArrayAdapter<T> extends ArrayAdapter<T> {
         if (null == convertView) {
             //Si no existe, entonces inflarlo con two_line_list_item.xml
             listItemView = inflater.inflate(
-                    R.layout.wish_list_view,
+                    R.layout.purchases_list_view,
                     parent,
                     false);
         }
@@ -42,17 +41,17 @@ public class LikedProductsArrayAdapter<T> extends ArrayAdapter<T> {
         TextView productName = (TextView)listItemView.findViewById(R.id.productItem);
         TextView productDescription = (TextView)listItemView.findViewById(R.id.descriptionItem);
         TextView discountPrice = (TextView)listItemView.findViewById(R.id.discountPriceItem);
-        TextView discountAmount = (TextView)listItemView.findViewById(R.id.discountAmountItem);
+        TextView purchaseDate = (TextView)listItemView.findViewById(R.id.purchaseDate);
 
         //Obteniendo instancia del producto en la posición actual
-        CustomerProductsDTO item = (CustomerProductsDTO)getItem(position);
+        PurchasesDTO item = (PurchasesDTO)getItem(position);
 
         // Fijando valores a los componentes de la lista
         productName.setText(item.getName());
         productDescription.setText(item.getDescription());
         discountPrice.setText( "$" + Integer.toString((int) Math.ceil(
                 Double.parseDouble(String.valueOf(item.getPrice())) - Double.parseDouble(String.valueOf(item.getPrice())) * Double.parseDouble(String.valueOf(item.getDiscount())) / 100)) );
-        discountAmount.setText( "%" + Double.parseDouble(String.valueOf(item.getDiscount())));
+        purchaseDate.setText( item.getDate());
         //Devolver al ListView la fila creada
         return listItemView;
     }

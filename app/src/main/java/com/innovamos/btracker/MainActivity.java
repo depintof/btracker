@@ -3,10 +3,8 @@ package com.innovamos.btracker;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.content.Intent;
-import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -15,8 +13,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.estimote.sdk.Beacon;
@@ -24,6 +20,10 @@ import com.innovamos.btracker.async.EventListener;
 import com.innovamos.btracker.dto.BeaconDTO;
 import com.innovamos.btracker.dto.CustomerDTO;
 import com.innovamos.btracker.dto.CustomerProductsDTO;
+import com.innovamos.btracker.dto.PurchasesDTO;
+import com.innovamos.btracker.fragments.PurchasedListFragment;
+import com.innovamos.btracker.fragments.StartFragment;
+import com.innovamos.btracker.fragments.WishListFragment;
 import com.innovamos.btracker.json.JsonResponseDecoder;
 import com.innovamos.btracker.web.DatabaseConnectivity;
 import com.estimote.sdk.BeaconManager;
@@ -55,6 +55,8 @@ public class MainActivity extends AppCompatActivity implements EventListener {
 
     // Lista de productos deseados
     private CustomerProductsDTO[] wishedProductsList;
+    // Lista de productos comprados
+    private PurchasesDTO[] purchasedProductsList;
 
     /*
      * Gestor de Beacons
@@ -153,6 +155,15 @@ public class MainActivity extends AppCompatActivity implements EventListener {
                 }
             });
         }
+
+        // Actualizar listas al retomar la actividad
+        if(customerDTO!=null){
+            DatabaseConnectivity databaseConnectivity = new DatabaseConnectivity(this);
+            // Obtener lista de productos con like
+            databaseConnectivity.getProductsLike(this, customerDTO.getId());
+            // Obtener lista de productos comprados
+            databaseConnectivity.getPurchasedProducts(this, customerDTO.getId());
+        }
     }
 
     @Override
@@ -194,7 +205,7 @@ public class MainActivity extends AppCompatActivity implements EventListener {
             selectedFragment = WishListFragment.newInstance(wishedProductsList);
         }
         if (title.equals(getString(R.string.compras_item))) {
-            selectedFragment = new WishListFragment();
+            selectedFragment = PurchasedListFragment.newInstance(purchasedProductsList);
         }
         if (title.equals(getString(R.string.visited_places_item))) {
             selectedFragment = new WishListFragment();
@@ -220,15 +231,13 @@ public class MainActivity extends AppCompatActivity implements EventListener {
         //TODO Create the proper fragment here
         Fragment notificationsFragment = new WishListFragment();
 
-        if (notificationsFragment != null) {
-            fragmentManager.beginTransaction().replace(R.id.main_container, notificationsFragment).commit();
-            // Cerrar menu lateral
-            drawerLayout.closeDrawers();
-            // Setear título actual
-            setTitle(getString(R.string.notification_item));
-            // Fijar item de notificaciones como seleccionado
-            navigationView.setCheckedItem(R.id.nav_notificaciones);
-        }
+        fragmentManager.beginTransaction().replace(R.id.main_container, notificationsFragment).commit();
+        // Cerrar menu lateral
+        drawerLayout.closeDrawers();
+        // Setear título actual
+        setTitle(getString(R.string.notification_item));
+        // Fijar item de notificaciones como seleccionado
+        navigationView.setCheckedItem(R.id.nav_notificaciones);
     }
 
     // Método para configurar la toolbar
@@ -314,7 +323,10 @@ public class MainActivity extends AppCompatActivity implements EventListener {
         customerDTO = JsonResponseDecoder.customerResponse(jsonResponse);
         if(customerDTO!=null){
             DatabaseConnectivity databaseConnectivity = new DatabaseConnectivity(this);
+            // Obtener lista de productos con like
             databaseConnectivity.getProductsLike(this,customerDTO.getId());
+            // Obtener lista de productos comprados
+            databaseConnectivity.getPurchasedProducts(this, customerDTO.getId());
         }
         else{
             Toast.makeText(this,"Couldn´t find any user", Toast.LENGTH_LONG).show();
@@ -348,7 +360,7 @@ public class MainActivity extends AppCompatActivity implements EventListener {
 
     @Override
     public void purchasedProductsList(JSONObject jsonResult) {
-
+        purchasedProductsList = JsonResponseDecoder.purchasedProductsResponse(jsonResult);
     }
 
     @Override

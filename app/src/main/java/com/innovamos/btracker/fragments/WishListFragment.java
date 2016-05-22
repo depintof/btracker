@@ -1,6 +1,5 @@
-package com.innovamos.btracker;
+package com.innovamos.btracker.fragments;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -9,16 +8,14 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.innovamos.btracker.R;
 import com.innovamos.btracker.adapter.LikedProductsArrayAdapter;
 import com.innovamos.btracker.dto.CustomerProductsDTO;
-import com.innovamos.btracker.dto.ProductDTO;
 
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * A fragment representing a list of Items.
@@ -75,8 +72,10 @@ public class WishListFragment extends Fragment implements AbsListView.OnItemClic
         View view = inflater.inflate(R.layout.fragment_wishlist_list, container, false);
 
         wishListView = (ListView)view.findViewById(R.id.wishlist);
-        ArrayAdapter likedProductsAdapter = new LikedProductsArrayAdapter(getContext(), Arrays.asList(wishedProductsList));
-        wishListView.setAdapter(likedProductsAdapter);
+        if(wishedProductsList!=null){
+            ArrayAdapter<CustomerProductsDTO> likedProductsAdapter = new LikedProductsArrayAdapter<CustomerProductsDTO>(getContext(), Arrays.asList(wishedProductsList));
+            wishListView.setAdapter(likedProductsAdapter);
+        }
 
         // Set OnItemClickListener so we can be notified on item clicks
         //mListView.setOnItemClickListener(this);

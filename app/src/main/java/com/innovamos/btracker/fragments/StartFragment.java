@@ -1,6 +1,5 @@
-package com.innovamos.btracker;
+package com.innovamos.btracker.fragments;
 
-import android.app.Activity;
 import android.graphics.drawable.AnimationDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
+import com.innovamos.btracker.R;
 
 
 /**
@@ -35,8 +36,7 @@ public class StartFragment extends Fragment {
      * @return A new instance of fragment StartFragment.
      */
     public static StartFragment newInstance() {
-        StartFragment fragment = new StartFragment();
-        return fragment;
+        return new StartFragment();
     }
 
     public StartFragment() {
