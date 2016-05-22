@@ -68,27 +68,16 @@ public class WishListFragment extends Fragment implements AbsListView.OnItemClic
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // TODO: Change Adapter to display your content
-        //mAdapter = new ArrayAdapter<ProductDTO>(getActivity(),
-                //android.R.layout.simple_list_item_1, android.R.id.text1, DummyContent.ITEMS);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_wishlist_list, container, false);
-        for(CustomerProductsDTO customerProductsDTO: wishedProductsList){
-            customerProductsDTO.getDescription();
-        }
 
         wishListView = (ListView)view.findViewById(R.id.wishlist);
         ArrayAdapter likedProductsAdapter = new LikedProductsArrayAdapter(getContext(), Arrays.asList(wishedProductsList));
         wishListView.setAdapter(likedProductsAdapter);
-
-        // Set the adapter
-        //mListView = (AbsListView) view.findViewById(android.R.id.list);
-        //((AdapterView<ListAdapter>) mListView).setAdapter(mAdapter);
 
         // Set OnItemClickListener so we can be notified on item clicks
         //mListView.setOnItemClickListener(this);
@@ -96,21 +85,9 @@ public class WishListFragment extends Fragment implements AbsListView.OnItemClic
         return view;
     }
 
-    /*@Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        try {
-            mListener = (OnFragmentInteractionListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }*/
-
     @Override
     public void onDetach() {
         super.onDetach();
-        //mListener = null;
     }
 
     @Override
