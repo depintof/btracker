@@ -50,8 +50,9 @@ public class LikedProductsArrayAdapter<T> extends ArrayAdapter<T> {
         // Fijando valores a los componentes de la lista
         productName.setText(item.getName());
         productDescription.setText(item.getDescription());
-        //discountPrice.setText( item.get );
-
+        discountPrice.setText( "$" + Integer.toString((int) Math.ceil(
+                Double.parseDouble(String.valueOf(item.getPrice())) - Double.parseDouble(String.valueOf(item.getPrice())) * Double.parseDouble(String.valueOf(item.getDiscount())) / 100)) );
+        discountAmount.setText( "%" + Double.parseDouble(String.valueOf(item.getDiscount())));
         //Devolver al ListView la fila creada
         return listItemView;
     }

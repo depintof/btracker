@@ -75,8 +75,10 @@ public class WishListFragment extends Fragment implements AbsListView.OnItemClic
         View view = inflater.inflate(R.layout.fragment_wishlist_list, container, false);
 
         wishListView = (ListView)view.findViewById(R.id.wishlist);
-        ArrayAdapter likedProductsAdapter = new LikedProductsArrayAdapter(getContext(), Arrays.asList(wishedProductsList));
-        wishListView.setAdapter(likedProductsAdapter);
+        if(wishedProductsList!=null){
+            ArrayAdapter likedProductsAdapter = new LikedProductsArrayAdapter(getContext(), Arrays.asList(wishedProductsList));
+            wishListView.setAdapter(likedProductsAdapter);
+        }
 
         // Set OnItemClickListener so we can be notified on item clicks
         //mListView.setOnItemClickListener(this);
