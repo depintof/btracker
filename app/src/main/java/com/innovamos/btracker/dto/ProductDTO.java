@@ -11,18 +11,17 @@ public class ProductDTO {
     private String id;
     private String name;
     private String description;
-    private String price;
-    private String discount;
     private String terms;
-    private String picture;
-    private String picture_dir;
+    private String pictureURL;
     private String status;
-
+    private String picture;
     private String created;
     private String modified;
     private String type;
+    private String price;
+    private String discount;
 
-    public ProductDTO(String id, String name, String description, String price, String discount, String terms, String picture, String pictureDir, String status, String created, String modified, String type) {
+    public ProductDTO(String id, String name, String description, String price, String discount, String terms, String picture, String pictureURL, String status, String created, String modified, String type) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -30,7 +29,7 @@ public class ProductDTO {
         this.discount = discount;
         this.terms = terms;
         this.picture = picture;
-        this.picture_dir = pictureDir;
+        this.pictureURL = pictureURL;
         this.status = status;
         this.created = created;
         this.modified = modified;
@@ -85,20 +84,15 @@ public class ProductDTO {
         this.terms = terms;
     }
 
-    public String getPicture() {
-        return picture;
+    public String getPictureURL() {
+        if(pictureURL != null)
+            return pictureURL;
+        else
+            return "http://btrackermanager.exeamedia.com/files/products/picture/901bfba7-9d2f-4aa4-8d1d-fe59c79f2a1b/pantaloneta.jpg";
     }
 
-    public void setPicture(String picture) {
-        this.picture = picture;
-    }
-
-    public String getPicture_dir() {
-        return picture_dir;
-    }
-
-    public void setPicture_dir(String picture_dir) {
-        this.picture_dir = picture_dir;
+    public void setPictureURL(String pictureURL) {
+        this.pictureURL = pictureURL;
     }
 
     public String getStatus() {
@@ -131,5 +125,18 @@ public class ProductDTO {
 
     public void setModified(String modified) {
         this.modified = modified;
+    }
+
+    public String getPicture() {
+        return picture;
+    }
+
+    public void setPicture(String picture) {
+        this.picture = picture;
+    }
+
+    public String getFinalPrice() {
+        return Integer.toString((int) Math.ceil(
+                Double.parseDouble(this.price) - Double.parseDouble(this.price) * Double.parseDouble(this.discount) / 100));
     }
 }
