@@ -1,15 +1,28 @@
 package com.innovamos.btracker.fragments;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.estimote.sdk.Beacon;
+import com.estimote.sdk.BeaconManager;
+import com.estimote.sdk.Region;
+import com.innovamos.btracker.MainActivity;
+import com.innovamos.btracker.ProductActivity;
 import com.innovamos.btracker.R;
+import com.innovamos.btracker.async.FragmentCommunicator;
+import com.innovamos.btracker.dto.CustomerDTO;
+
+import java.util.List;
 
 
 /**
@@ -20,12 +33,25 @@ import com.innovamos.btracker.R;
  * Use the {@link StartFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class StartFragment extends Fragment {
+public class StartFragment extends Fragment implements FragmentCommunicator {
+
+    // Objeto Cliente - Recibido desde la actividad Principal
+    private static CustomerDTO customerDTO;
 
     // Imagen de carga
     private ImageView loadingView;
     // Animation del Buscador
     private AnimationDrawable loadingAnimation;
+
+    public Context context;
+
+    /*
+     * Gestor de Beacons
+     */
+    // Gestor de Beacons
+    private BeaconManager beaconManager;
+    // Regiones de escaneo
+    private static Region region;
 
     private OnFragmentInteractionListener mListener;
 
@@ -35,7 +61,8 @@ public class StartFragment extends Fragment {
      *
      * @return A new instance of fragment StartFragment.
      */
-    public static StartFragment newInstance() {
+    public static StartFragment newInstance(CustomerDTO customerDTO) {
+        StartFragment.customerDTO = customerDTO;
         return new StartFragment();
     }
 
@@ -46,6 +73,19 @@ public class StartFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Iniciar búsqueda de beacons
+        beaconManager = new BeaconManager(getContext());
+        beaconManager.setRangingListener(new BeaconManager.RangingListener() {
+            @Override
+            public void onBeaconsDiscovered(Region region, List<Beacon> list) {
+                if (!list.isEmpty()) {
+                    Beacon nearestBeacon = list.get(0);
+                    Log.e("Beacon encontrado: ", nearestBeacon.getMacAddress().toString());
+                    productDetail(nearestBeacon, customerDTO);
+                }
+            }
+        });
     }
 
     @Override
@@ -75,8 +115,24 @@ public class StartFragment extends Fragment {
     @Override
     public void onPause(){
         super.onPause();
+        // Detener animación
         loadingAnimation.stop();
         loadingView.setVisibility(View.INVISIBLE);
+        // Detener búsqueda de beacons
+        if(region!=null){
+            beaconManager.stopRanging(region);
+        }
+    }
+
+    @Override
+    public void passDataToFragment(Region region) {
+        StartFragment.region = region;
+        beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
+            @Override
+            public void onServiceReady() {
+                beaconManager.startRanging(StartFragment.region);
+            }
+        });
     }
 
     /**
@@ -96,8 +152,18 @@ public class StartFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();  // Always call the superclass method first
+        // Animación de carga
         loadingAnimation.start();
         loadingView.setVisibility(View.VISIBLE);
+        // Retomar búsqueda de beacons
+        if(region!=null){
+            beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
+                @Override
+                public void onServiceReady() {
+                    beaconManager.startRanging(region);
+                }
+            });
+        }
     }
 
     @Override
@@ -107,7 +173,26 @@ public class StartFragment extends Fragment {
     }
 
     @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        context = getActivity();
+        ((MainActivity)context).fc = this;
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
+    }
+
+    /**
+     * Método lanzado para abrir la actividad de producto
+     * @param beacon Beacon
+     * @param customerDTO Cliente
+     */
+    public void productDetail(Beacon beacon, CustomerDTO customerDTO) {
+        Intent detailIntent = new Intent(getContext(), ProductActivity.class);
+        detailIntent.putExtra("ProductBeacon", beacon);
+        detailIntent.putExtra("Customer", customerDTO.getId());
+        startActivity(detailIntent);
     }
 }
