@@ -369,7 +369,7 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
     private void loadGallery(ProductDTO[] productList,ProductDTO selectedProduct){
         try {
             for (final ProductDTO iteratorProduct : productList) {
-                if(!Objects.equals(iteratorProduct.getId(), selectedProduct.getId())){
+                if(!iteratorProduct.getId().equals(selectedProduct.getId())){
                     InputStream is = getAssets().open(galleryDirectoryName + "/" + iteratorProduct.getPicture());
 
                     //final Drawable shownImage = Drawable.createFromStream(is,iteratorProduct.getPicture());
