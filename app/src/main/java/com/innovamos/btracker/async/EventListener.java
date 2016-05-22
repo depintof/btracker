@@ -16,4 +16,6 @@ public interface EventListener {
     void purchasedProductsList(JSONObject jsonResult);
     void insertProductPurchase(JSONObject jsonResult);
     void deleteProductPurchase(JSONObject jsonResult);
+    void customerVisitsList(JSONObject jsonResult);
+    void customerNotificationsList(JSONObject jsonResult);
 }

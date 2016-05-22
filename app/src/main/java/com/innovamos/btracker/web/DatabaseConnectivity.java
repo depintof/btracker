@@ -180,24 +180,24 @@ public class DatabaseConnectivity {
         String requestURL = Cons.DELETE_PRODUCT_LIKE + Cons.QUESTION_MARK + Cons.CUSTOMER_ID + Cons.EQUAL_MARK + idCustomer + Cons.AND + Cons.PRODUCT_ID + Cons.EQUAL_MARK + idProduct;
         // Petición GET
         VolleySingleton.getInstance(context).addToRequestQueue(
-            new JsonObjectRequest(
-                Request.Method.GET,
-                requestURL,
-                (String) null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                    // Procesar la respuesta Json
-                    el.deleteProductLike(response);
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                    Log.d(context.getClass().getSimpleName(), "Error Volley: " + error.getMessage());
-                    }
-                }
-            )
+                new JsonObjectRequest(
+                        Request.Method.GET,
+                        requestURL,
+                        (String) null,
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                // Procesar la respuesta Json
+                                el.deleteProductLike(response);
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Log.d(context.getClass().getSimpleName(), "Error Volley: " + error.getMessage());
+                            }
+                        }
+                )
         );
     }
 
@@ -270,6 +270,60 @@ public class DatabaseConnectivity {
                                     public void onResponse(JSONObject response) {
                                         // Procesar la respuesta Json
                                         el.deleteProductPurchase(response);
+                                    }
+                                },
+                                new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        Log.d(context.getClass().getSimpleName(), "Error Volley: " + error.getMessage());
+                                    }
+                                }
+                        )
+                );
+    }
+
+    public void getCustomerVisits(final Context context,String idCustomer){
+        String requestURL = Cons.GET_CUSTOMER_VISITS + Cons.QUESTION_MARK + Cons.CUSTOMER_ID + Cons.EQUAL_MARK + idCustomer;
+        // Petición GET
+        VolleySingleton.
+                getInstance(context).
+                addToRequestQueue(
+                        new JsonObjectRequest(
+                                Request.Method.GET,
+                                requestURL,
+                                (String) null,
+                                new Response.Listener<JSONObject>() {
+                                    @Override
+                                    public void onResponse(JSONObject response) {
+                                        // Procesar la respuesta Json
+                                        el.customerVisitsList(response);
+                                    }
+                                },
+                                new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        Log.d(context.getClass().getSimpleName(), "Error Volley: " + error.getMessage());
+                                    }
+                                }
+                        )
+                );
+    }
+
+    public void getCustomerNotifications(final Context context,String idCustomer){
+        String requestURL = Cons.GET_CUSTOMER_NOTIFICATIONS + Cons.QUESTION_MARK + Cons.CUSTOMER_ID + Cons.EQUAL_MARK + idCustomer;
+        // Petición GET
+        VolleySingleton.
+                getInstance(context).
+                addToRequestQueue(
+                        new JsonObjectRequest(
+                                Request.Method.GET,
+                                requestURL,
+                                (String) null,
+                                new Response.Listener<JSONObject>() {
+                                    @Override
+                                    public void onResponse(JSONObject response) {
+                                        // Procesar la respuesta Json
+                                        el.customerNotificationsList(response);
                                     }
                                 },
                                 new Response.ErrorListener() {

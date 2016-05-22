@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/general_padding">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/storeDescription"
+        android:text="Tienda XXXX"
+        android:textStyle="normal"
+        android:textSize="16sp"
+        android:textColor="@color/primaryText"
+        android:gravity="left"
+        android:layout_alignParentTop="true"
+        android:maxEms="10"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/zoneName"
+        android:text="Eléctricos"
+        android:maxLines="2"
+        android:textSize="14sp"
+        android:textColor="@color/secondaryText"
+        android:gravity="left"
+        android:maxEms="10"
+        android:layout_below="@+id/storeDescription"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/triggerTime"
+        android:text="2016-05-22 05:45:45"
+        android:textStyle="italic"
+        android:textSize="12sp"
+        android:textColor="@color/accentColor"
+        android:maxEms="5"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+</RelativeLayout>

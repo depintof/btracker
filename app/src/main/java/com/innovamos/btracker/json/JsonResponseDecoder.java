@@ -5,6 +5,7 @@ import com.innovamos.btracker.dto.CustomerDTO;
 import com.innovamos.btracker.dto.CustomerProductsDTO;
 import com.innovamos.btracker.dto.ProductDTO;
 import com.innovamos.btracker.dto.PurchasesDTO;
+import com.innovamos.btracker.dto.VisitsDTO;
 import com.innovamos.btracker.dto.ZoneDTO;
 import com.innovamos.btracker.utils.Cons;
 import com.google.gson.Gson;
@@ -239,4 +240,47 @@ public class JsonResponseDecoder {
         return null;
     }
 
+    /**
+     * JSON -> VisitsDTO
+     * @param response Respuesta JSON
+     */
+    public static VisitsDTO[] visitsListResponse(JSONObject response) {
+        try {
+            Gson gson = new Gson();
+            String status = response.getString(Cons.STATUS);
+
+            switch (status) {
+                case Cons.STATUS_SUCCESS: // Respuesta exitosa
+                    JSONArray mensaje = response.getJSONArray(Cons.VISITS);
+                    return gson.fromJson(mensaje.toString(), VisitsDTO[].class);
+                case Cons.STATUS_FAIL: // Respuesta fallida
+                    return null;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * JSON -> VisitsDTO
+     * @param response Respuesta JSON
+     */
+    public static VisitsDTO[] notificationsListResponse(JSONObject response) {
+        try {
+            Gson gson = new Gson();
+            String status = response.getString(Cons.STATUS);
+
+            switch (status) {
+                case Cons.STATUS_SUCCESS: // Respuesta exitosa
+                    JSONArray mensaje = response.getJSONArray(Cons.NOTIFICATIONS);
+                    return gson.fromJson(mensaje.toString(), VisitsDTO[].class);
+                case Cons.STATUS_FAIL: // Respuesta fallida
+                    return null;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

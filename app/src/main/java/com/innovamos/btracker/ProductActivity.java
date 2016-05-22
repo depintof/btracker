@@ -346,6 +346,16 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
         }
     }
 
+    @Override
+    public void customerVisitsList(JSONObject jsonResult) {
+
+    }
+
+    @Override
+    public void customerNotificationsList(JSONObject jsonResult) {
+
+    }
+
     private void loadProductInformation(ProductDTO product){
         tvProducto.setText(product.getName());
         tvDescripcion.setText(product.getDescription());
