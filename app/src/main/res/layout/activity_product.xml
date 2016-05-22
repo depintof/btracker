@@ -88,7 +88,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/producto"
-                        android:text="PRODUCTO"
                         android:maxLines="@integer/description_title_lines"
                         android:textStyle="bold"
                         android:textSize="22sp"
@@ -110,13 +109,13 @@
                         android:gravity="right"
                         android:enabled="false"
                         android:minLines="@integer/description_lines"
-                        android:ellipsize="end" />
+                        android:ellipsize="end"
+                        android:text="@string/loading" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/precioConDescuento"
-                        android:text="$34.930"
                         android:maxLines="1"
                         android:textStyle="bold"
                         android:textSize="26sp"
@@ -127,7 +126,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/precioOriginal"
-                        android:text="$20.000"
                         android:textSize="18sp"
                         android:textColor="@color/secondaryText"
                         android:maxLines="1"
