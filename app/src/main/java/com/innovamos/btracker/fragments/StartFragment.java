@@ -7,7 +7,6 @@ import android.graphics.drawable.AnimationDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.text.format.Time;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,10 +23,8 @@ import com.innovamos.btracker.async.FragmentCommunicator;
 import com.innovamos.btracker.dto.CustomerDTO;
 import com.innovamos.btracker.utils.Cons;
 
-import java.security.Timestamp;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 
