@@ -114,23 +114,6 @@ public class MainActivity extends AppCompatActivity implements EventListener {
 
         // Obtener MAC y Confirmar Existencia
         databaseConnectivity.getCustomer(this, getMacAddr());
-
-        /* Configuración de búsqueda inicial de beacons */
-
-        // Instanciar gestor de Beacons
-        /*
-        beaconManager = new BeaconManager(this);
-        beaconManager.setRangingListener(new BeaconManager.RangingListener() {
-            @Override
-            public void onBeaconsDiscovered(Region region, List<com.estimote.sdk.Beacon> list) {
-            if (!list.isEmpty()) {
-                Beacon nearestBeacon = list.get(0);
-                Log.e("Beacon encontrado: ",nearestBeacon.getMacAddress().toString());
-                productDetail(nearestBeacon,customerDTO);
-            }
-            }
-        });
-        */
     }
 
     @Override
@@ -161,17 +144,6 @@ public class MainActivity extends AppCompatActivity implements EventListener {
 
         SystemRequirementsChecker.checkWithDefaultDialogs(this);
 
-        /*
-        if(region!=null){
-            beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
-                @Override
-                public void onServiceReady() {
-                    beaconManager.startRanging(region);
-                }
-            });
-        }
-        */
-
         // Actualizar listas al retomar la actividad
         if(customerDTO!=null){
             DatabaseConnectivity databaseConnectivity = new DatabaseConnectivity(this);
@@ -189,11 +161,7 @@ public class MainActivity extends AppCompatActivity implements EventListener {
     @Override
     protected void onPause() {
         super.onPause();
-        /*
-        if(region!=null){
-            beaconManager.stopRanging(region);
-        }
-        */
+
     }
 
     private void setupDrawerContent(NavigationView navigationView) {
@@ -322,16 +290,9 @@ public class MainActivity extends AppCompatActivity implements EventListener {
     public void beaconsListResult(JSONObject jsonResponse) {
         BeaconDTO[] beaconsList = JsonResponseDecoder.beaconListResponse(jsonResponse);
         if (beaconsList != null) {
+            // Pasar la región por interfaz al fragmento start
             fc.passDataToFragment(new Region("Ranged Beacons Region", UUID.fromString(beaconsList[0].getUuid()), null, null));
         }
-        /*
-        beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
-            @Override
-            public void onServiceReady() {
-                beaconManager.startRanging(region);
-            }
-        });
-        */
         // Mensaje de prueba
         //Toast.makeText(this,beaconsList[0].getUuid(),Toast.LENGTH_LONG).show();
     }

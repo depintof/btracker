@@ -24,10 +24,6 @@ import com.innovamos.btracker.async.FragmentCommunicator;
 import com.innovamos.btracker.dto.CustomerDTO;
 import com.innovamos.btracker.utils.Cons;
 
-import java.security.Timestamp;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 
@@ -48,6 +44,8 @@ public class StartFragment extends Fragment implements FragmentCommunicator {
     private ImageView loadingView;
     // Animation del Buscador
     private AnimationDrawable loadingAnimation;
+
+    public boolean firstTime = true;
 
     public Context context;
 
@@ -112,6 +110,13 @@ public class StartFragment extends Fragment implements FragmentCommunicator {
                     Log.i("Beacon encontrado: ", nearestBeacon.getMacAddress().toString());
                     productDetail(nearestBeacon, customerDTO);
                     canView = false;
+                if (!list.isEmpty()) {
+                    if(firstTime){
+                        Beacon nearestBeacon = list.get(0);
+                        Log.e("Beacon encontrado: ", nearestBeacon.getMacAddress().toString());
+                        productDetail(nearestBeacon, customerDTO);
+                        firstTime = false;
+                    }
                 }
             }
         });
@@ -139,6 +144,7 @@ public class StartFragment extends Fragment implements FragmentCommunicator {
         super.onStop();
         loadingAnimation.stop();
         loadingView.setVisibility(View.INVISIBLE);
+        firstTime = true;
     }
 
     @Override
