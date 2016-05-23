@@ -37,12 +37,13 @@ public class MyApplication extends Application implements EventListener {
         super.onCreate();
 
         beaconManager = new BeaconManager(getApplicationContext());
+        beaconManager.setBackgroundScanPeriod(15000,5000);
         beaconManager.setMonitoringListener(new BeaconManager.MonitoringListener() {
             @Override
             public void onEnteredRegion(Region region, List<Beacon> list) {
                 if (!list.isEmpty()) {
                     nearestBeacon = list.get(0);
-                    Log.e("Beacon notificacion: ",nearestBeacon.getMacAddress().toString());
+                    //Log.e("Beacon notificacion: ",nearestBeacon.getMacAddress().toString());
                 }
                 showNotification(
                         region.getIdentifier(),
@@ -53,9 +54,9 @@ public class MyApplication extends Application implements EventListener {
             @Override
             public void onExitedRegion(Region region) {
 //                // could add an "exit" notification too if you want (-:
-//                showNotification(
-//                        "Bye bye little programer.",
-//                        "Have an ass day!");
+                showNotification(
+                        "Bye bye little programer.",
+                        "Have an ass day!");
 //
             }
         });
@@ -78,7 +79,6 @@ public class MyApplication extends Application implements EventListener {
         PendingIntent pendingIntent = PendingIntent.getActivity(this, uniqueInt,
                 notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         Notification notification = new Notification.Builder(this)
-                //.setSmallIcon(android.R.drawable.ic_dialog_info)
                 .setSmallIcon(R.drawable.ic_action_descuentos)
                 .setContentTitle(title)
                 .setContentText(message)
