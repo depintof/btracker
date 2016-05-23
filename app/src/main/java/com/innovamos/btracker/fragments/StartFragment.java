@@ -45,12 +45,7 @@ public class StartFragment extends Fragment implements FragmentCommunicator {
     // Animation del Buscador
     private AnimationDrawable loadingAnimation;
 
-    public boolean firstTime = true;
-
     public Context context;
-
-    private Date lastLaunch;
-    private Boolean canView;
 
     /*
      * Gestor de Beacons
@@ -86,37 +81,10 @@ public class StartFragment extends Fragment implements FragmentCommunicator {
         beaconManager.setRangingListener(new BeaconManager.RangingListener() {
             @Override
             public void onBeaconsDiscovered(Region region, List<Beacon> list) {
-                if (lastLaunch != null) {
-                    Date currentDate = Calendar.getInstance().getTime();
-                    Long seconds = currentDate.getTime() - lastLaunch.getTime();
-                    seconds = seconds / 1000;
-                    Log.d("Time:", seconds.toString());
-
-                    if (seconds >= Cons.TIMEOUT) {
-                        lastLaunch = Calendar.getInstance().getTime();
-                        canView = true;
-                    }
-                }
-                else {
-                    lastLaunch = Calendar.getInstance().getTime();
-                    Log.d("Launch Time:", lastLaunch.toString());
-                    canView = true;
-                }
-
-                Log.d("Time View:", canView.toString());
-
-                if (!list.isEmpty() && canView) {
-                    Beacon nearestBeacon = list.get(0);
-                    Log.i("Beacon encontrado: ", nearestBeacon.getMacAddress().toString());
-                    productDetail(nearestBeacon, customerDTO);
-                    canView = false;
                 if (!list.isEmpty()) {
-                    if(firstTime){
-                        Beacon nearestBeacon = list.get(0);
-                        Log.e("Beacon encontrado: ", nearestBeacon.getMacAddress().toString());
-                        productDetail(nearestBeacon, customerDTO);
-                        firstTime = false;
-                    }
+                    Beacon nearestBeacon = list.get(0);
+                    Log.e("Beacon encontrado: ", nearestBeacon.getMacAddress().toString());
+                    productDetail(nearestBeacon, customerDTO);
                 }
             }
         });
@@ -144,7 +112,6 @@ public class StartFragment extends Fragment implements FragmentCommunicator {
         super.onStop();
         loadingAnimation.stop();
         loadingView.setVisibility(View.INVISIBLE);
-        firstTime = true;
     }
 
     @Override
@@ -199,11 +166,6 @@ public class StartFragment extends Fragment implements FragmentCommunicator {
                 }
             });
         }
-
-        // Evitar lanzar aplicaciones en determinada cantidad de segundos
-        lastLaunch = Calendar.getInstance().getTime();
-        Log.d("Launch Time:", lastLaunch.toString());
-        canView = false;
     }
 
     @Override
