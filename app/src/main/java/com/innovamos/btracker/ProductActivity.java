@@ -139,7 +139,7 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
             beacon = getIntent().getParcelableExtra("ProductBeacon");
             Log.e("Beacon Final RESUME: ", beacon.getMacAddress().toString());
             // Relacion con Vistas
-            //tvDescripcion.setText(beacon.getMacAddress().toString());
+            tvDescripcion.setText(beacon.getMacAddress().toString());
 
             // TODO Crear método para obtener detalles del producto asociado al BeaconDTO
             //getProductDetails(beacon);

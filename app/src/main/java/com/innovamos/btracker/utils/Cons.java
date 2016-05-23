@@ -180,4 +180,9 @@ public class Cons {
      */
     public static final String STATUS_FAIL  = "2";
 
+    /**
+     * Timeout entre vistas de productos
+     */
+    public static final Integer TIMEOUT = 5;
+
 }

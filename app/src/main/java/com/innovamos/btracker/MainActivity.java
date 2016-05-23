@@ -37,6 +37,7 @@ import com.estimote.sdk.SystemRequirementsChecker;
 import org.json.JSONObject;
 
 import java.net.NetworkInterface;
+import java.security.Timestamp;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -68,7 +69,6 @@ public class MainActivity extends AppCompatActivity implements EventListener {
     private VisitsDTO[] customerVisitsList;
     // Lista de notificaciones recibidas por el usuario
     private VisitsDTO[] customerNotificationsList;
-
 
     /*
      * Gestor de Beacons
@@ -282,7 +282,10 @@ public class MainActivity extends AppCompatActivity implements EventListener {
     }
     */
 
-    // Método que obtiene la MAC del dispositivo movil
+    /**
+     * Método que obtiene la MAC del dispositivo movil
+     * @return MAC
+     */
     public static String getMacAddr() {
         try {
             List<NetworkInterface> all = Collections.list(NetworkInterface.getNetworkInterfaces());
