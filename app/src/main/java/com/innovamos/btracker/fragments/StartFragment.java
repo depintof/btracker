@@ -108,7 +108,7 @@ public class StartFragment extends Fragment implements FragmentCommunicator {
 
                 if (!list.isEmpty() && canView && firstTime) {
                     Beacon nearestBeacon = list.get(0);
-                    Log.i("Beacon encontrado: ", nearestBeacon.getMacAddress().toString());
+                    Log.e("Beacon encontrado: ", nearestBeacon.getMacAddress().toString());
                     productDetail(nearestBeacon, customerDTO);
                     canView = false;
                 }
@@ -138,7 +138,6 @@ public class StartFragment extends Fragment implements FragmentCommunicator {
         super.onStop();
         loadingAnimation.stop();
         loadingView.setVisibility(View.INVISIBLE);
-        firstTime = true;
     }
 
     @Override
@@ -193,11 +192,6 @@ public class StartFragment extends Fragment implements FragmentCommunicator {
                 }
             });
         }
-
-        // Evitar lanzar aplicaciones en determinada cantidad de segundos
-        lastLaunch = Calendar.getInstance().getTime();
-        Log.d("Launch Time:", lastLaunch.toString());
-        canView = false;
     }
 
     @Override

@@ -254,7 +254,6 @@ public class MainActivity extends AppCompatActivity implements EventListener {
      * Método que obtiene la MAC del dispositivo movil
      * @return MAC
      */
-    // Método que obtiene la MAC del dispositivo movil
     public static String getMacAddr() {
         try {
             List<NetworkInterface> all = Collections.list(NetworkInterface.getNetworkInterfaces());
