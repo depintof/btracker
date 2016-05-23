@@ -87,13 +87,6 @@ public class StartFragment extends Fragment implements FragmentCommunicator {
         beaconManager.setRangingListener(new BeaconManager.RangingListener() {
             @Override
             public void onBeaconsDiscovered(Region region, List<Beacon> list) {
-                if (!list.isEmpty()) {
-                    if(firstTime){
-                        Beacon nearestBeacon = list.get(0);
-                        Log.e("Beacon encontrado: ", nearestBeacon.getMacAddress().toString());
-                        productDetail(nearestBeacon, customerDTO);
-                        firstTime = false;
-                    }
                 if (lastLaunch != null) {
                     Date currentDate = Calendar.getInstance().getTime();
                     Long seconds = currentDate.getTime() - lastLaunch.getTime();
@@ -113,7 +106,7 @@ public class StartFragment extends Fragment implements FragmentCommunicator {
 
                 Log.d("Time View:", canView.toString());
 
-                if (!list.isEmpty() && canView) {
+                if (!list.isEmpty() && canView && firstTime) {
                     Beacon nearestBeacon = list.get(0);
                     Log.i("Beacon encontrado: ", nearestBeacon.getMacAddress().toString());
                     productDetail(nearestBeacon, customerDTO);
