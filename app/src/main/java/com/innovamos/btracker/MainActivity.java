@@ -15,7 +15,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.estimote.sdk.Beacon;
 import com.innovamos.btracker.async.EventListener;
 import com.innovamos.btracker.async.FragmentCommunicator;
 import com.innovamos.btracker.dto.BeaconDTO;
@@ -30,14 +29,12 @@ import com.innovamos.btracker.fragments.VisitsListFragment;
 import com.innovamos.btracker.fragments.WishListFragment;
 import com.innovamos.btracker.json.JsonResponseDecoder;
 import com.innovamos.btracker.web.DatabaseConnectivity;
-import com.estimote.sdk.BeaconManager;
 import com.estimote.sdk.Region;
 import com.estimote.sdk.SystemRequirementsChecker;
 
 import org.json.JSONObject;
 
 import java.net.NetworkInterface;
-import java.security.Timestamp;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -133,6 +130,10 @@ public class MainActivity extends AppCompatActivity implements EventListener {
                 return true;
             case R.id.main_notifications:
                 showNotifications();
+                return true;
+            case R.id.main_menu_help:
+                Log.e("Activity", "Help Menu");
+                showHelp();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -321,6 +322,14 @@ public class MainActivity extends AppCompatActivity implements EventListener {
         else{
             Toast.makeText(this,"Couldn´t find any user", Toast.LENGTH_LONG).show();
         }
+    }
+
+    /** Called when the user clicks the Help item
+     *
+     */
+    public void showHelp() {
+        Intent intent = new Intent(this, HelpActivity.class);
+        startActivity(intent);
     }
 
     @Override

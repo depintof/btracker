@@ -133,8 +133,14 @@ public class ProductDTO {
     }
 
     public String getFinalPrice() {
-        return Integer.toString((int) Math.ceil(
-                Double.parseDouble(this.price) - Double.parseDouble(this.price) * Double.parseDouble(this.discount) / 100));
+        String finalPrice = "";
+
+        if (this.price != null) {
+            finalPrice = Integer.toString((int) Math.ceil(
+                    Double.parseDouble(this.price) - Double.parseDouble(this.price) * Double.parseDouble(this.discount) / 100));
+        }
+
+        return finalPrice;
     }
 
     public String getPicture_dir() {

@@ -16,4 +16,13 @@
     <string name="configuration_item">Configuración</string>
 
     <string name="loading">Cargando...</string>
+    <string name="title_activity_help">HelpActivity</string>
+
+    <string name="hello_world">Hello world!</string>
+
+    <string name="help_stores">Identifica las tiendas inscritas a BTracker</string>
+    <string name="help_bluetooth">Dirígete a la tienda de tu interés y activa el bluetooth en tu celular</string>
+    <string name="help_products">Descubre los productos con descuentos mientras recorres la tienda</string>
+
+    <string name="searching">Detectando promociones cerca...\n\nAcércate a los productos para obtener más información</string>
 </resources>

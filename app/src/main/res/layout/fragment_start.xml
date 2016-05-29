@@ -7,17 +7,44 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/loadingView"
-            android:background="@drawable/loading"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:layout_width="@dimen/loading_width"
-            android:layout_height="@dimen/loading_height"
-            android:scaleType="centerInside"
-            android:adjustViewBounds="true"/>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:gravity="bottom|center_horizontal"
+            android:layout_marginBottom="0dp"
+            android:layout_alignParentEnd="false"
+            android:layout_alignParentStart="false">
+
+            <ImageView
+                android:id="@+id/loadingView"
+                android:background="@drawable/loading"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_width="@dimen/loading_width"
+                android:layout_height="@dimen/loading_height"
+                android:scaleType="centerInside"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/loading" />
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="0dp"
+                android:text="@string/searching"
+                android:id="@+id/textView"
+                android:background="#cccccc"
+                android:padding="@dimen/general_padding"
+                android:textColor="@color/textIcons"
+                android:textSize="@dimen/text_help"
+                android:gravity="center_horizontal"
+                android:layout_marginTop="100dp" />
+
+        </LinearLayout>
+
     </RelativeLayout>
+
 
 </LinearLayout>

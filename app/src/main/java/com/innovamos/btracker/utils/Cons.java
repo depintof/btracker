@@ -183,6 +183,6 @@ public class Cons {
     /**
      * Timeout entre vistas de productos
      */
-    public static final Integer TIMEOUT = 5;
+    public static final Integer TIMEOUT = 20;
 
 }
