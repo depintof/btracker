@@ -1,5 +1,9 @@
 package com.innovamos.btracker;
 
+import android.bluetooth.BluetoothAdapter;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.IntentFilter;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.content.Intent;
@@ -22,6 +26,7 @@ import com.innovamos.btracker.dto.CustomerDTO;
 import com.innovamos.btracker.dto.CustomerProductsDTO;
 import com.innovamos.btracker.dto.PurchasesDTO;
 import com.innovamos.btracker.dto.VisitsDTO;
+import com.innovamos.btracker.fragments.MessageFragment;
 import com.innovamos.btracker.fragments.NotificationsListFragment;
 import com.innovamos.btracker.fragments.PurchasedListFragment;
 import com.innovamos.btracker.fragments.StartFragment;
@@ -51,6 +56,10 @@ public class MainActivity extends AppCompatActivity implements EventListener {
 
     // Interfaz de comunicación con el fragmento principal
     public FragmentCommunicator fc ;
+
+    private Fragment mainFragment;
+    private Fragment messageFragment;
+    private Fragment startFragment;
 
     // Fragmentos
     private FragmentManager fragmentManager;
@@ -98,6 +107,11 @@ public class MainActivity extends AppCompatActivity implements EventListener {
             setupDrawerContent(navigationView);
         }
 
+        startFragment = StartFragment.newInstance(customerDTO);
+        messageFragment = MessageFragment.newInstance(getString(R.string.info), getString(R.string.bluetooth_info));
+        mainFragment = isBluetoothAvailable() ? startFragment : messageFragment;
+        fragmentManager.beginTransaction().replace(R.id.main_container, mainFragment).commit();
+
         /*if (savedInstanceState == null) {
             // Seleccionar item
         }*/
@@ -111,6 +125,10 @@ public class MainActivity extends AppCompatActivity implements EventListener {
 
         // Obtener MAC y Confirmar Existencia
         databaseConnectivity.getCustomer(this, getMacAddr());
+
+        // Register for broadcasts on BluetoothAdapter state change
+        IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
+        registerReceiver(mReceiver, filter);
     }
 
     @Override
@@ -189,7 +207,7 @@ public class MainActivity extends AppCompatActivity implements EventListener {
         Fragment selectedFragment = null;
 
         if (title.equals(getString(R.string.home_item))) {
-            selectedFragment = StartFragment.newInstance(customerDTO);
+            selectedFragment = mainFragment;
             title = getString(R.string.app_name);
         }
         if (title.equals(getString(R.string.deseos_item))) {
@@ -250,6 +268,43 @@ public class MainActivity extends AppCompatActivity implements EventListener {
         startActivity(detailIntent);
     }
     */
+
+    /**
+     * Check for Bluetooth.
+     * @return True if Bluetooth is available.
+     */
+    public static boolean isBluetoothAvailable() {
+        final BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        return (bluetoothAdapter != null && bluetoothAdapter.isEnabled());
+    }
+
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d("Bluetooth: ", "Status changed");
+
+            final String action = intent.getAction();
+
+            if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
+                final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR);
+
+                switch (state) {
+                    case BluetoothAdapter.STATE_OFF:
+                        mainFragment = messageFragment;
+                        break;
+                    case BluetoothAdapter.STATE_TURNING_OFF:
+                        break;
+                    case BluetoothAdapter.STATE_ON:
+                        mainFragment = startFragment;
+                        break;
+                    case BluetoothAdapter.STATE_TURNING_ON:
+                        break;
+                }
+
+                fragmentManager.beginTransaction().replace(R.id.main_container, mainFragment).commit();
+            }
+        }
+    };
 
     /**
      * Método que obtiene la MAC del dispositivo movil
@@ -380,5 +435,14 @@ public class MainActivity extends AppCompatActivity implements EventListener {
     @Override
     public void customerNotificationsList(JSONObject jsonResult) {
         customerNotificationsList = JsonResponseDecoder.notificationsListResponse(jsonResult);
+    }
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        // Unregister broadcast listeners
+        unregisterReceiver(mReceiver);
     }
 }

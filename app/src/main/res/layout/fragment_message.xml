@@ -1,0 +1,35 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.innovamos.btracker.fragments.MessageFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center_vertical|center_horizontal">
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/TextTitle"
+            android:gravity="center_horizontal"
+            android:padding="@dimen/general_padding"
+            android:textSize="@dimen/text_help"
+            android:autoText="true"
+            android:background="@color/grayBackground"
+            android:textColor="@color/textIcons" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/TextMessage"
+            android:gravity="center_horizontal"
+            android:padding="@dimen/general_padding"
+            android:textSize="@dimen/text_help"
+            android:autoText="true"
+            android:lines="3" />
+    </LinearLayout>
+</RelativeLayout>

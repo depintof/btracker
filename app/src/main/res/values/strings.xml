@@ -28,4 +28,8 @@
     <string name="help_products">Descubre los productos con descuentos mientras recorres la tienda</string>
 
     <string name="searching">Detectando promociones cerca...\n\nAcércate a los productos para obtener más información</string>
+
+    <string name="info">Información</string>
+    <string name="bluetooth_info">Enciende tu bluetooth para detectar promociones cercanas</string>
+
 </resources>

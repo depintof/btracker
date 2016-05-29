@@ -62,8 +62,6 @@ public class MyApplication extends Application implements EventListener {
         // Obtener listado de Beacons
         DatabaseConnectivity databaseConnectivity = new DatabaseConnectivity(this);
         databaseConnectivity.getBeaconsList(this);
-
-
     }
 
     public void showNotification(String title, String message) {

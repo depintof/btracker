@@ -44,7 +44,7 @@ public class DatabaseConnectivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.d(context.getClass().getSimpleName(),"Error Volley: " + error.getMessage());
+                        Log.d(context.getClass().getSimpleName(),"Error Volley while trying to get beacons list. " + error.getMessage());
                     }
                 }
             )
@@ -69,7 +69,7 @@ public class DatabaseConnectivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                    Log.d(context.getClass().getSimpleName(),"Error Volley: " + error.getMessage());
+                    Log.d(context.getClass().getSimpleName(),"Error Volley while trying to get customers. " + error.getMessage());
                     }
                 }
             )
@@ -94,7 +94,7 @@ public class DatabaseConnectivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                    Log.d(context.getClass().getSimpleName(),"Error Volley: " + error.getMessage());
+                    Log.d(context.getClass().getSimpleName(),"Error Volley while trying to get zone. " + error.getMessage());
                     }
                 }
             )
@@ -119,7 +119,7 @@ public class DatabaseConnectivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                    Log.d(context.getClass().getSimpleName(),"Error Volley: " + error.getMessage());
+                    Log.d(context.getClass().getSimpleName(),"Error Volley while trying to get products in zone. " + error.getMessage());
                     }
                 }
             )
@@ -144,7 +144,7 @@ public class DatabaseConnectivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                    Log.d(context.getClass().getSimpleName(), "Error Volley: " + error.getMessage());
+                    Log.d(context.getClass().getSimpleName(), "Error Volley while trying to create like. " + error.getMessage());
                     }
                 }
             )
@@ -169,7 +169,7 @@ public class DatabaseConnectivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                    Log.d(context.getClass().getSimpleName(), "Error Volley: " + error.getMessage());
+                    Log.d(context.getClass().getSimpleName(), "Error Volley while trying to get likes list. " + error.getMessage());
                     }
                 }
             )
@@ -194,7 +194,7 @@ public class DatabaseConnectivity {
                         new Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError error) {
-                                Log.d(context.getClass().getSimpleName(), "Error Volley: " + error.getMessage());
+                                Log.d(context.getClass().getSimpleName(), "Error Volley while trying to get products list. " + error.getMessage());
                             }
                         }
                 )
@@ -221,7 +221,7 @@ public class DatabaseConnectivity {
                                 new Response.ErrorListener() {
                                     @Override
                                     public void onErrorResponse(VolleyError error) {
-                                        Log.d(context.getClass().getSimpleName(), "Error Volley: " + error.getMessage());
+                                        Log.d(context.getClass().getSimpleName(), "Error Volley while trying to create purchase. " + error.getMessage());
                                     }
                                 }
                         )
@@ -248,7 +248,7 @@ public class DatabaseConnectivity {
                                 new Response.ErrorListener() {
                                     @Override
                                     public void onErrorResponse(VolleyError error) {
-                                        Log.d(context.getClass().getSimpleName(), "Error Volley: " + error.getMessage());
+                                        Log.d(context.getClass().getSimpleName(), "Error Volley while trying to get purchased products. " + error.getMessage());
                                     }
                                 }
                         )
@@ -275,7 +275,7 @@ public class DatabaseConnectivity {
                                 new Response.ErrorListener() {
                                     @Override
                                     public void onErrorResponse(VolleyError error) {
-                                        Log.d(context.getClass().getSimpleName(), "Error Volley: " + error.getMessage());
+                                        Log.d(context.getClass().getSimpleName(), "Error Volley while trying to delete product. " + error.getMessage());
                                     }
                                 }
                         )
@@ -302,7 +302,7 @@ public class DatabaseConnectivity {
                                 new Response.ErrorListener() {
                                     @Override
                                     public void onErrorResponse(VolleyError error) {
-                                        Log.d(context.getClass().getSimpleName(), "Error Volley: " + error.getMessage());
+                                        Log.d(context.getClass().getSimpleName(), "Error Volley while trying to get customers visits. " + error.getMessage());
                                     }
                                 }
                         )
@@ -329,7 +329,7 @@ public class DatabaseConnectivity {
                                 new Response.ErrorListener() {
                                     @Override
                                     public void onErrorResponse(VolleyError error) {
-                                        Log.d(context.getClass().getSimpleName(), "Error Volley: " + error.getMessage());
+                                        Log.d(context.getClass().getSimpleName(), "Error Volley while trying to get customer notifications." + error.getMessage());
                                     }
                                 }
                         )

@@ -46,8 +46,6 @@ public class StartFragment extends Fragment implements FragmentCommunicator {
     // Animation del Buscador
     private AnimationDrawable loadingAnimation;
 
-    public boolean firstTime = true;
-
     public Context context;
 
     private Date lastLaunch;
@@ -101,16 +99,16 @@ public class StartFragment extends Fragment implements FragmentCommunicator {
                 else {
                     lastLaunch = Calendar.getInstance().getTime();
                     Log.d("Launch Time:", lastLaunch.toString());
-                    canView = true;
+                    canView = false;
                 }
 
                 Log.d("Time View:", canView.toString());
 
-                if (!list.isEmpty() && canView && firstTime) {
+                if (!list.isEmpty() && canView) {
+                    canView = false;
                     Beacon nearestBeacon = list.get(0);
                     Log.e("Beacon encontrado: ", nearestBeacon.getMacAddress().toString());
                     productDetail(nearestBeacon, customerDTO);
-                    canView = false;
                 }
             }
         });
@@ -201,18 +199,6 @@ public class StartFragment extends Fragment implements FragmentCommunicator {
     public void onDetach() {
         super.onDetach();
 
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        context = getActivity();
-        ((MainActivity)context).fc = this;
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
     }
 
     /**
