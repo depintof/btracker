@@ -16,4 +16,7 @@
     <string name="configuration_item">Configuración</string>
 
     <string name="loading">Cargando...</string>
+
+    <string name="sync_account_type">btracker.innovamos.com</string>
+    <string name="content_authority">com.innovamos.btracker</string>
 </resources>
