@@ -37,7 +37,7 @@ public class MyApplication extends Application implements EventListener {
         super.onCreate();
 
         beaconManager = new BeaconManager(getApplicationContext());
-        /*beaconManager.setBackgroundScanPeriod(15000,5000);
+        beaconManager.setBackgroundScanPeriod(15000,5000);
         beaconManager.setMonitoringListener(new BeaconManager.MonitoringListener() {
             @Override
             public void onEnteredRegion(Region region, List<Beacon> list) {
@@ -57,7 +57,7 @@ public class MyApplication extends Application implements EventListener {
                         "Bye bye little programer.",
                         "Have an ass day!");
             }
-        });*/
+        });
 
         // Obtener listado de Beacons
         DatabaseConnectivity databaseConnectivity = new DatabaseConnectivity(this);

@@ -185,17 +185,17 @@ public class MainActivity extends AppCompatActivity implements EventListener {
 
     private void setupDrawerContent(NavigationView navigationView) {
         navigationView.setNavigationItemSelectedListener(
-                new NavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        // Marcar item presionado
-                        menuItem.setChecked(true);
-                        // Crear nuevo fragmento
-                        String title = menuItem.getTitle().toString();
-                        selectItem(title);
-                        return true;
-                    }
+            new NavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(MenuItem menuItem) {
+                    // Marcar item presionado
+                    menuItem.setChecked(true);
+                    // Crear nuevo fragmento
+                    String title = menuItem.getTitle().toString();
+                    selectItem(title);
+                    return true;
                 }
+            }
         );
     }
 

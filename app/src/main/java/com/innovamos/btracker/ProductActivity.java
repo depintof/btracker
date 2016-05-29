@@ -226,10 +226,6 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
         zone = JsonResponseDecoder.zoneResponse(jsonResult);
         if (zone != null) {
             databaseConnectivity.getProductZoneList(this, zone.getId());
-        }
-
-        // Interfaz Gráfica
-        if (zone != null) {
             toolbar.setTitle(zone.getName());
         }
     }
