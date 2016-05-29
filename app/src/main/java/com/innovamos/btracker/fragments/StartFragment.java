@@ -192,6 +192,9 @@ public class StartFragment extends Fragment implements FragmentCommunicator {
                 }
             });
         }
+
+        lastLaunch = Calendar.getInstance().getTime();
+        canView = false;
     }
 
     @Override
