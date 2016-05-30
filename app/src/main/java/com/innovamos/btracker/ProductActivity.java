@@ -1,5 +1,6 @@
 package com.innovamos.btracker;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Paint;
@@ -162,6 +163,9 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
                 else{
                     databaseConnectivity.createProductLike(this, customerId, mainProduct.getId());
                 }
+                return true;
+            case R.id.main_menu_help:
+                showHelp();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -459,5 +463,13 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
             fab.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_shopping_cart_white_24dp));
             purchasedFlag = false;
         }
+    }
+
+    /** Called when the user clicks the Help item
+     *
+     */
+    public void showHelp() {
+        Intent intent = new Intent(this, HelpActivity.class);
+        startActivity(intent);
     }
 }

@@ -1,16 +1,26 @@
 package com.innovamos.btracker;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class HelpActivity extends AppCompatActivity {
+import com.innovamos.btracker.utils.PagerAdapter;
+
+public class HelpActivity extends FragmentActivity {
+
+    ViewPager mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_help);
+
+        mViewPager = (ViewPager) findViewById(R.id.pager);
+        PagerAdapter pAdapter = new PagerAdapter(getSupportFragmentManager());
+
+        mViewPager.setAdapter(pAdapter);
     }
 
     @Override
@@ -34,4 +44,5 @@ public class HelpActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
 }

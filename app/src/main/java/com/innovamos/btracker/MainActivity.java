@@ -140,7 +140,6 @@ public class MainActivity extends AppCompatActivity implements EventListener {
                 showNotifications();
                 return true;
             case R.id.main_menu_help:
-                Log.e("Activity", "Help Menu");
                 showHelp();
                 return true;
         }
