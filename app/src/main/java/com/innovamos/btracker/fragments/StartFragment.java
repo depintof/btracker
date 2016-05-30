@@ -59,25 +59,7 @@ public class StartFragment extends Fragment implements FragmentCommunicator {
 
     private OnFragmentInteractionListener mListener;
 
-    //private static final Map<String, List<String>> PLACES_BY_BEACONS;
-
     static Map<String, List<String>> placesByBeacons = new HashMap<>();
-
-    /*static {
-        placesByBeacons.put("54167:16064", new ArrayList<String>() {{
-            add("Beacon Azul");
-        }});
-        placesByBeacons.put("60906:40046", new ArrayList<String>() {{
-            add("Beacon  Verde 1");
-        }});
-        placesByBeacons.put("27024:27939", new ArrayList<String>() {{
-            add("Beacon  Morado");
-        }});
-        placesByBeacons.put("60231:36744", new ArrayList<String>() {{
-            add("Beacon  Verde 2");
-        }});
-        PLACES_BY_BEACONS = Collections.unmodifiableMap(placesByBeacons);
-    }*/
 
     private List<String> placesNearBeacon(Beacon beacon) {
         String beaconKey = String.format("%d:%d", beacon.getMajor(), beacon.getMinor());
@@ -133,7 +115,7 @@ public class StartFragment extends Fragment implements FragmentCommunicator {
                     Beacon nearestBeacon = list.get(0);
                     List<String> places = placesNearBeacon(nearestBeacon);
 
-                    Log.d("Nearest beacon: ", places.toString());
+                    Log.d("Nearest beacon", places.toString());
 
                     if (!places.isEmpty()) {
                         if (customerDTO == null) {
@@ -141,6 +123,7 @@ public class StartFragment extends Fragment implements FragmentCommunicator {
                         }
                         productDetail(nearestBeacon, customerDTO);
                     } else {
+                        Log.d("Beacon without zone", nearestBeacon.getMajor() + ":" + nearestBeacon.getMinor());
                         canView = true;
                     }
                 }
