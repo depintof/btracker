@@ -96,7 +96,7 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
         Bundle extras = getIntent().getExtras();
         beacon = extras.getParcelable("ProductBeacon");
         customerId = extras.getString("Customer");
-        Log.e("Beacon Final Producto: ", beacon.getMacAddress().toString());
+        Log.d("Beacon Final Producto: ", beacon.getMacAddress().toString());
 
         /*
          * Configuracion Interfaz Visual
@@ -136,7 +136,7 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
         super.onResume();  // Always call the superclass method first
         if(getIntent().getParcelableExtra("ProductBeacon") != null){
             beacon = getIntent().getParcelableExtra("ProductBeacon");
-            Log.e("Beacon Final RESUME: ", beacon.getMacAddress().toString());
+            Log.d("Beacon Final RESUME: ", beacon.getMacAddress().toString());
             // Relacion con Vistas
             //tvDescripcion.setText(beacon.getMacAddress().toString());
 

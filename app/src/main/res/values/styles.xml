@@ -1,4 +1,4 @@
-<resources>
+    <resources>
     <style name="AppTheme" parent="Theme.BTracker"/>
 
     <style name="Theme.BTracker" parent="Base.AppTheme"/>
