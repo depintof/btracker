@@ -8,11 +8,22 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SyncRequest;
 import android.content.SyncResult;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
 import com.innovamos.btracker.R;
+import com.innovamos.btracker.utils.Cons;
+
+import org.json.JSONException;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 /**
  * Created by root on 29/05/16.
@@ -34,6 +45,62 @@ public class BtrackerSyncAdapter extends AbstractThreadedSyncAdapter {
     @Override
     public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
         Log.d(LOG_TAG, " +++ +++ onPerformSync Called.");
+
+        HttpURLConnection urlConnection = null;
+        BufferedReader reader = null;
+
+        String beaconsJsonString = null;
+
+        try {
+            Uri builtUri = Uri.parse(Cons.GET_ALL_BEACONS);
+
+            URL url = new URL(builtUri.toString());
+
+            urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setRequestMethod("GET");
+            urlConnection.connect();
+
+            InputStream inputStream = urlConnection.getInputStream();
+            StringBuffer buffer = new StringBuffer();
+
+            if (inputStream == null) {
+                return;
+            }
+
+            reader = new BufferedReader(new InputStreamReader(inputStream));
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                buffer.append(line + "\n");
+            }
+
+            if (buffer.length() == 0) {
+                return;
+            }
+
+            beaconsJsonString = buffer.toString();
+
+            Log.v(LOG_TAG, "+++ Retrieved string: " + beaconsJsonString);
+            //getWeatherDataFromJson(forecastJsonStr, locationQuery); // pending
+        } catch (IOException e) {
+            Log.e(LOG_TAG, " +++ Error ", e);
+        } catch (Exception e) { // TODO: JSONException
+            Log.e(LOG_TAG, e.getMessage(), e);
+            e.printStackTrace();
+        } finally {
+            if (urlConnection != null) {
+                urlConnection.disconnect();
+            }
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (final IOException e) {
+                    Log.e(LOG_TAG, "Error closing stream", e);
+                }
+            }
+        }
+        return;
+
     }
 
     public static void syncImmediately(Context context) {
