@@ -19,7 +19,7 @@
 
     <string name="sync_account_type">btracker.innovamos.com</string>
     <string name="content_authority">com.innovamos.btracker</string>
-    <string name="title_activity_help">HelpActivity</string>
+    <string name="title_activity_help">Ayuda</string>
 
     <string name="hello_world">Hello world!</string>
 
