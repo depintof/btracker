@@ -33,6 +33,7 @@ import com.innovamos.btracker.fragments.StartFragment;
 import com.innovamos.btracker.fragments.VisitsListFragment;
 import com.innovamos.btracker.fragments.WishListFragment;
 import com.innovamos.btracker.json.JsonResponseDecoder;
+import com.innovamos.btracker.sync.BtrackerSyncAdapter;
 import com.innovamos.btracker.web.DatabaseConnectivity;
 import com.estimote.sdk.SystemRequirementsChecker;
 
@@ -119,6 +120,8 @@ public class MainActivity extends AppCompatActivity implements EventListener {
         // Register for broadcasts on BluetoothAdapter state change
         IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
         registerReceiver(mReceiver, filter);
+
+        BtrackerSyncAdapter.initializeSyncAdapter(this);
     }
 
     @Override

@@ -36,6 +36,14 @@ public class BtrackerContract {
         public static final String COLUMN_DETECTION_RANGE = "detection_range";
         public static final String COLUMN_CREATED = "created";
         public static final String COLUMN_MODIFIED = "modified";
+
+        public static final Uri CONTENT_URI =
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_BEACONS).build();
+
+        public static final String CONTENT_TYPE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_BEACONS;
+        public static final String CONTENT_ITEM_TYPE =
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_BEACONS;
     }
 
     public static final class CustomersEntry implements BaseColumns{
