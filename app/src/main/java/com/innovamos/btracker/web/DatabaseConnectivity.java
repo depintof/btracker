@@ -42,6 +42,7 @@ public class DatabaseConnectivity {
                     public void onResponse(JSONObject response) {
                         // Procesar la respuesta Json
                         el.beaconsListResult(response);
+                        Log.v(DatabaseConnectivity.class.getSimpleName(), ">>Get beacons: Req: " + Cons.GET_ALL_BEACONS + " resp: " + response);
                     }
                 },
                 new Response.ErrorListener() {
@@ -55,7 +56,7 @@ public class DatabaseConnectivity {
     }
 
     public void getCustomer(final Context context,String macAddress){
-        String requestURL = Cons.GET_CUSTOMER + Cons.QUESTION_MARK + Cons.MAC + Cons.EQUAL_MARK + macAddress;
+        final String requestURL = Cons.GET_CUSTOMER + Cons.QUESTION_MARK + Cons.MAC + Cons.EQUAL_MARK + macAddress;
         // Petición GET
         VolleySingleton.getInstance(context).addToRequestQueue(
             new JsonObjectRequest(
@@ -67,6 +68,7 @@ public class DatabaseConnectivity {
                     public void onResponse(JSONObject response) {
                     // Procesar la respuesta Json
                     el.customerResult(response);
+                        Log.v(DatabaseConnectivity.class.getSimpleName(), ">>Get customer: Req: " + requestURL + " resp: " + response);
                     }
                 },
                 new Response.ErrorListener() {
@@ -84,7 +86,7 @@ public class DatabaseConnectivity {
     }
 
     public void getZone(final Context context,String beaconId){
-        String requestURL = Cons.GET_ZONE + Cons.QUESTION_MARK + Cons.BEACON_ID + Cons.EQUAL_MARK + beaconId;
+        final String requestURL = Cons.GET_ZONE + Cons.QUESTION_MARK + Cons.BEACON_ID + Cons.EQUAL_MARK + beaconId;
         // Petición GET
         VolleySingleton.getInstance(context).addToRequestQueue(
             new JsonObjectRequest(
@@ -96,6 +98,7 @@ public class DatabaseConnectivity {
                     public void onResponse(JSONObject response) {
                     // Procesar la respuesta Json
                     el.zoneResult(response);
+                        Log.v(DatabaseConnectivity.class.getSimpleName(), ">>Get Zone: Req: " + requestURL + " resp: " + response);
                     }
                 },
                 new Response.ErrorListener() {
@@ -109,7 +112,7 @@ public class DatabaseConnectivity {
     }
 
     public void getProductZoneList(final Context context,String zoneId){
-        String requestURL = Cons.GET_PRODUCTS_ZONE_LIST + Cons.QUESTION_MARK + Cons.ZONE_ID + Cons.EQUAL_MARK + zoneId;
+        final String requestURL = Cons.GET_PRODUCTS_ZONE_LIST + Cons.QUESTION_MARK + Cons.ZONE_ID + Cons.EQUAL_MARK + zoneId;
         // Petición GET
         VolleySingleton.getInstance(context).addToRequestQueue(
             new JsonObjectRequest(
@@ -121,6 +124,7 @@ public class DatabaseConnectivity {
                     public void onResponse(JSONObject response) {
                         // Enviar respuesta JSON por Interfaz
                         el.productsZoneList(response);
+                        Log.v(DatabaseConnectivity.class.getSimpleName(), ">>Get prod zone list: Req: " + requestURL + " resp: " + response);
                     }
                 },
                 new Response.ErrorListener() {
@@ -134,7 +138,7 @@ public class DatabaseConnectivity {
     }
 
     public void createProductLike(final Context context,String idCustomer, String idProduct){
-        String requestURL = Cons.INSERT_PRODUCT_LIKE + Cons.QUESTION_MARK + Cons.CUSTOMER_ID + Cons.EQUAL_MARK + idCustomer + Cons.AND + Cons.PRODUCT_ID + Cons.EQUAL_MARK + idProduct;
+        final String requestURL = Cons.INSERT_PRODUCT_LIKE + Cons.QUESTION_MARK + Cons.CUSTOMER_ID + Cons.EQUAL_MARK + idCustomer + Cons.AND + Cons.PRODUCT_ID + Cons.EQUAL_MARK + idProduct;
         // Petición GET
         VolleySingleton.getInstance(context).addToRequestQueue(
             new JsonObjectRequest(
@@ -146,6 +150,7 @@ public class DatabaseConnectivity {
                     public void onResponse(JSONObject response) {
                     // Procesar la respuesta Json
                     el.insertProductLike(response);
+                        Log.v(DatabaseConnectivity.class.getSimpleName(), ">>Create product like: Req: " + requestURL + " resp: " + response);
                     }
                 },
                 new Response.ErrorListener() {
@@ -159,7 +164,7 @@ public class DatabaseConnectivity {
     }
 
     public void getProductsLike(final Context context,String idCustomer){
-        String requestURL = Cons.GET_PRODUCTS_LIKE + Cons.QUESTION_MARK + Cons.CUSTOMER_ID + Cons.EQUAL_MARK + idCustomer;
+        final String requestURL = Cons.GET_PRODUCTS_LIKE + Cons.QUESTION_MARK + Cons.CUSTOMER_ID + Cons.EQUAL_MARK + idCustomer;
         // Petición GET
         VolleySingleton.getInstance(context).addToRequestQueue(
             new JsonObjectRequest(
@@ -171,6 +176,7 @@ public class DatabaseConnectivity {
                     public void onResponse(JSONObject response) {
                     // Procesar la respuesta Json
                     el.productsLikeList(response);
+                        Log.v(DatabaseConnectivity.class.getSimpleName(), ">>Get products like: Req: " + requestURL + " resp: " + response);
                     }
                 },
                 new Response.ErrorListener() {
@@ -184,7 +190,7 @@ public class DatabaseConnectivity {
     }
 
     public void deleteProductLike(final Context context,String idCustomer, String idProduct){
-        String requestURL = Cons.DELETE_PRODUCT_LIKE + Cons.QUESTION_MARK + Cons.CUSTOMER_ID + Cons.EQUAL_MARK + idCustomer + Cons.AND + Cons.PRODUCT_ID + Cons.EQUAL_MARK + idProduct;
+        final String requestURL = Cons.DELETE_PRODUCT_LIKE + Cons.QUESTION_MARK + Cons.CUSTOMER_ID + Cons.EQUAL_MARK + idCustomer + Cons.AND + Cons.PRODUCT_ID + Cons.EQUAL_MARK + idProduct;
         // Petición GET
         VolleySingleton.getInstance(context).addToRequestQueue(
                 new JsonObjectRequest(
@@ -196,6 +202,7 @@ public class DatabaseConnectivity {
                             public void onResponse(JSONObject response) {
                                 // Procesar la respuesta Json
                                 el.deleteProductLike(response);
+                                Log.v(DatabaseConnectivity.class.getSimpleName(), ">>Delete prod like: Req: " + requestURL + " resp: " + response);
                             }
                         },
                         new Response.ErrorListener() {
@@ -209,7 +216,7 @@ public class DatabaseConnectivity {
     }
 
     public void createProductPurchase(final Context context, String idProduct, String idCustomer, String price){
-        String requestURL = Cons.INSERT_PRODUCT_PURCHASE + Cons.QUESTION_MARK + Cons.PRODUCT_ID + Cons.EQUAL_MARK + idProduct + Cons.AND + Cons.CUSTOMER_ID + Cons.EQUAL_MARK + idCustomer + Cons.AND + Cons.PRICE + Cons.EQUAL_MARK + price;
+        final String requestURL = Cons.INSERT_PRODUCT_PURCHASE + Cons.QUESTION_MARK + Cons.PRODUCT_ID + Cons.EQUAL_MARK + idProduct + Cons.AND + Cons.CUSTOMER_ID + Cons.EQUAL_MARK + idCustomer + Cons.AND + Cons.PRICE + Cons.EQUAL_MARK + price;
         // Petición GET
         VolleySingleton.
                 getInstance(context).
@@ -223,6 +230,7 @@ public class DatabaseConnectivity {
                                     public void onResponse(JSONObject response) {
                                         // Procesar la respuesta Json
                                         el.insertProductPurchase(response);
+                                        Log.v(DatabaseConnectivity.class.getSimpleName(), ">>Create products purchase: Req: " + requestURL + " resp: " + response);
                                     }
                                 },
                                 new Response.ErrorListener() {
@@ -236,7 +244,7 @@ public class DatabaseConnectivity {
     }
 
     public void getPurchasedProducts(final Context context,String idCustomer){
-        String requestURL = Cons.GET_PURCHASED_PRODUCTS + Cons.QUESTION_MARK + Cons.CUSTOMER_ID + Cons.EQUAL_MARK + idCustomer;
+        final String requestURL = Cons.GET_PURCHASED_PRODUCTS + Cons.QUESTION_MARK + Cons.CUSTOMER_ID + Cons.EQUAL_MARK + idCustomer;
         // Petición GET
         VolleySingleton.
                 getInstance(context).
@@ -250,6 +258,7 @@ public class DatabaseConnectivity {
                                     public void onResponse(JSONObject response) {
                                         // Procesar la respuesta Json
                                         el.purchasedProductsList(response);
+                                        Log.v(DatabaseConnectivity.class.getSimpleName(), ">>Get purchased prod: Req: " + requestURL + " resp: " + response);
                                     }
                                 },
                                 new Response.ErrorListener() {
@@ -263,7 +272,7 @@ public class DatabaseConnectivity {
     }
 
     public void deleteProductPurchase(final Context context, String idProduct, String idCustomer){
-        String requestURL = Cons.DELETE_PRODUCT_PURCHASE + Cons.QUESTION_MARK + Cons.PRODUCT_ID + Cons.EQUAL_MARK + idProduct + Cons.AND + Cons.CUSTOMER_ID + Cons.EQUAL_MARK + idCustomer;
+        final String requestURL = Cons.DELETE_PRODUCT_PURCHASE + Cons.QUESTION_MARK + Cons.PRODUCT_ID + Cons.EQUAL_MARK + idProduct + Cons.AND + Cons.CUSTOMER_ID + Cons.EQUAL_MARK + idCustomer;
         // Petición GET
         VolleySingleton.
                 getInstance(context).
@@ -277,6 +286,7 @@ public class DatabaseConnectivity {
                                     public void onResponse(JSONObject response) {
                                         // Procesar la respuesta Json
                                         el.deleteProductPurchase(response);
+                                        Log.v(DatabaseConnectivity.class.getSimpleName(), ">>Delete prod. purchase: Req: " + requestURL + " resp: " + response);
                                     }
                                 },
                                 new Response.ErrorListener() {
@@ -290,7 +300,7 @@ public class DatabaseConnectivity {
     }
 
     public void getCustomerVisits(final Context context,String idCustomer){
-        String requestURL = Cons.GET_CUSTOMER_VISITS + Cons.QUESTION_MARK + Cons.CUSTOMER_ID + Cons.EQUAL_MARK + idCustomer;
+        final String requestURL = Cons.GET_CUSTOMER_VISITS + Cons.QUESTION_MARK + Cons.CUSTOMER_ID + Cons.EQUAL_MARK + idCustomer;
         // Petición GET
         VolleySingleton.
                 getInstance(context).
@@ -304,6 +314,7 @@ public class DatabaseConnectivity {
                                     public void onResponse(JSONObject response) {
                                         // Procesar la respuesta Json
                                         el.customerVisitsList(response);
+                                        Log.v(DatabaseConnectivity.class.getSimpleName(), ">>Get customer visits: Req: " + requestURL + " resp: " + response);
                                     }
                                 },
                                 new Response.ErrorListener() {

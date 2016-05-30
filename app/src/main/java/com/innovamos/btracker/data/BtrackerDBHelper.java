@@ -106,15 +106,5 @@ public class BtrackerDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + BeaconsEntry.TABLE_NAME);
-        db.execSQL("DROP TABLE IF EXISTS " + CustomersEntry.TABLE_NAME);
-        db.execSQL("DROP TABLE IF EXISTS " + CustomersProductsEntry.TABLE_NAME);
-        db.execSQL("DROP TABLE IF EXISTS " + ProductsEntry.TABLE_NAME);
-        db.execSQL("DROP TABLE IF EXISTS " + ProductsZonesEntry.TABLE_NAME);
-        db.execSQL("DROP TABLE IF EXISTS " + PurchasesEntry.TABLE_NAME);
-        db.execSQL("DROP TABLE IF EXISTS " + StoresEntry.TABLE_NAME);
-        db.execSQL("DROP TABLE IF EXISTS " + VisitsEntry.TABLE_NAME);
-        db.execSQL("DROP TABLE IF EXISTS " + ZonesEntry.TABLE_NAME);
-        onCreate(db);
     }
 }
