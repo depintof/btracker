@@ -195,6 +195,14 @@ public class StartFragment extends Fragment implements FragmentCommunicator {
         canView = false;
     }
 
+    @SuppressWarnings("deprecation")
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        context = getActivity();
+        ((MainActivity)context).fc = this;
+    }
+
     @Override
     public void onDetach() {
         super.onDetach();
