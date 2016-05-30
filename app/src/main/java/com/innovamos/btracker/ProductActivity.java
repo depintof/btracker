@@ -116,8 +116,6 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
         myGallery = (LinearLayout) findViewById(R.id.myGallery);
         tvDescripcion.setText(R.string.loading);
 
-        // tvDescripcion.setText(beacon.getMacAddress().toString());
-
         /*
             Consulta de toda la lista de beacons
          */
@@ -139,7 +137,7 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
             beacon = getIntent().getParcelableExtra("ProductBeacon");
             Log.e("Beacon Final RESUME: ", beacon.getMacAddress().toString());
             // Relacion con Vistas
-            tvDescripcion.setText(beacon.getMacAddress().toString());
+            //tvDescripcion.setText(beacon.getMacAddress().toString());
 
             // TODO Crear método para obtener detalles del producto asociado al BeaconDTO
             //getProductDetails(beacon);

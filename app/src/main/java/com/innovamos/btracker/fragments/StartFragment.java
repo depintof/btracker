@@ -59,10 +59,11 @@ public class StartFragment extends Fragment implements FragmentCommunicator {
 
     private OnFragmentInteractionListener mListener;
 
-    private static final Map<String, List<String>> PLACES_BY_BEACONS;
+    //private static final Map<String, List<String>> PLACES_BY_BEACONS;
 
-    static {
-        Map<String, List<String>> placesByBeacons = new HashMap<>();
+    static Map<String, List<String>> placesByBeacons = new HashMap<>();
+
+    /*static {
         placesByBeacons.put("54167:16064", new ArrayList<String>() {{
             add("Beacon Azul");
         }});
@@ -76,12 +77,12 @@ public class StartFragment extends Fragment implements FragmentCommunicator {
             add("Beacon  Verde 2");
         }});
         PLACES_BY_BEACONS = Collections.unmodifiableMap(placesByBeacons);
-    }
+    }*/
 
     private List<String> placesNearBeacon(Beacon beacon) {
         String beaconKey = String.format("%d:%d", beacon.getMajor(), beacon.getMinor());
-        if (PLACES_BY_BEACONS.containsKey(beaconKey)) {
-            return PLACES_BY_BEACONS.get(beaconKey);
+        if (placesByBeacons.containsKey(beaconKey)) {
+            return placesByBeacons.get(beaconKey);
         }
         return Collections.emptyList();
     }
@@ -134,10 +135,14 @@ public class StartFragment extends Fragment implements FragmentCommunicator {
 
                     Log.d("Nearest beacon: ", places.toString());
 
-                    if (customerDTO == null)  {
-                        customerDTO = ((MainActivity) getActivity()).getCustomerDTO();
+                    if (!places.isEmpty()) {
+                        if (customerDTO == null) {
+                            customerDTO = ((MainActivity) getActivity()).getCustomerDTO();
+                        }
+                        productDetail(nearestBeacon, customerDTO);
+                    } else {
+                        canView = true;
                     }
-                    productDetail(nearestBeacon, customerDTO);
                 }
             }
         });
@@ -180,9 +185,15 @@ public class StartFragment extends Fragment implements FragmentCommunicator {
 
     @Override
     public void setBeaconList(BeaconDTO[] beaconsList) {
-        for (BeaconDTO beacon : beaconsList) {
-            Log.d("Beacon ID:", beacon.getId());
+
+        for (final BeaconDTO beacon : beaconsList) {
+
+            placesByBeacons.put(beacon.getMajor() + ":" + beacon.getMinor(), new ArrayList<String>() {{
+                add("Beacon " + beacon.getId());
+            }});
         }
+
+        Log.d("Places", placesByBeacons.toString());
     }
 
     @Override
