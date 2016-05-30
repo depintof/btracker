@@ -5,18 +5,23 @@ import android.accounts.AccountManager;
 import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.SyncRequest;
 import android.content.SyncResult;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
 import com.innovamos.btracker.R;
+import com.innovamos.btracker.data.BtrackerContract;
 import com.innovamos.btracker.utils.Cons;
 
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -24,6 +29,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Vector;
 
 /**
  * Created by root on 29/05/16.
@@ -34,7 +40,7 @@ public class BtrackerSyncAdapter extends AbstractThreadedSyncAdapter {
     // Interval at which to sync with the weather, in seconds.
     // 60 seconds (1 minute) * 180 = 3 hours
     //public static final int SYNC_INTERVAL = 60 * 60 * 3;
-    public static final int SYNC_INTERVAL = 30;
+    public static final int SYNC_INTERVAL = 60;
 
     public static final int SYNC_FLEXTIME = SYNC_INTERVAL/3;
 
@@ -81,6 +87,7 @@ public class BtrackerSyncAdapter extends AbstractThreadedSyncAdapter {
             beaconsJsonString = buffer.toString();
 
             Log.v(LOG_TAG, "+++ Retrieved string: " + beaconsJsonString);
+            getBeaconsDataFromJSON(beaconsJsonString);
             //getWeatherDataFromJson(forecastJsonStr, locationQuery); // pending
         } catch (IOException e) {
             Log.e(LOG_TAG, " +++ Error ", e);
@@ -103,6 +110,82 @@ public class BtrackerSyncAdapter extends AbstractThreadedSyncAdapter {
 
     }
 
+    private void getBeaconsDataFromJSON(String beaconsJSONString){
+        final String WS_BEACONS = "beacons";
+        final String WS_ID = "id";
+        final String WS_UUID = "uuid";
+        final String WS_MAJOR = "major";
+        final String WS_NAME = "name";
+        final String WS_MINOR = "minor";
+        final String WS_DETECTION_RANGE = "detection_range";
+        final String WS_CREATED = "created";
+        final String WS_MODIFIED = "modified";
+
+        try {
+            JSONObject beaconsJSON = new JSONObject(beaconsJSONString);
+            JSONArray beaconsArray = beaconsJSON.getJSONArray(WS_BEACONS);
+
+            Vector<ContentValues> dataVector = new Vector<ContentValues>(beaconsArray.length());
+
+
+            for (int i = 0; i < beaconsArray.length(); i++){
+                int id;
+                String uuid;
+                int major;
+                String name;
+                int minor;
+                int detectionRange;
+                String created;
+                String modified;
+
+                JSONObject singleBeacon = beaconsArray.getJSONObject(i);
+
+                id = singleBeacon.getInt(WS_ID);
+                uuid = singleBeacon.getString(WS_UUID);
+                major = singleBeacon.getInt(WS_MAJOR);
+                name = singleBeacon.getString(WS_NAME);
+                minor = singleBeacon.getInt(WS_MINOR);
+                detectionRange = singleBeacon.getInt(WS_DETECTION_RANGE);
+                created = singleBeacon.getString(WS_CREATED);
+                modified = singleBeacon.getString(WS_MODIFIED);
+
+                ContentValues beaconValues = new ContentValues();
+                beaconValues.put(BtrackerContract.BeaconsEntry.COLUMN_ID, id);
+                beaconValues.put(BtrackerContract.BeaconsEntry.COLUMN_UUID, uuid);
+                beaconValues.put(BtrackerContract.BeaconsEntry.COLUMN_MAJOR, major);
+                beaconValues.put(BtrackerContract.BeaconsEntry.COLUMN_NAME, name);
+                beaconValues.put(BtrackerContract.BeaconsEntry.COLUMN_MINOR, minor);
+                beaconValues.put(BtrackerContract.BeaconsEntry.COLUMN_DETECTION_RANGE, detectionRange);
+                beaconValues.put(BtrackerContract.BeaconsEntry.COLUMN_CREATED, created);
+                beaconValues.put(BtrackerContract.BeaconsEntry.COLUMN_MODIFIED, modified);
+
+                dataVector.add(beaconValues);
+            }
+
+            int inserted = 0;
+
+            if ( dataVector.size() > 0 ) {
+                ContentValues[] dataArray = new ContentValues[dataVector.size()];
+                dataVector.toArray(dataArray);
+                getContext().getContentResolver().bulkInsert(BtrackerContract.BeaconsEntry.CONTENT_URI, dataArray);
+
+                Cursor cursor = getContext().getContentResolver().query(BtrackerContract.BeaconsEntry.CONTENT_URI, null, null, null, null);
+
+                Log.v(LOG_TAG, "+++ Cursor: " + cursor.getCount());
+                notifyApplication();
+            }
+
+            Log.d(LOG_TAG, "+++ Sync Complete. " + dataVector.size() + " Inserted");
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void notifyApplication(){
+        //TODO: Actions to notify application if necessary
+    }
+
     public static void syncImmediately(Context context) {
         Bundle bundle = new Bundle();
         bundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
@@ -120,31 +203,17 @@ public class BtrackerSyncAdapter extends AbstractThreadedSyncAdapter {
      * @return a fake account.
      */
     public static Account getSyncAccount(Context context) {
-        // Get an instance of the Android account manager
         AccountManager accountManager =
                 (AccountManager) context.getSystemService(Context.ACCOUNT_SERVICE);
 
-        // Create the account type and default account
         Account newAccount = new Account(
                 context.getString(R.string.app_name), context.getString(R.string.sync_account_type));
 
-        // If the password doesn't exist, the account doesn't exist
         if ( null == accountManager.getPassword(newAccount) ) {
 
-        /*
-         * Add the account and account type, no password or user data
-         * If successful, return the Account object, otherwise report an error.
-         */
             if (!accountManager.addAccountExplicitly(newAccount, "", null)) {
                 return null;
             }
-            /*
-             * If you don't set android:syncable="true" in
-             * in your <provider> element in the manifest,
-             * then call ContentResolver.setIsSyncable(account, AUTHORITY, 1)
-             * here.
-             */
-
             onAccountCreated(newAccount, context);
 
         }
@@ -155,7 +224,6 @@ public class BtrackerSyncAdapter extends AbstractThreadedSyncAdapter {
         Account account = getSyncAccount(context);
         String authority = context.getString(R.string.content_authority);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            // we can enable inexact timers in our periodic sync
             SyncRequest request = new SyncRequest.Builder().
                     syncPeriodic(syncInterval, flexTime).
                     setSyncAdapter(account, authority).
@@ -169,19 +237,11 @@ public class BtrackerSyncAdapter extends AbstractThreadedSyncAdapter {
 
     private static void onAccountCreated(Account newAccount, Context context) {
         Log.v(LOG_TAG, " +++ +++ account created");
-        /*
-         * Since we've created an account
-         */
+
         BtrackerSyncAdapter.configurePeriodicSync(context, SYNC_INTERVAL, SYNC_FLEXTIME);
 
-        /*
-         * Without calling setSyncAutomatically, our periodic sync will not be enabled.
-         */
         ContentResolver.setSyncAutomatically(newAccount, context.getString(R.string.content_authority), true);
 
-        /*
-         * Finally, let's do a sync to get things started
-         */
         syncImmediately(context);
     }
 

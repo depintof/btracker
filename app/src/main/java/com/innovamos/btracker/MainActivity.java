@@ -111,6 +111,8 @@ public class MainActivity extends AppCompatActivity implements EventListener {
             // Seleccionar item
         }*/
 
+        BtrackerSyncAdapter.initializeSyncAdapter(this);
+
         /* Configuración de las instancias de comunicación a base de datos:
            Lista de Beacons y Confirmar existencia de usuario */
         DatabaseConnectivity databaseConnectivity = new DatabaseConnectivity(this);
@@ -121,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements EventListener {
         IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
         registerReceiver(mReceiver, filter);
 
-        BtrackerSyncAdapter.initializeSyncAdapter(this);
+
     }
 
     @Override
