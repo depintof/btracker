@@ -307,6 +307,8 @@ public class MainActivity extends AppCompatActivity implements EventListener {
     public void customerResult(JSONObject jsonResponse) {
         customerDTO = JsonResponseDecoder.customerResponse(jsonResponse);
         if(customerDTO!=null) {
+            fc.setCustomer(customerDTO);
+
             DatabaseConnectivity databaseConnectivity = new DatabaseConnectivity(this);
             // Obtener lista de productos con like
             databaseConnectivity.getProductsLike(this,customerDTO.getId());

@@ -19,12 +19,10 @@ import com.estimote.sdk.Region;
 import com.innovamos.btracker.MainActivity;
 import com.innovamos.btracker.ProductActivity;
 import com.innovamos.btracker.R;
-import com.innovamos.btracker.async.EventListener;
 import com.innovamos.btracker.async.FragmentCommunicator;
 import com.innovamos.btracker.dto.BeaconDTO;
 import com.innovamos.btracker.dto.CustomerDTO;
 import com.innovamos.btracker.utils.Cons;
-import com.innovamos.btracker.web.DatabaseConnectivity;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -106,8 +104,6 @@ public class StartFragment extends Fragment implements FragmentCommunicator {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
-
         // Iniciar búsqueda de beacons
         beaconManager = new BeaconManager(getContext());
         beaconManager.setBackgroundScanPeriod(1000, 5000);
@@ -138,10 +134,10 @@ public class StartFragment extends Fragment implements FragmentCommunicator {
 
                     Log.d("Nearest beacon: ", places.toString());
 
-                    customerDTO = ((MainActivity) getActivity()).getCustomerDTO();
-                    if (customerDTO != null) {
-                        productDetail(nearestBeacon, customerDTO);
+                    if (customerDTO == null)  {
+                        customerDTO = ((MainActivity) getActivity()).getCustomerDTO();
                     }
+                    productDetail(nearestBeacon, customerDTO);
                 }
             }
         });
@@ -150,8 +146,7 @@ public class StartFragment extends Fragment implements FragmentCommunicator {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_start, container, false);
 
@@ -188,6 +183,11 @@ public class StartFragment extends Fragment implements FragmentCommunicator {
         for (BeaconDTO beacon : beaconsList) {
             Log.d("Beacon ID:", beacon.getId());
         }
+    }
+
+    @Override
+    public void setCustomer(CustomerDTO customer) {
+        customerDTO = customer;
     }
 
 
