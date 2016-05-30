@@ -36,8 +36,8 @@ public class MyApplication extends Application implements EventListener {
     public void onCreate() {
         super.onCreate();
 
-        beaconManager = new BeaconManager(getApplicationContext());
-        beaconManager.setBackgroundScanPeriod(15000,5000);
+        //beaconManager = new BeaconManager(getApplicationContext());
+        /*beaconManager.setBackgroundScanPeriod(15000,5000);
         beaconManager.setMonitoringListener(new BeaconManager.MonitoringListener() {
             @Override
             public void onEnteredRegion(Region region, List<Beacon> list) {
@@ -58,10 +58,10 @@ public class MyApplication extends Application implements EventListener {
                         "Have an ass day!");
             }
         });
-
+        */
         // Obtener listado de Beacons
-        DatabaseConnectivity databaseConnectivity = new DatabaseConnectivity(this);
-        databaseConnectivity.getBeaconsList(this);
+       // DatabaseConnectivity databaseConnectivity = new DatabaseConnectivity(this);
+        //databaseConnectivity.getBeaconsList(this);
     }
 
     public void showNotification(String title, String message) {
@@ -89,6 +89,7 @@ public class MyApplication extends Application implements EventListener {
 
     @Override
     public void beaconsListResult(JSONObject jsonResult) {
+        /*
         final BeaconDTO[] beaconDTOList = JsonResponseDecoder.beaconListResponse(jsonResult);
         beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
             @Override
@@ -99,7 +100,7 @@ public class MyApplication extends Application implements EventListener {
                                 UUID.fromString(iteratorBeaconDTO.getUuid()), Integer.parseInt(iteratorBeaconDTO.getMajor()), Integer.parseInt(iteratorBeaconDTO.getMinor())));
                     }
             }
-        });
+        });*/
     }
 
     @Override

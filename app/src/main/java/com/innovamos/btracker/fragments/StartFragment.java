@@ -19,13 +19,21 @@ import com.estimote.sdk.Region;
 import com.innovamos.btracker.MainActivity;
 import com.innovamos.btracker.ProductActivity;
 import com.innovamos.btracker.R;
+import com.innovamos.btracker.async.EventListener;
 import com.innovamos.btracker.async.FragmentCommunicator;
+import com.innovamos.btracker.dto.BeaconDTO;
 import com.innovamos.btracker.dto.CustomerDTO;
 import com.innovamos.btracker.utils.Cons;
+import com.innovamos.btracker.web.DatabaseConnectivity;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 
 /**
@@ -38,12 +46,9 @@ import java.util.List;
  */
 public class StartFragment extends Fragment implements FragmentCommunicator {
 
-    // Objeto Cliente - Recibido desde la actividad Principal
     private static CustomerDTO customerDTO;
 
-    // Imagen de carga
     private ImageView loadingView;
-    // Animation del Buscador
     private AnimationDrawable loadingAnimation;
 
     public Context context;
@@ -51,15 +56,37 @@ public class StartFragment extends Fragment implements FragmentCommunicator {
     private Date lastLaunch;
     private Boolean canView;
 
-    /*
-     * Gestor de Beacons
-     */
-    // Gestor de Beacons
     private BeaconManager beaconManager;
-    // Regiones de escaneo
-    private static Region region;
+    private Region region;
 
     private OnFragmentInteractionListener mListener;
+
+    private static final Map<String, List<String>> PLACES_BY_BEACONS;
+
+    static {
+        Map<String, List<String>> placesByBeacons = new HashMap<>();
+        placesByBeacons.put("54167:16064", new ArrayList<String>() {{
+            add("Beacon Azul");
+        }});
+        placesByBeacons.put("60906:40046", new ArrayList<String>() {{
+            add("Beacon  Verde 1");
+        }});
+        placesByBeacons.put("27024:27939", new ArrayList<String>() {{
+            add("Beacon  Morado");
+        }});
+        placesByBeacons.put("60231:36744", new ArrayList<String>() {{
+            add("Beacon  Verde 2");
+        }});
+        PLACES_BY_BEACONS = Collections.unmodifiableMap(placesByBeacons);
+    }
+
+    private List<String> placesNearBeacon(Beacon beacon) {
+        String beaconKey = String.format("%d:%d", beacon.getMajor(), beacon.getMinor());
+        if (PLACES_BY_BEACONS.containsKey(beaconKey)) {
+            return PLACES_BY_BEACONS.get(beaconKey);
+        }
+        return Collections.emptyList();
+    }
 
     /**
      * Use this factory method to create a new instance of
@@ -67,8 +94,7 @@ public class StartFragment extends Fragment implements FragmentCommunicator {
      *
      * @return A new instance of fragment StartFragment.
      */
-    public static StartFragment newInstance(CustomerDTO customerDTO) {
-        StartFragment.customerDTO = customerDTO;
+    public static StartFragment newInstance() {
         return new StartFragment();
     }
 
@@ -80,38 +106,47 @@ public class StartFragment extends Fragment implements FragmentCommunicator {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
+
         // Iniciar búsqueda de beacons
         beaconManager = new BeaconManager(getContext());
+        beaconManager.setBackgroundScanPeriod(1000, 5000);
         beaconManager.setRangingListener(new BeaconManager.RangingListener() {
             @Override
             public void onBeaconsDiscovered(Region region, List<Beacon> list) {
+
                 if (lastLaunch != null) {
                     Date currentDate = Calendar.getInstance().getTime();
                     Long seconds = currentDate.getTime() - lastLaunch.getTime();
                     seconds = seconds / 1000;
-                    Log.d("Time:", seconds.toString());
+                    Log.d("Elapsed time: ", seconds.toString());
 
                     if (seconds >= Cons.TIMEOUT) {
                         lastLaunch = Calendar.getInstance().getTime();
                         canView = true;
                     }
-                }
-                else {
+                } else {
                     lastLaunch = Calendar.getInstance().getTime();
-                    Log.d("Launch Time:", lastLaunch.toString());
+                    Log.d("Launched time:", lastLaunch.toString());
                     canView = false;
                 }
-
-                Log.d("Time View:", canView.toString());
 
                 if (!list.isEmpty() && canView) {
                     canView = false;
                     Beacon nearestBeacon = list.get(0);
-                    Log.e("Beacon encontrado: ", nearestBeacon.getMacAddress().toString());
-                    productDetail(nearestBeacon, customerDTO);
+                    List<String> places = placesNearBeacon(nearestBeacon);
+
+                    Log.d("Nearest beacon: ", places.toString());
+
+                    customerDTO = ((MainActivity) getActivity()).getCustomerDTO();
+                    if (customerDTO != null) {
+                        productDetail(nearestBeacon, customerDTO);
+                    }
                 }
             }
         });
+
+        region = new Region("ranged region", UUID.fromString("B9407F30-F5F8-466E-AFF9-25556B57FE6D"), null, null);
     }
 
     @Override
@@ -141,35 +176,21 @@ public class StartFragment extends Fragment implements FragmentCommunicator {
     @Override
     public void onPause(){
         super.onPause();
-        // Detener animación
+
         loadingAnimation.stop();
         loadingView.setVisibility(View.INVISIBLE);
-        // Detener búsqueda de beacons
-        if(region!=null){
-            beaconManager.stopRanging(region);
-        }
+
+        beaconManager.stopRanging(region);
     }
 
     @Override
-    public void passDataToFragment(Region region) {
-        StartFragment.region = region;
-        beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
-            @Override
-            public void onServiceReady() {
-                beaconManager.startRanging(StartFragment.region);
-            }
-        });
+    public void setBeaconList(BeaconDTO[] beaconsList) {
+        for (BeaconDTO beacon : beaconsList) {
+            Log.d("Beacon ID:", beacon.getId());
+        }
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * Communicating with Other Fragments</a> for more information.
-     */
+
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
@@ -178,21 +199,19 @@ public class StartFragment extends Fragment implements FragmentCommunicator {
     @Override
     public void onResume() {
         super.onResume();  // Always call the superclass method first
-        // Animación de carga
+
         loadingAnimation.start();
         loadingView.setVisibility(View.VISIBLE);
-        // Retomar búsqueda de beacons
-        if(region!=null){
-            beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
-                @Override
-                public void onServiceReady() {
-                    beaconManager.startRanging(region);
-                }
-            });
-        }
 
         lastLaunch = Calendar.getInstance().getTime();
         canView = false;
+
+        beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
+            @Override
+            public void onServiceReady() {
+                beaconManager.startRanging(region);
+            }
+        });
     }
 
     @SuppressWarnings("deprecation")
@@ -206,7 +225,6 @@ public class StartFragment extends Fragment implements FragmentCommunicator {
     @Override
     public void onDetach() {
         super.onDetach();
-
     }
 
     /**

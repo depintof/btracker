@@ -34,15 +34,9 @@ import com.innovamos.btracker.fragments.VisitsListFragment;
 import com.innovamos.btracker.fragments.WishListFragment;
 import com.innovamos.btracker.json.JsonResponseDecoder;
 import com.innovamos.btracker.web.DatabaseConnectivity;
-import com.estimote.sdk.Region;
 import com.estimote.sdk.SystemRequirementsChecker;
 
 import org.json.JSONObject;
-
-import java.net.NetworkInterface;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity implements EventListener {
 
@@ -107,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements EventListener {
             setupDrawerContent(navigationView);
         }
 
-        startFragment = StartFragment.newInstance(customerDTO);
+        startFragment = StartFragment.newInstance();
         messageFragment = MessageFragment.newInstance(getString(R.string.info), getString(R.string.bluetooth_info));
         mainFragment = isBluetoothAvailable() ? startFragment : messageFragment;
         fragmentManager.beginTransaction().replace(R.id.main_container, mainFragment).commit();
@@ -119,12 +113,8 @@ public class MainActivity extends AppCompatActivity implements EventListener {
         /* Configuración de las instancias de comunicación a base de datos:
            Lista de Beacons y Confirmar existencia de usuario */
         DatabaseConnectivity databaseConnectivity = new DatabaseConnectivity(this);
-
-        // Obtener listado de Beacons
         databaseConnectivity.getBeaconsList(this);
-
-        // Obtener MAC y Confirmar Existencia
-        databaseConnectivity.getCustomer(this, getMacAddr());
+        databaseConnectivity.getCustomer(this);
 
         // Register for broadcasts on BluetoothAdapter state change
         IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
@@ -180,7 +170,6 @@ public class MainActivity extends AppCompatActivity implements EventListener {
     @Override
     protected void onPause() {
         super.onPause();
-
     }
 
     private void setupDrawerContent(NavigationView navigationView) {
@@ -260,15 +249,6 @@ public class MainActivity extends AppCompatActivity implements EventListener {
         }
     }
 
-    /*
-    public void productDetail(Beacon beacon, CustomerDTO customerDTO) {
-        Intent detailIntent = new Intent(getContext(), ProductActivity.class);
-        detailIntent.putExtra("ProductBeacon", beacon);
-        detailIntent.putExtra("Customer", customerDTO.getId());
-        startActivity(detailIntent);
-    }
-    */
-
     /**
      * Check for Bluetooth.
      * @return True if Bluetooth is available.
@@ -307,38 +287,6 @@ public class MainActivity extends AppCompatActivity implements EventListener {
     };
 
     /**
-     * Método que obtiene la MAC del dispositivo movil
-     * @return MAC
-     */
-    public static String getMacAddr() {
-        try {
-            List<NetworkInterface> all = Collections.list(NetworkInterface.getNetworkInterfaces());
-            for (NetworkInterface nif : all) {
-                if (!nif.getName().equalsIgnoreCase("wlan0")) continue;
-
-                byte[] macBytes = nif.getHardwareAddress();
-                if (macBytes == null) {
-                    return "";
-                }
-
-                StringBuilder res1 = new StringBuilder();
-                for (byte b : macBytes) {
-                    res1.append(Integer.toHexString(b & 0xFF)).append(":");
-                }
-
-                if (res1.length() > 0) {
-                    res1.deleteCharAt(res1.length() - 1);
-                }
-                return res1.toString();
-            }
-        } catch (Exception ex) {
-            return "02:00:00:00:00:00";
-        }
-
-        return null;
-    }
-
-    /**
      * Método que obtiene la respuesta de base de datos con la lista de beacons
      * @param jsonResponse Objeto JSON a decodificar
      */
@@ -347,10 +295,8 @@ public class MainActivity extends AppCompatActivity implements EventListener {
         BeaconDTO[] beaconsList = JsonResponseDecoder.beaconListResponse(jsonResponse);
         if (beaconsList != null) {
             // Pasar la región por interfaz al fragmento start
-            fc.passDataToFragment(new Region("Ranged Beacons Region", UUID.fromString(beaconsList[0].getUuid()), null, null));
+            fc.setBeaconList(beaconsList);
         }
-        // Mensaje de prueba
-        //Toast.makeText(this,beaconsList[0].getUuid(),Toast.LENGTH_LONG).show();
     }
 
     /**
@@ -360,10 +306,7 @@ public class MainActivity extends AppCompatActivity implements EventListener {
     @Override
     public void customerResult(JSONObject jsonResponse) {
         customerDTO = JsonResponseDecoder.customerResponse(jsonResponse);
-        if(customerDTO!=null){
-            // Crear fragmento de búsqueda en el contenedor principal (sobre el que se colocan todos los fragmentos
-            fragmentManager.beginTransaction().add(R.id.main_container, StartFragment.newInstance(customerDTO)).commit();
-
+        if(customerDTO!=null) {
             DatabaseConnectivity databaseConnectivity = new DatabaseConnectivity(this);
             // Obtener lista de productos con like
             databaseConnectivity.getProductsLike(this,customerDTO.getId());
@@ -377,6 +320,10 @@ public class MainActivity extends AppCompatActivity implements EventListener {
         else{
             Toast.makeText(this,"Couldn´t find any user", Toast.LENGTH_LONG).show();
         }
+    }
+
+    public CustomerDTO getCustomerDTO() {
+        return customerDTO;
     }
 
     /** Called when the user clicks the Help item
