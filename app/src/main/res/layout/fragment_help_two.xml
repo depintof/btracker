@@ -29,7 +29,8 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/prevImage"
                 android:src="@drawable/ic_chevron_left_white_48dp"
-                android:layout_gravity="center_vertical" />
+                android:layout_gravity="center_vertical"
+                android:onClick="onClick" />
 
             <TextView android:text="@string/help_bluetooth" android:layout_width="200dp"
                 android:layout_height="wrap_content"
@@ -47,7 +48,8 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/nextImage"
                 android:src="@drawable/ic_chevron_right_white_48dp"
-                android:layout_gravity="center_vertical" />
+                android:layout_gravity="center_vertical"
+                android:onClick="onClick" />
 
         </LinearLayout>
 

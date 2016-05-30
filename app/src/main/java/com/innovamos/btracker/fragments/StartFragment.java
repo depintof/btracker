@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -33,15 +32,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link StartFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link StartFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class StartFragment extends Fragment implements FragmentCommunicator {
 
     private static CustomerDTO customerDTO;
@@ -56,8 +46,6 @@ public class StartFragment extends Fragment implements FragmentCommunicator {
 
     private BeaconManager beaconManager;
     private Region region;
-
-    private OnFragmentInteractionListener mListener;
 
     static Map<String, List<String>> placesByBeacons = new HashMap<>();
 
@@ -184,12 +172,6 @@ public class StartFragment extends Fragment implements FragmentCommunicator {
         customerDTO = customer;
     }
 
-
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
-
     @Override
     public void onResume() {
         super.onResume();  // Always call the superclass method first
@@ -228,6 +210,7 @@ public class StartFragment extends Fragment implements FragmentCommunicator {
      */
     public void productDetail(Beacon beacon, CustomerDTO customerDTO) {
         Intent detailIntent = new Intent(getContext(), ProductActivity.class);
+        detailIntent .setFlags(detailIntent .getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY);
         detailIntent.putExtra("ProductBeacon", beacon);
         detailIntent.putExtra("Customer", customerDTO.getId());
         startActivity(detailIntent);

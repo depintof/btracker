@@ -1,17 +1,17 @@
 package com.innovamos.btracker;
 
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.innovamos.btracker.utils.PagerAdapter;
 
-public class HelpActivity extends AppCompatActivity {
+public class HelpActivity extends AppCompatActivity implements View.OnClickListener {
 
     ViewPager mViewPager;
     Toolbar toolbar;
@@ -32,6 +32,7 @@ public class HelpActivity extends AppCompatActivity {
 
         mViewPager = (ViewPager) findViewById(R.id.pager);
         PagerAdapter pAdapter = new PagerAdapter(getSupportFragmentManager());
+
 
         mViewPager.setAdapter(pAdapter);
     }
@@ -56,4 +57,14 @@ public class HelpActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onClick(View view) {
+        if(view.getId() == R.id.nextImage){
+            mViewPager.setCurrentItem(mViewPager.getCurrentItem() + 1);
+        }
+
+        if(view.getId() == R.id.prevImage){
+            mViewPager.setCurrentItem(mViewPager.getCurrentItem() - 1);
+        }
+    }
 }

@@ -136,8 +136,13 @@ public class ProductDTO {
         String finalPrice = "";
 
         if (this.price != null) {
-            finalPrice = Integer.toString((int) Math.ceil(
-                    Double.parseDouble(this.price) - Double.parseDouble(this.price) * Double.parseDouble(this.discount) / 100));
+            if (this.discount != null) {
+                finalPrice = Integer.toString((int) Math.ceil(
+                        Double.parseDouble(this.price) - Double.parseDouble(this.price) * Double.parseDouble(this.discount) / 100));
+            }
+            else {
+                finalPrice = Integer.toString((int) Math.ceil(Double.parseDouble(this.price)));
+            }
         }
 
         return finalPrice;

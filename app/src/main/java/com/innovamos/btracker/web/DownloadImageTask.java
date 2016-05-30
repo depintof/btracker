@@ -15,6 +15,8 @@ import java.io.InputStream;
 public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
     private ImageView bmImage;
     private Context context;
+    private static Bitmap loading;
+    private Bitmap imageBitmap;
 
     public DownloadImageTask(ImageView bmImage, Context context) {
         this.bmImage = bmImage;
@@ -23,23 +25,25 @@ public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
 
     @Override
     protected void onPreExecute() {
-        Bitmap loading = BitmapFactory.decodeResource(context.getResources(), R.drawable.loading_picture);
+        loading = BitmapFactory.decodeResource(context.getResources(), R.drawable.loading_picture);
         bmImage.setImageBitmap(loading);
     }
 
     @Override
     protected Bitmap doInBackground(String... urls) {
         String urlDisplay = urls[0];
-        Bitmap mIcon11 = null;
+        imageBitmap = null;
+
         try {
             InputStream in = new java.net.URL(urlDisplay).openStream();
-            mIcon11 = BitmapFactory.decodeStream(in);
+            imageBitmap = BitmapFactory.decodeStream(in);
         } catch (Exception e) {
-            Log.e("Error", "image download error");
+            Log.e("Error", "Image download error");
             Log.e("Error", e.getMessage());
             e.printStackTrace();
         }
-        return mIcon11;
+
+        return imageBitmap;
     }
 
     @Override

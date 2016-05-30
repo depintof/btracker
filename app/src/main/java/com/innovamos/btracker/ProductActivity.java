@@ -4,11 +4,11 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Paint;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
@@ -33,11 +33,6 @@ import com.innovamos.btracker.web.DownloadImageTask;
 
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Random;
 
 public class ProductActivity extends AppCompatActivity implements EventListener{
@@ -66,11 +61,6 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
     Beacon beacon;
 
     /*
-     * Información Quemada para Imágenes
-     */
-    String galleryDirectoryName = "products";
-
-    /*
      * Información de Base de Datos
      */
     BeaconDTO[] beaconsList;
@@ -80,6 +70,7 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
     CustomerProductsDTO[] productsLikeList;
     PurchasesDTO[] purchasedProductsList;
     DownloadImageTask loadMainImageTask;
+    Bitmap noPicture;
 
     private String customerId;
 
@@ -116,6 +107,8 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
         displayImage = (ImageView) findViewById(R.id.productImage);
         myGallery = (LinearLayout) findViewById(R.id.myGallery);
         tvDescripcion.setText(R.string.loading);
+
+        noPicture = BitmapFactory.decodeResource(this.getResources(), R.drawable.no_picture);
 
         /*
             Consulta de toda la lista de beacons
@@ -373,7 +366,6 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
             loadMainImageTask.execute(url);
         }
         else {
-            Bitmap noPicture = BitmapFactory.decodeResource(this.getResources(), R.drawable.no_picture);
             displayImage.setImageBitmap(noPicture);
         }
     }
@@ -465,11 +457,22 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
         }
     }
 
+    @Override
+    public void onDestroy() {
+        Log.e("Destroy", "Changes");
+        super.onDestroy();
+        displayImage = null;
+        myGallery.removeAllViews();
+        myGallery = null;
+        System.gc();
+    }
+
     /** Called when the user clicks the Help item
      *
      */
     public void showHelp() {
         Intent intent = new Intent(this, HelpActivity.class);
+        intent .setFlags(intent .getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY);
         startActivity(intent);
     }
 }

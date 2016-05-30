@@ -335,6 +335,7 @@ public class MainActivity extends AppCompatActivity implements EventListener {
      */
     public void showHelp() {
         Intent intent = new Intent(this, HelpActivity.class);
+        intent .setFlags(intent .getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY);
         startActivity(intent);
     }
 
