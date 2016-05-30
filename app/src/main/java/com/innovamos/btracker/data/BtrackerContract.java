@@ -38,7 +38,7 @@ public class BtrackerContract {
         public static final String COLUMN_MODIFIED = "modified";
     }
 
-    public static final class Customers implements BaseColumns{
+    public static final class CustomersEntry implements BaseColumns{
         public static final String TABLE_NAME = "customers";
         public static final String COLUMN_ID = "id";
         public static final String COLUMN_MAC = "mac";
@@ -46,13 +46,13 @@ public class BtrackerContract {
         public static final String COLUMN_MODIFIED = "modified";
     }
 
-    public static final class CustomersProducts implements BaseColumns{
+    public static final class CustomersProductsEntry implements BaseColumns{
         public static final String TABLE_NAME = "customers_products";
         public static final String COLUMN_CUSTOMER_ID = "customer_id";
         public static final String COLUMN_PRODUCT_ID = "product_id";
     }
 
-    public static final class Products implements BaseColumns{
+    public static final class ProductsEntry implements BaseColumns{
         public static final String TABLE_NAME = "products";
         public static final String COLUMN_ID = "id";
         public static final String COLUMN_NAME = "name";
@@ -68,13 +68,13 @@ public class BtrackerContract {
         public static final String COLUMN_TYPE = "type";
     }
 
-    public static final class ProductsZones implements BaseColumns{
+    public static final class ProductsZonesEntry implements BaseColumns{
         public static final String TABLE_NAME = "products_zones";
         public static final String COLUMN_ZONE_ID = "zone_id";
         public static final String COLUMN_PRODUCT_ID = "product_id";
     }
 
-    public static final class Purchases implements BaseColumns{
+    public static final class PurchasesEntry implements BaseColumns{
         public static final String TABLE_NAME = "purchases";
         public static final String COLUMN_ID = "id";
         public static final String COLUMN_PRODUCT_ID = "product_id";
@@ -83,7 +83,7 @@ public class BtrackerContract {
         public static final String COLUMN_PRICE = "price";
     }
 
-    public static final class Stores implements BaseColumns{
+    public static final class StoresEntry implements BaseColumns{
         public static final String TABLE_NAME = "stores";
         public static final String COLUMN_ID = "id";
         public static final String COLUMN_USER_ID = "user_id";
@@ -94,7 +94,7 @@ public class BtrackerContract {
         public static final String COLUMN_MODIFIED = "modified";
     }
 
-    public static final class Visits implements BaseColumns{
+    public static final class VisitsEntry implements BaseColumns{
         public static final String TABLE_NAME = "visits";
         public static final String COLUMN_ID = "id";
         public static final String COLUMN_TRIGGER_TIME = "trigger_time";
@@ -104,7 +104,7 @@ public class BtrackerContract {
         public static final String COLUMN_VIEWED = "viewed";
     }
 
-    public static final class Zones implements BaseColumns{
+    public static final class ZonesEntry implements BaseColumns{
         public static final String TABLE_NAME = "zones";
         public static final String COLUMN_ID = "id";
         public static final String COLUMN_NAME = "name";
