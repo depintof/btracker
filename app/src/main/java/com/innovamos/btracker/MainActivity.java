@@ -4,6 +4,11 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.IntentFilter;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
+import android.database.Cursor;
+import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.content.Intent;
@@ -21,6 +26,7 @@ import android.widget.Toast;
 
 import com.innovamos.btracker.async.EventListener;
 import com.innovamos.btracker.async.FragmentCommunicator;
+import com.innovamos.btracker.data.BtrackerContract;
 import com.innovamos.btracker.dto.BeaconDTO;
 import com.innovamos.btracker.dto.CustomerDTO;
 import com.innovamos.btracker.dto.CustomerProductsDTO;
@@ -39,7 +45,7 @@ import com.estimote.sdk.SystemRequirementsChecker;
 
 import org.json.JSONObject;
 
-public class MainActivity extends AppCompatActivity implements EventListener {
+public class MainActivity extends AppCompatActivity implements EventListener, LoaderManager.LoaderCallbacks<Cursor> {
 
     /**
      * Interfaz principal
@@ -70,6 +76,21 @@ public class MainActivity extends AppCompatActivity implements EventListener {
     private VisitsDTO[] customerVisitsList;
     // Lista de notificaciones recibidas por el usuario
     private VisitsDTO[] customerNotificationsList;
+
+    private static final int LOADER_ID = 101;
+
+    private static final String[] BEACONS_COLUMNS = {
+            BtrackerContract.BeaconsEntry.TABLE_NAME + "." + BtrackerContract.BeaconsEntry._ID,
+            BtrackerContract.BeaconsEntry.COLUMN_ID,
+            BtrackerContract.BeaconsEntry.COLUMN_UUID,
+            BtrackerContract.BeaconsEntry.COLUMN_MAJOR,
+            BtrackerContract.BeaconsEntry.COLUMN_NAME,
+            BtrackerContract.BeaconsEntry.COLUMN_MINOR,
+            BtrackerContract.BeaconsEntry.COLUMN_DETECTION_RANGE,
+            BtrackerContract.BeaconsEntry.COLUMN_CREATED,
+            BtrackerContract.BeaconsEntry.COLUMN_MODIFIED,
+
+    };
 
     /*
      * Gestor de Beacons
@@ -122,6 +143,8 @@ public class MainActivity extends AppCompatActivity implements EventListener {
         // Register for broadcasts on BluetoothAdapter state change
         IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
         registerReceiver(mReceiver, filter);
+
+        getSupportLoaderManager().initLoader(LOADER_ID, null, this);
 
 
     }
@@ -398,5 +421,32 @@ public class MainActivity extends AppCompatActivity implements EventListener {
 
         // Unregister broadcast listeners
         unregisterReceiver(mReceiver);
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        Uri weatherForLocationUri = BtrackerContract.BeaconsEntry.CONTENT_URI;
+
+        Log.v("MainActivity", " !!! Loader created");
+
+        return new CursorLoader(this,
+                weatherForLocationUri,
+                BEACONS_COLUMNS,
+                null,
+                null,
+                null);
+
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        //loades y data deberían contner la info recuperada de la base de datos local (que a su vez)
+        // se sincroniza con la BD del servidor. Toca ver cómo manipular estos objetos
+        Log.v("MainActivity", " !!! Load completed: " + data.toString() + "      " + loader.toString());
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        Log.v("MainActivity", " !!! Load reset: " + loader.toString());
     }
 }
