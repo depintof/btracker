@@ -461,10 +461,13 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
     public void onDestroy() {
         Log.e("Destroy", "Changes");
         super.onDestroy();
-        displayImage = null;
-        myGallery.removeAllViews();
-        myGallery = null;
         System.gc();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
     }
 
     /** Called when the user clicks the Help item

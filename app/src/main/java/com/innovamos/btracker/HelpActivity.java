@@ -67,4 +67,10 @@ public class HelpActivity extends AppCompatActivity implements View.OnClickListe
             mViewPager.setCurrentItem(mViewPager.getCurrentItem() - 1);
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
 }
