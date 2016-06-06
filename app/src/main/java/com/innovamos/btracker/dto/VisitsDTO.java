@@ -14,9 +14,10 @@ public class VisitsDTO {
     private String customer_id;
     private String zone_id;
     private String viewed;
-
-    private String description; // De la tabla Stores
-    private String name; // De la tabla zones
+    private String store_name;
+    private String store_description;
+    private String description; // De la tabla Zones
+    private String name; // De la tabla Zones
 
     public String getId() {
         return id;
@@ -82,12 +83,30 @@ public class VisitsDTO {
         this.name = name;
     }
 
-    public VisitsDTO(String id, String trigger_time, String leave_time, String customer_id, String zone_id, String viewed) {
+    public VisitsDTO(String id, String trigger_time, String leave_time, String customer_id, String zone_id, String viewed, String store_name, String store_description) {
         this.id = id;
         this.trigger_time = trigger_time;
         this.leave_time = leave_time;
         this.customer_id = customer_id;
         this.zone_id = zone_id;
         this.viewed = viewed;
+        this.store_description = store_description;
+        this.store_name = store_name;
+    }
+
+    public String getStoreName() {
+        return store_name;
+    }
+
+    public void setStoreName(String store_name) {
+        this.store_name = store_name;
+    }
+
+    public String getStoreDescription() {
+        return store_description;
+    }
+
+    public void setStoreDescription(String store_description) {
+        this.store_description = store_description;
     }
 }

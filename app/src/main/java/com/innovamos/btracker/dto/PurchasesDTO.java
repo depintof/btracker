@@ -12,12 +12,12 @@ public class PurchasesDTO {
     private String product_id;
     private String customer_id;
     private String date;
-    private double price;
+    private String price;
     private String name;
-    private double discount;
+    private String discount;
     private String description;
 
-    public PurchasesDTO(String id, String idProduct, String idCustomer, String date, double price) {
+    public PurchasesDTO(String id, String idProduct, String idCustomer, String date, String price) {
         this.id = id;
         this.product_id = idProduct;
         this.customer_id = idCustomer;
@@ -57,11 +57,11 @@ public class PurchasesDTO {
         this.date = date;
     }
 
-    public double getPrice() {
+    public String getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(String price) {
         this.price = price;
     }
 
@@ -73,11 +73,11 @@ public class PurchasesDTO {
         this.name = name;
     }
 
-    public double getDiscount() {
+    public String getDiscount() {
         return discount;
     }
 
-    public void setDiscount(double discount) {
+    public void setDiscount(String discount) {
         this.discount = discount;
     }
 
@@ -89,4 +89,19 @@ public class PurchasesDTO {
         this.description = description;
     }
 
+    public Integer getFinalPrice() {
+        Integer finalPrice = 0;
+
+        if (this.price != null) {
+            if (this.discount != null) {
+                finalPrice = (int) Math.ceil(
+                        Double.parseDouble(this.price) - Double.parseDouble(this.price) * Double.parseDouble(this.discount) / 100);
+            }
+            else {
+                finalPrice = (int) Math.ceil(Double.parseDouble(this.price));
+            }
+        }
+
+        return finalPrice;
+    }
 }

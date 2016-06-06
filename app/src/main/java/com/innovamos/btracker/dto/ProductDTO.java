@@ -132,16 +132,16 @@ public class ProductDTO {
         this.picture = picture;
     }
 
-    public String getFinalPrice() {
-        String finalPrice = "";
+    public Integer getFinalPrice() {
+        Integer finalPrice = 0;
 
         if (this.price != null) {
             if (this.discount != null) {
-                finalPrice = Integer.toString((int) Math.ceil(
-                        Double.parseDouble(this.price) - Double.parseDouble(this.price) * Double.parseDouble(this.discount) / 100));
+                finalPrice = (int) Math.ceil(
+                        Double.parseDouble(this.price) - Double.parseDouble(this.price) * Double.parseDouble(this.discount) / 100);
             }
             else {
-                finalPrice = Integer.toString((int) Math.ceil(Double.parseDouble(this.price)));
+                finalPrice = (int) Math.ceil(Double.parseDouble(this.price));
             }
         }
 

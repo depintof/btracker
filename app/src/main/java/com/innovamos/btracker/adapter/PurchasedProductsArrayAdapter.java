@@ -8,8 +8,8 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.innovamos.btracker.R;
-import com.innovamos.btracker.dto.CustomerProductsDTO;
 import com.innovamos.btracker.dto.PurchasesDTO;
+import com.innovamos.btracker.utils.Common;
 
 import java.util.List;
 
@@ -49,9 +49,9 @@ public class PurchasedProductsArrayAdapter<T> extends ArrayAdapter {
         // Fijando valores a los componentes de la lista
         productName.setText(item.getName());
         productDescription.setText(item.getDescription());
-        discountPrice.setText( "$" + Integer.toString((int) Math.ceil(
-                Double.parseDouble(String.valueOf(item.getPrice())) - Double.parseDouble(String.valueOf(item.getPrice())) * Double.parseDouble(String.valueOf(item.getDiscount())) / 100)) );
+        discountPrice.setText( "$" + Common.FormatCurrency(this.getContext(), item.getFinalPrice()));
         purchaseDate.setText( item.getDate());
+
         //Devolver al ListView la fila creada
         return listItemView;
     }

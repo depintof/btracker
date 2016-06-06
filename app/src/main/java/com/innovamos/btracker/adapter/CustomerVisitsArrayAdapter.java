@@ -9,7 +9,6 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.innovamos.btracker.R;
-import com.innovamos.btracker.dto.CustomerProductsDTO;
 import com.innovamos.btracker.dto.VisitsDTO;
 
 import java.util.List;
@@ -48,8 +47,8 @@ public class CustomerVisitsArrayAdapter<T> extends ArrayAdapter<T> {
         VisitsDTO item = (VisitsDTO)getItem(position);
 
         // Fijando valores a los componentes de la lista
-        storeDescription.setText(item.getDescription());
-        zoneName.setText(item.getName());
+        storeDescription.setText(item.getStoreName());
+        zoneName.setText(item.getDescription());
         triggerTime.setText( item.getTrigger_time() );
         //Devolver al ListView la fila creada
         return listItemView;

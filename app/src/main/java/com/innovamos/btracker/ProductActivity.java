@@ -28,6 +28,7 @@ import com.innovamos.btracker.dto.ProductDTO;
 import com.innovamos.btracker.dto.PurchasesDTO;
 import com.innovamos.btracker.dto.ZoneDTO;
 import com.innovamos.btracker.json.JsonResponseDecoder;
+import com.innovamos.btracker.utils.Common;
 import com.innovamos.btracker.web.DatabaseConnectivity;
 import com.innovamos.btracker.web.DownloadImageTask;
 
@@ -186,8 +187,7 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
                     databaseConnectivity.deleteProductPurchase(ProductActivity.this, mainProduct.getId(), customerId);
                 }
                 else{
-                    // TODO Arreglar con el valor aplicando el descuento
-                    databaseConnectivity.createProductPurchase(ProductActivity.this, mainProduct.getId(), customerId, mainProduct.getFinalPrice());
+                    databaseConnectivity.createProductPurchase(ProductActivity.this, mainProduct.getId(), customerId, mainProduct.getFinalPrice().toString());
                 }
             }
         });
@@ -355,9 +355,9 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
     private void loadProductInformation(ProductDTO product){
         tvProducto.setText(product.getName());
         tvDescripcion.setText(product.getDescription());
-        tvPrecioOriginal.setText("$" + product.getPrice());
+        tvPrecioOriginal.setText("$" + Common.FormatCurrency(this, Integer.parseInt(product.getPrice())));
         tvDescuento.setText(product.getDiscount() + "%");
-        tvPrecioConDescuento.setText("$" + product.getFinalPrice());
+        tvPrecioConDescuento.setText("$" + Common.FormatCurrency(this, product.getFinalPrice()));
 
         // Set the picture of the main product
         String url = product.getPictureURL();

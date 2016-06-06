@@ -1,15 +1,38 @@
 package com.innovamos.btracker.utils;
 
-import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import android.content.Context;
+import android.util.Log;
+
+import java.text.NumberFormat;
+import java.util.Locale;
 
 public class Common {
 
     public static long UnixTime() {
-        long unixTime = System.currentTimeMillis() / 1000L;
-        return unixTime;
+        return System.currentTimeMillis() / 1000L;
+    }
+
+    public static String FormatCurrency(Context context, Integer quantity) {
+        Locale currentLocale = context.getResources().getConfiguration().locale;
+
+        NumberFormat numberFormatter;
+        numberFormatter = NumberFormat.getNumberInstance(currentLocale);
+        String currency = numberFormatter.format(quantity);
+
+        Log.d("Currency", currency);
+
+        return currency;
+    }
+
+    public static String FormatCurrency(Context context, Double quantity) {
+        Locale currentLocale = context.getResources().getConfiguration().locale;
+
+        NumberFormat numberFormatter;
+        numberFormatter = NumberFormat.getNumberInstance(currentLocale);
+        String currency = numberFormatter.format(quantity);
+
+        Log.d("Currency", currency);
+
+        return currency;
     }
 }

@@ -2,7 +2,6 @@ package com.innovamos.btracker.web;
 
 import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -16,9 +15,7 @@ import org.json.JSONObject;
 
 import java.net.NetworkInterface;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Methods for CRUD on Database
@@ -302,7 +299,6 @@ public class DatabaseConnectivity {
 
     public void getCustomerVisits(final Context context,String idCustomer){
         final String requestURL = Cons.GET_CUSTOMER_VISITS + Cons.QUESTION_MARK + Cons.CUSTOMER_ID + Cons.EQUAL_MARK + idCustomer;
-        Log.e("ID Customer", idCustomer);
 
         // Petición GET
         VolleySingleton.

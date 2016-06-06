@@ -12,8 +12,8 @@ public class CustomerProductsDTO {
     private String product_id;
     private String mac;
     private String name;
-    private double price;
-    private double discount;
+    private String price;
+    private String discount;
     private String description;
 
     public CustomerProductsDTO(String idCustomer, String idProduct) {
@@ -53,19 +53,19 @@ public class CustomerProductsDTO {
         this.name = name;
     }
 
-    public double getPrice() {
+    public String getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(String price) {
         this.price = price;
     }
 
-    public double getDiscount() {
+    public String getDiscount() {
         return discount;
     }
 
-    public void setDiscount(double discount) {
+    public void setDiscount(String discount) {
         this.discount = discount;
     }
 
@@ -75,5 +75,21 @@ public class CustomerProductsDTO {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Integer getFinalPrice() {
+        Integer finalPrice = 0;
+
+        if (this.price != null) {
+            if (this.discount != null) {
+                finalPrice = (int) Math.ceil(
+                        Double.parseDouble(this.price) - Double.parseDouble(this.price) * Double.parseDouble(this.discount) / 100);
+            }
+            else {
+                finalPrice = (int) Math.ceil(Double.parseDouble(this.price));
+            }
+        }
+
+        return finalPrice;
     }
 }
