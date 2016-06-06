@@ -14,6 +14,7 @@ public class BeaconDTO {
     private String detection_range;
     private String created;
     private String modified;
+    private Boolean viewed;
 
     public BeaconDTO(String idBeacon, String uuid, String major, String minor, String detectionRange, String created, String modified) {
         this.id = idBeacon;
@@ -23,6 +24,7 @@ public class BeaconDTO {
         this.detection_range = detectionRange;
         this.created = created;
         this.modified = modified;
+        this.viewed = false;
     }
 
     public String getId() {
@@ -61,5 +63,13 @@ public class BeaconDTO {
         return this.uuid.compareTo(beaconDTO.uuid) == 0 &&
                 this.major.compareTo(beaconDTO.major) == 0 &&
                 this.minor.compareTo(beaconDTO.minor) == 0;
+    }
+
+    public Boolean getViewed() {
+        return viewed;
+    }
+
+    public void setViewed(Boolean viewed) {
+        this.viewed = viewed;
     }
 }

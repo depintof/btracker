@@ -72,6 +72,8 @@ public class Cons {
      */
     public static final String GET_CUSTOMER_VISITS = IP + PUERTO_HOST + "/get_customer_visits.php";
 
+    public static final String INSERT_VISIT = IP + PUERTO_HOST + "/set_visits.php";
+
     /**
      * URLs del Web Service: Obtener Lista de Visitas del Usuario
      */
@@ -153,6 +155,12 @@ public class Cons {
         Tag 'purchases' para respuestas de web-services
      */
     public static final String PURCHASES = "purchases";
+
+    public static final String VIEWED = "viewed";
+
+    public static final String TRIGGER_TIME = "trigger_time";
+
+    public static final String LEAVE_TIME = "leave_time";
 
     /*
         Tag 'price' para respuestas de web-services

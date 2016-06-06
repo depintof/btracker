@@ -35,7 +35,6 @@
         android:layout_height="wrap_content"
         android:id="@+id/triggerTime"
         android:text="2016-05-22 05:45:45"
-        android:textStyle="italic"
         android:textSize="12sp"
         android:textColor="@color/accentColor"
         android:maxEms="5"

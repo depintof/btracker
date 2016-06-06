@@ -9,6 +9,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.innovamos.btracker.async.EventListener;
+import com.innovamos.btracker.utils.Common;
 import com.innovamos.btracker.utils.Cons;
 
 import org.json.JSONObject;
@@ -89,25 +90,25 @@ public class DatabaseConnectivity {
         final String requestURL = Cons.GET_ZONE + Cons.QUESTION_MARK + Cons.BEACON_ID + Cons.EQUAL_MARK + beaconId;
         // Petición GET
         VolleySingleton.getInstance(context).addToRequestQueue(
-            new JsonObjectRequest(
-                Request.Method.GET,
-                requestURL,
-                (String)null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                    // Procesar la respuesta Json
-                    el.zoneResult(response);
-                        Log.v(DatabaseConnectivity.class.getSimpleName(), ">>Get Zone: Req: " + requestURL + " resp: " + response);
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                    Log.d(context.getClass().getSimpleName(),"Error Volley while trying to get zone. " + error.getMessage());
-                    }
-                }
-            )
+                new JsonObjectRequest(
+                        Request.Method.GET,
+                        requestURL,
+                        (String) null,
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                // Procesar la respuesta Json
+                                el.zoneResult(response);
+                                Log.v(DatabaseConnectivity.class.getSimpleName(), ">>Get Zone: Req: " + requestURL + " resp: " + response);
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Log.d(context.getClass().getSimpleName(), "Error Volley while trying to get zone. " + error.getMessage());
+                            }
+                        }
+                )
         );
     }
 
@@ -301,6 +302,8 @@ public class DatabaseConnectivity {
 
     public void getCustomerVisits(final Context context,String idCustomer){
         final String requestURL = Cons.GET_CUSTOMER_VISITS + Cons.QUESTION_MARK + Cons.CUSTOMER_ID + Cons.EQUAL_MARK + idCustomer;
+        Log.e("ID Customer", idCustomer);
+
         // Petición GET
         VolleySingleton.
                 getInstance(context).
@@ -327,6 +330,41 @@ public class DatabaseConnectivity {
                 );
     }
 
+    public void createVisit(final Context context, String idCustomer, String idZone) {
+        final String requestURL = Cons.INSERT_VISIT + Cons.QUESTION_MARK +
+                Cons.CUSTOMER_ID + Cons.EQUAL_MARK + idCustomer + Cons.AND +
+                Cons.ZONE_ID + Cons.EQUAL_MARK + idZone + Cons.AND +
+                Cons.TRIGGER_TIME + Cons.EQUAL_MARK + Common.UnixTime() + Cons.AND +
+                Cons.LEAVE_TIME + Cons.EQUAL_MARK +Common.UnixTime() + Cons.AND +
+                Cons.VIEWED + Cons.EQUAL_MARK + 0;
+
+        Log.v(DatabaseConnectivity.class.getSimpleName(), ">>Create visit: Req: " + requestURL);
+
+        // Petición GET
+        VolleySingleton.
+                getInstance(context).
+                addToRequestQueue(
+                        new JsonObjectRequest(
+                                Request.Method.GET,
+                                requestURL,
+                                (String) null,
+                                new Response.Listener<JSONObject>() {
+                                    @Override
+                                    public void onResponse(JSONObject response) {
+                                        // Procesar la respuesta Json
+                                        el.insertProductPurchase(response);
+                                        Log.v(DatabaseConnectivity.class.getSimpleName(), ">>Create visit: Req: " + requestURL + " resp: " + response);
+                                    }
+                                },
+                                new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        Log.d(context.getClass().getSimpleName(), "Error Volley while trying to create purchase. " + error.getMessage());
+                                    }
+                                }
+                        )
+                );
+    }
     public void getCustomerNotifications(final Context context,String idCustomer){
         String requestURL = Cons.GET_CUSTOMER_NOTIFICATIONS + Cons.QUESTION_MARK + Cons.CUSTOMER_ID + Cons.EQUAL_MARK + idCustomer;
         // Petición GET

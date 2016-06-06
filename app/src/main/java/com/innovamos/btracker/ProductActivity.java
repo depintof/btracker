@@ -198,7 +198,9 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
         beaconsList = JsonResponseDecoder.beaconListResponse(jsonResult);
         if (beaconsList != null) {
             for(BeaconDTO iteratorBeacon: beaconsList){
-                if((iteratorBeacon.getUuid().equalsIgnoreCase(beacon.getProximityUUID().toString()))&&(iteratorBeacon.getMajor().equals(String.valueOf(beacon.getMajor())))&&(iteratorBeacon.getMinor().equals(String.valueOf(beacon.getMinor())))){
+                if((iteratorBeacon.getUuid().equalsIgnoreCase(beacon.getProximityUUID().toString())) &&
+                        (iteratorBeacon.getMajor().equals(String.valueOf(beacon.getMajor()))) &&
+                        (iteratorBeacon.getMinor().equals(String.valueOf(beacon.getMinor())))){
                     DatabaseConnectivity databaseConnectivity = new DatabaseConnectivity(this);
                     databaseConnectivity.getZone(this,iteratorBeacon.getId());
                     return;
@@ -221,6 +223,7 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
         zone = JsonResponseDecoder.zoneResponse(jsonResult);
         if (zone != null) {
             databaseConnectivity.getProductZoneList(this, zone.getId());
+            databaseConnectivity.createVisit(this, customerId, zone.getId());
             toolbar.setTitle(zone.getName());
         }
     }
