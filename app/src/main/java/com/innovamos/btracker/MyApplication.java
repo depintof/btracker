@@ -9,18 +9,14 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
 import android.util.Log;
 
-import com.innovamos.btracker.async.EventListener;
-import com.innovamos.btracker.dto.BeaconDTO;
-import com.innovamos.btracker.dto.CustomerDTO;
-import com.innovamos.btracker.json.JsonResponseDecoder;
-import com.innovamos.btracker.web.DatabaseConnectivity;
 import com.estimote.sdk.Beacon;
 import com.estimote.sdk.BeaconManager;
 import com.estimote.sdk.Region;
+import com.innovamos.btracker.async.EventListener;
+import com.innovamos.btracker.dto.BeaconDTO;
+import com.innovamos.btracker.json.JsonResponseDecoder;
 
 import org.json.JSONObject;
 
@@ -31,43 +27,54 @@ public class MyApplication extends Application implements EventListener {
 
     private BeaconManager beaconManager;
     private Beacon nearestBeacon;
+    private Region region;
 
     @Override
     public void onCreate() {
         super.onCreate();
 
-        //beaconManager = new BeaconManager(getApplicationContext());
-        /*beaconManager.setBackgroundScanPeriod(15000,5000);
+        beaconManager = new BeaconManager(getApplicationContext());
+        beaconManager.setBackgroundScanPeriod(1500, 1000);
         beaconManager.setMonitoringListener(new BeaconManager.MonitoringListener() {
             @Override
             public void onEnteredRegion(Region region, List<Beacon> list) {
                 if (!list.isEmpty()) {
                     nearestBeacon = list.get(0);
-                    //Log.e("Beacon notificacion: ",nearestBeacon.getMacAddress().toString());
+                    Log.e("Beacon notificacion: ", nearestBeacon.getMacAddress().toString());
+
+                    showNotification(
+                            "Promoción encontrada!",
+                            "Toca para ver detalles"
+                    );
                 }
-                showNotification(
-                        region.getIdentifier(),
-                        "Current Beacon: "
-                                + "MAC: " + nearestBeacon.getMacAddress().toString()
-                                + "Minor: " + region.getMinor().toString());
             }
+
             @Override
             public void onExitedRegion(Region region) {
                 showNotification(
-                        "Bye bye little programer.",
-                        "Have an ass day!");
+                        "Hasta luego!",
+                        "Recuerda volver para más descuentos");
             }
         });
-        */
+
+        region = new Region("ranged region", UUID.fromString("B9407F30-F5F8-466E-AFF9-25556B57FE6D"), null, null);
+
+        beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
+            @Override
+            public void onServiceReady() {
+                beaconManager.startMonitoring(region);
+            }
+        });
+
         // Obtener listado de Beacons
-       // DatabaseConnectivity databaseConnectivity = new DatabaseConnectivity(this);
+        //DatabaseConnectivity databaseConnectivity = new DatabaseConnectivity(this);
         //databaseConnectivity.getBeaconsList(this);
     }
 
     public void showNotification(String title, String message) {
         Intent notifyIntent = new Intent(this, ProductActivity.class);
         //notifyIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        notifyIntent.putExtra("ProductBeacon",nearestBeacon);
+        notifyIntent.putExtra("ProductBeacon", nearestBeacon);
 
         //PendingIntent pendingIntent = PendingIntent.getActivities(this, 0,
         //        new Intent[]{notifyIntent}, PendingIntent.FLAG_CANCEL_CURRENT);
@@ -89,18 +96,19 @@ public class MyApplication extends Application implements EventListener {
 
     @Override
     public void beaconsListResult(JSONObject jsonResult) {
-        /*
         final BeaconDTO[] beaconDTOList = JsonResponseDecoder.beaconListResponse(jsonResult);
         beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
             @Override
             public void onServiceReady() {
-                for (BeaconDTO iteratorBeaconDTO : beaconDTOList)
-                    if (iteratorBeaconDTO.getUuid().equals("B9407F30-F5F8-466E-AFF9-25556B57FE6D")) {
-                        beaconManager.startMonitoring(new Region("BeaconDTO " + iteratorBeaconDTO.getId(),
-                                UUID.fromString(iteratorBeaconDTO.getUuid()), Integer.parseInt(iteratorBeaconDTO.getMajor()), Integer.parseInt(iteratorBeaconDTO.getMinor())));
-                    }
+                if (beaconDTOList != null) {
+                    for (BeaconDTO iteratorBeaconDTO : beaconDTOList)
+                        if (iteratorBeaconDTO.getUuid().equals("B9407F30-F5F8-466E-AFF9-25556B57FE6D")) {
+                            beaconManager.startMonitoring(new Region("BeaconDTO " + iteratorBeaconDTO.getId(),
+                                    UUID.fromString(iteratorBeaconDTO.getUuid()), Integer.parseInt(iteratorBeaconDTO.getMajor()), Integer.parseInt(iteratorBeaconDTO.getMinor())));
+                        }
+                }
             }
-        });*/
+        });
     }
 
     @Override
