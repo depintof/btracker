@@ -7,7 +7,9 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.estimote.sdk.Region;
 import com.innovamos.btracker.async.EventListener;
+import com.innovamos.btracker.dto.BeaconDTO;
 import com.innovamos.btracker.dto.VisitsDTO;
 import com.innovamos.btracker.utils.Common;
 import com.innovamos.btracker.utils.Cons;
@@ -110,8 +112,8 @@ public class DatabaseConnectivity {
         );
     }
 
-    public void getZoneVisit(final Context context,String beaconId, final long currentDate, final boolean isEnteringToRegion){
-        final String requestURL = Cons.GET_ZONE + Cons.QUESTION_MARK + Cons.BEACON_ID + Cons.EQUAL_MARK + beaconId;
+    public void getZoneVisit(final Context context,final BeaconDTO beaconRegion, final long currentDate, final boolean isEnteringToRegion){
+        final String requestURL = Cons.GET_ZONE + Cons.QUESTION_MARK + Cons.BEACON_ID + Cons.EQUAL_MARK + beaconRegion.getId();
         // Petición GET
         VolleySingleton.getInstance(context).addToRequestQueue(
                 new JsonObjectRequest(
@@ -122,7 +124,7 @@ public class DatabaseConnectivity {
                             @Override
                             public void onResponse(JSONObject response) {
                                 // Procesar la respuesta Json
-                                el.zoneVisitResult(response, currentDate,isEnteringToRegion);
+                                el.zoneVisitResult(response, currentDate,isEnteringToRegion,beaconRegion);
                                 Log.v(DatabaseConnectivity.class.getSimpleName(), ">>Get Zone: Req: " + requestURL + " resp: " + response);
                             }
                         },

@@ -370,7 +370,7 @@ public class MainActivity extends AppCompatActivity implements EventListener, Lo
     }
 
     @Override
-    public void zoneVisitResult(JSONObject jsonResult, long currentDate, boolean isEnteringToRegion) {
+    public void zoneVisitResult(JSONObject jsonResult, long currentDate, boolean isEnteringToRegion, BeaconDTO beaconRegion) {
 
     }
 
