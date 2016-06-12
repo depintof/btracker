@@ -51,8 +51,11 @@ public class MyApplication extends Application implements EventListener {
             public void onEnteredRegion(Region identifiedRegion, List<Beacon> list) {
                 if (!list.isEmpty()) {
                     nearestBeacon = list.get(0);
+
                     Log.e("Beacon notificacion: ", nearestBeacon.getMacAddress().toString());
                     addVisit(identifiedRegion, Common.UnixTime(), true);
+
+
                     showNotification(
                             "Promoción encontrada!",
                             "M: " + identifiedRegion.getMajor() + ", m: " + identifiedRegion.getMinor() + ", R: " + nearestBeacon.getRssi() + ", P: " + nearestBeacon.getMeasuredPower()
