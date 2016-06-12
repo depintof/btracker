@@ -15,9 +15,15 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.innovamos.btracker.R;
 import com.innovamos.btracker.data.BtrackerContract;
 import com.innovamos.btracker.utils.Cons;
+import com.innovamos.btracker.web.DatabaseConnectivity;
+import com.innovamos.btracker.web.VolleySingleton;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,11 +37,10 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Vector;
 
-/**
- * Created by root on 29/05/16.
- */
-public class BtrackerSyncAdapter extends AbstractThreadedSyncAdapter {
-    public static final String LOG_TAG = BtrackerSyncAdapter.class.getSimpleName();
+public class BTrackerSyncAdapter extends AbstractThreadedSyncAdapter {
+    public static final String LOG_TAG = BTrackerSyncAdapter.class.getSimpleName();
+
+    ContentResolver resolver;
 
     // Interval at which to sync with the weather, in seconds.
     // 60 seconds (1 minute) * 180 = 3 hours
@@ -44,18 +49,40 @@ public class BtrackerSyncAdapter extends AbstractThreadedSyncAdapter {
 
     public static final int SYNC_FLEXTIME = SYNC_INTERVAL/3;
 
-    public BtrackerSyncAdapter(Context context, boolean autoInitialize) {
+    public BTrackerSyncAdapter(Context context, boolean autoInitialize) {
         super(context, autoInitialize);
+        resolver = context.getContentResolver();
     }
 
     @Override
     public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
-        Log.d(LOG_TAG, " +++ +++ onPerformSync Called.");
+        Log.d(LOG_TAG, "onPerformSync Called.");
+        boolean synchronizeLocally = extras.getBoolean(ContentResolver.SYNC_EXTRAS_UPLOAD, false);
 
+        if (synchronizeLocally) {
+            performLocalSync();
+        }
+        else {
+            performRemoteSync();
+        }
+    }
+
+    /**
+     * Download data from remote database
+     */
+    private void performLocalSync() {
+        Log.i(LOG_TAG, "Updating the client database");
+
+    }
+
+    /**
+     * Synchronize with remote database
+     */
+    private void performRemoteSync() {
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
 
-        String beaconsJsonString = null;
+        String beaconsJsonString;
 
         try {
             Uri builtUri = Uri.parse(Cons.GET_ALL_BEACONS);
@@ -67,7 +94,7 @@ public class BtrackerSyncAdapter extends AbstractThreadedSyncAdapter {
             urlConnection.connect();
 
             InputStream inputStream = urlConnection.getInputStream();
-            StringBuffer buffer = new StringBuffer();
+            StringBuilder buffer = new StringBuilder();
 
             if (inputStream == null) {
                 return;
@@ -77,7 +104,8 @@ public class BtrackerSyncAdapter extends AbstractThreadedSyncAdapter {
 
             String line;
             while ((line = reader.readLine()) != null) {
-                buffer.append(line + "\n");
+                buffer.append(line);
+                buffer.append("\n");
             }
 
             if (buffer.length() == 0) {
@@ -106,8 +134,6 @@ public class BtrackerSyncAdapter extends AbstractThreadedSyncAdapter {
                 }
             }
         }
-        return;
-
     }
 
     private void getBeaconsDataFromJSON(String beaconsJSONString){
@@ -125,7 +151,7 @@ public class BtrackerSyncAdapter extends AbstractThreadedSyncAdapter {
             JSONObject beaconsJSON = new JSONObject(beaconsJSONString);
             JSONArray beaconsArray = beaconsJSON.getJSONArray(WS_BEACONS);
 
-            Vector<ContentValues> dataVector = new Vector<ContentValues>(beaconsArray.length());
+            Vector<ContentValues> dataVector = new Vector<>(beaconsArray.length());
 
 
             for (int i = 0; i < beaconsArray.length(); i++){
@@ -238,13 +264,12 @@ public class BtrackerSyncAdapter extends AbstractThreadedSyncAdapter {
     private static void onAccountCreated(Account newAccount, Context context) {
         Log.v(LOG_TAG, " +++ +++ account created");
 
-        BtrackerSyncAdapter.configurePeriodicSync(context, SYNC_INTERVAL, SYNC_FLEXTIME);
+        BTrackerSyncAdapter.configurePeriodicSync(context, SYNC_INTERVAL, SYNC_FLEXTIME);
 
         ContentResolver.setSyncAutomatically(newAccount, context.getString(R.string.content_authority), true);
 
         syncImmediately(context);
     }
-
 
     public static void initializeSyncAdapter(Context context) {
         getSyncAccount(context);

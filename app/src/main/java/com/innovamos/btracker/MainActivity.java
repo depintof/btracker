@@ -39,7 +39,7 @@ import com.innovamos.btracker.fragments.StartFragment;
 import com.innovamos.btracker.fragments.VisitsListFragment;
 import com.innovamos.btracker.fragments.WishListFragment;
 import com.innovamos.btracker.json.JsonResponseDecoder;
-import com.innovamos.btracker.sync.BtrackerSyncAdapter;
+import com.innovamos.btracker.sync.BTrackerSyncAdapter;
 import com.innovamos.btracker.web.DatabaseConnectivity;
 import com.estimote.sdk.SystemRequirementsChecker;
 
@@ -47,9 +47,8 @@ import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity implements EventListener, LoaderManager.LoaderCallbacks<Cursor> {
 
-    /**
-     * Interfaz principal
-     */
+    private Cursor cursor;
+
     // Instancia del drawer
     private DrawerLayout drawerLayout;
     // Instancia del panel lateral
@@ -89,7 +88,6 @@ public class MainActivity extends AppCompatActivity implements EventListener, Lo
             BtrackerContract.BeaconsEntry.COLUMN_DETECTION_RANGE,
             BtrackerContract.BeaconsEntry.COLUMN_CREATED,
             BtrackerContract.BeaconsEntry.COLUMN_MODIFIED,
-
     };
 
     /*
@@ -132,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements EventListener, Lo
             // Seleccionar item
         }*/
 
-        BtrackerSyncAdapter.initializeSyncAdapter(this);
+        BTrackerSyncAdapter.initializeSyncAdapter(this);
 
         /* Configuración de las instancias de comunicación a base de datos:
            Lista de Beacons y Confirmar existencia de usuario */
@@ -145,8 +143,6 @@ public class MainActivity extends AppCompatActivity implements EventListener, Lo
         registerReceiver(mReceiver, filter);
 
         getSupportLoaderManager().initLoader(LOADER_ID, null, this);
-
-
     }
 
     @Override
@@ -458,5 +454,14 @@ public class MainActivity extends AppCompatActivity implements EventListener, Lo
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         Log.v("MainActivity", " !!! Load reset: " + loader.toString());
+    }
+
+    public void setCursor(Cursor newCursor) {
+        cursor = newCursor;
+        //notifyDataSetChanged();
+    }
+
+    public Cursor getCursor() {
+        return cursor;
     }
 }

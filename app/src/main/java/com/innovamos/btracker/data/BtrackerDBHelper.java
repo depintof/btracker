@@ -2,13 +2,12 @@ package com.innovamos.btracker.data;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.innovamos.btracker.data.BtrackerContract.*;
 
-/**
- * Created by root on 29/05/16.
- */
 public class BtrackerDBHelper extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 2;
     static final String DATABASE_NAME = "btracker.db";
@@ -115,5 +114,20 @@ public class BtrackerDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        try {
+            db.execSQL("drop table " + BeaconsEntry.TABLE_NAME);
+            db.execSQL("drop table " + CustomersEntry.TABLE_NAME);
+            db.execSQL("drop table " + CustomersProductsEntry.TABLE_NAME);
+            db.execSQL("drop table " + ProductsEntry.TABLE_NAME);
+            db.execSQL("drop table " + ProductsZonesEntry.TABLE_NAME);
+            db.execSQL("drop table " + PurchasesEntry.TABLE_NAME);
+            db.execSQL("drop table " + StoresEntry.TABLE_NAME);
+            db.execSQL("drop table " + VisitsEntry.TABLE_NAME);
+            db.execSQL("drop table " + ZonesEntry.TABLE_NAME);
+        }
+        catch (SQLiteException e) {
+            Log.e("SQLException", "Exception when upgrading database");
+        }
+        onCreate(db);
     }
 }
