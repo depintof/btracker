@@ -9,6 +9,7 @@ public interface EventListener {
     void beaconsListResult(JSONObject jsonResult);
     void customerResult(JSONObject jsonResult);
     void zoneResult(JSONObject jsonResult);
+    void zoneVisitResult(JSONObject jsonResult, long currentDate, boolean isEnteringToRegion);
     void productsZoneList(JSONObject jsonResult);
     void productsLikeList(JSONObject jsonResult);
     void insertProductLike(JSONObject jsonResult);
@@ -18,4 +19,5 @@ public interface EventListener {
     void deleteProductPurchase(JSONObject jsonResult);
     void customerVisitsList(JSONObject jsonResult);
     void customerNotificationsList(JSONObject jsonResult);
+    void insertVisit(JSONObject jsonResult);
 }

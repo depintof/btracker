@@ -370,6 +370,11 @@ public class MainActivity extends AppCompatActivity implements EventListener, Lo
     }
 
     @Override
+    public void zoneVisitResult(JSONObject jsonResult, long currentDate, boolean isEnteringToRegion) {
+
+    }
+
+    @Override
     public void productsZoneList(JSONObject jsonResult) {
 
     }
@@ -412,6 +417,11 @@ public class MainActivity extends AppCompatActivity implements EventListener, Lo
     @Override
     public void customerNotificationsList(JSONObject jsonResult) {
         customerNotificationsList = JsonResponseDecoder.notificationsListResponse(jsonResult);
+    }
+
+    @Override
+    public void insertVisit(JSONObject jsonResult) {
+
     }
 
 

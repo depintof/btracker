@@ -83,6 +83,28 @@ public class VisitsDTO {
         this.name = name;
     }
 
+    public VisitsDTO(String id, String customer_id, String zone_id) {
+        this.id = id;
+        this.customer_id = customer_id;
+        this.zone_id = zone_id;
+    }
+
+    public VisitsDTO(String id, String trigger_time, String customer_id, String zone_id) {
+        this.id = id;
+        this.trigger_time = trigger_time;
+        this.customer_id = customer_id;
+        this.zone_id = zone_id;
+    }
+
+    public VisitsDTO(String id, String trigger_time, String leave_time, String customer_id, String zone_id, String viewed) {
+        this.id = id;
+        this.trigger_time = trigger_time;
+        this.leave_time = leave_time;
+        this.customer_id = customer_id;
+        this.zone_id = zone_id;
+        this.viewed = viewed;
+    }
+
     public VisitsDTO(String id, String trigger_time, String leave_time, String customer_id, String zone_id, String viewed, String store_name, String store_description) {
         this.id = id;
         this.trigger_time = trigger_time;
@@ -108,5 +130,17 @@ public class VisitsDTO {
 
     public void setStoreDescription(String store_description) {
         this.store_description = store_description;
+    }
+
+    @Override
+    public boolean equals(Object object){
+        VisitsDTO visitsDTO;
+        try {
+            visitsDTO = (VisitsDTO) object;
+        }
+        catch (Exception e) {
+            return false;
+        }
+        return (visitsDTO.getCustomer_id().equals(this.customer_id) && visitsDTO.getZone_id().equals(this.zone_id) );
     }
 }

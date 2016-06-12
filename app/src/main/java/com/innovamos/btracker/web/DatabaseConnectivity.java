@@ -8,6 +8,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.innovamos.btracker.async.EventListener;
+import com.innovamos.btracker.dto.VisitsDTO;
 import com.innovamos.btracker.utils.Common;
 import com.innovamos.btracker.utils.Cons;
 
@@ -96,6 +97,32 @@ public class DatabaseConnectivity {
                             public void onResponse(JSONObject response) {
                                 // Procesar la respuesta Json
                                 el.zoneResult(response);
+                                Log.v(DatabaseConnectivity.class.getSimpleName(), ">>Get Zone: Req: " + requestURL + " resp: " + response);
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Log.d(context.getClass().getSimpleName(), "Error Volley while trying to get zone. " + error.getMessage());
+                            }
+                        }
+                )
+        );
+    }
+
+    public void getZoneVisit(final Context context,String beaconId, final long currentDate, final boolean isEnteringToRegion){
+        final String requestURL = Cons.GET_ZONE + Cons.QUESTION_MARK + Cons.BEACON_ID + Cons.EQUAL_MARK + beaconId;
+        // Petición GET
+        VolleySingleton.getInstance(context).addToRequestQueue(
+                new JsonObjectRequest(
+                        Request.Method.GET,
+                        requestURL,
+                        (String) null,
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                // Procesar la respuesta Json
+                                el.zoneVisitResult(response, currentDate,isEnteringToRegion);
                                 Log.v(DatabaseConnectivity.class.getSimpleName(), ">>Get Zone: Req: " + requestURL + " resp: " + response);
                             }
                         },
@@ -326,13 +353,13 @@ public class DatabaseConnectivity {
                 );
     }
 
-    public void createVisit(final Context context, String idCustomer, String idZone) {
+    public void createVisit(final Context context, VisitsDTO visitsDTO) {
         final String requestURL = Cons.INSERT_VISIT + Cons.QUESTION_MARK +
-                Cons.CUSTOMER_ID + Cons.EQUAL_MARK + idCustomer + Cons.AND +
-                Cons.ZONE_ID + Cons.EQUAL_MARK + idZone + Cons.AND +
-                Cons.TRIGGER_TIME + Cons.EQUAL_MARK + Common.UnixTime() + Cons.AND +
-                Cons.LEAVE_TIME + Cons.EQUAL_MARK +Common.UnixTime() + Cons.AND +
-                Cons.VIEWED + Cons.EQUAL_MARK + 0;
+                Cons.CUSTOMER_ID + Cons.EQUAL_MARK + visitsDTO.getCustomer_id() + Cons.AND +
+                Cons.ZONE_ID + Cons.EQUAL_MARK + visitsDTO.getZone_id() + Cons.AND +
+                Cons.TRIGGER_TIME + Cons.EQUAL_MARK + visitsDTO.getTrigger_time() + Cons.AND +
+                Cons.LEAVE_TIME + Cons.EQUAL_MARK + visitsDTO.getLeave_time() + Cons.AND +
+                Cons.VIEWED + Cons.EQUAL_MARK + visitsDTO.getViewed();
 
         Log.v(DatabaseConnectivity.class.getSimpleName(), ">>Create visit: Req: " + requestURL);
 
@@ -348,7 +375,7 @@ public class DatabaseConnectivity {
                                     @Override
                                     public void onResponse(JSONObject response) {
                                         // Procesar la respuesta Json
-                                        el.insertProductPurchase(response);
+                                        el.insertVisit(response);
                                         Log.v(DatabaseConnectivity.class.getSimpleName(), ">>Create visit: Req: " + requestURL + " resp: " + response);
                                     }
                                 },

@@ -77,7 +77,7 @@ public class StartFragment extends Fragment implements FragmentCommunicator {
 
         // Iniciar búsqueda de beacons
         beaconManager = new BeaconManager(getContext());
-        beaconManager.setBackgroundScanPeriod(1000, 5000);
+        //beaconManager.setForegroundScanPeriod(25000,5000);
         beaconManager.setRangingListener(new BeaconManager.RangingListener() {
             @Override
             public void onBeaconsDiscovered(Region region, List<Beacon> list) {
