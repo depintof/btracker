@@ -21,6 +21,7 @@ import com.innovamos.btracker.R;
 import com.innovamos.btracker.async.FragmentCommunicator;
 import com.innovamos.btracker.dto.BeaconDTO;
 import com.innovamos.btracker.dto.CustomerDTO;
+import com.innovamos.btracker.utils.Common;
 import com.innovamos.btracker.utils.Cons;
 
 import java.util.ArrayList;
@@ -101,6 +102,9 @@ public class StartFragment extends Fragment implements FragmentCommunicator {
                 if (!list.isEmpty() && canView) {
                     canView = false;
                     Beacon nearestBeacon = list.get(0);
+
+                    Log.d("Distance", Double.toString(Common.getDistance(nearestBeacon.getRssi(), nearestBeacon.getMeasuredPower())));
+
                     List<String> places = placesNearBeacon(nearestBeacon);
 
                     Log.d("Nearest beacon", places.toString());

@@ -26,8 +26,7 @@ import com.innovamos.btracker.web.DatabaseConnectivity;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -36,7 +35,7 @@ public class MyApplication extends Application implements EventListener {
     private CustomerDTO customerDTO;
     private BeaconManager beaconManager;
     private Beacon nearestBeacon;
-    private Region region;
+
     List<BeaconDTO> beaconsList = new ArrayList<>();
     List<VisitsDTO> visitsList = new ArrayList<>();
 
@@ -138,9 +137,7 @@ public class MyApplication extends Application implements EventListener {
             }
         });
         if(beaconDTOList!=null){
-            for(BeaconDTO beacon: beaconDTOList){
-                beaconsList.add(beacon);
-            }
+            Collections.addAll(beaconsList, beaconDTOList);
         }
     }
 
