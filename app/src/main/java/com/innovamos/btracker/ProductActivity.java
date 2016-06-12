@@ -132,21 +132,11 @@ public class ProductActivity extends AppCompatActivity implements EventListener 
         super.onResume();  // Always call the superclass method first
         if(getIntent().getParcelableExtra("ProductBeacon") != null){
             beacon = getIntent().getParcelableExtra("ProductBeacon");
-            Log.d("Beacon Final RESUME: ", beacon.getMacAddress().toString());
-            // Relacion con Vistas
-            //tvDescripcion.setText(beacon.getMacAddress().toString());
-
-            // TODO Crear método para obtener detalles del producto asociado al BeaconDTO
-            //getProductDetails(beacon);
+            Log.d(LOG_TAG, "Beacon Final RESUME: " + beacon.getMacAddress().toString());
         }
 
-        try {
-            if (getIntent().getParcelableExtra("Customer") != null) {
-                customerId = getIntent().getParcelableExtra("Customer");
-            }
-        }
-        catch (Exception e) {
-            Log.e(LOG_TAG, "Error parsing customer ID");
+        if (getIntent().getParcelableExtra("Customer") != null) {
+            customerId = getIntent().getParcelableExtra("Customer");
         }
     }
 
@@ -440,7 +430,7 @@ public class ProductActivity extends AppCompatActivity implements EventListener 
                 }
             }
         } catch (Exception e) {
-            Log.e("GalleryScrollView", e.getMessage(), e);
+            Log.e(LOG_TAG, "GalleryScrollView" + e.getMessage(), e);
         }
     }
 
@@ -480,7 +470,7 @@ public class ProductActivity extends AppCompatActivity implements EventListener 
 
     @Override
     public void onDestroy() {
-        Log.e("Destroy", "Changes");
+        Log.d(LOG_TAG, "Destroy changes");
         super.onDestroy();
         System.gc();
     }
