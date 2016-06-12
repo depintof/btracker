@@ -49,7 +49,7 @@ public class PurchasedProductsArrayAdapter<T> extends ArrayAdapter {
         // Fijando valores a los componentes de la lista
         productName.setText(item.getName());
         productDescription.setText(item.getDescription());
-        discountPrice.setText( "$" + Common.FormatCurrency(this.getContext(), item.getFinalPrice()));
+        discountPrice.setText( "$" + item.getPurchase_price());
         purchaseDate.setText( item.getDate());
 
         //Devolver al ListView la fila creada

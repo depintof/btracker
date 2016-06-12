@@ -6,31 +6,34 @@ package com.innovamos.btracker.dto;
 public class PurchasesDTO {
 
     /*
-           Columnas
-     */
+               Columnas
+         */
+    private String purchase_id;
     private String id;
     private String product_id;
     private String customer_id;
     private String date;
-    private String price;
+    private String purchase_price;
+    // From Product Table
     private String name;
+    private String price;
     private String discount;
     private String description;
 
-    public PurchasesDTO(String id, String idProduct, String idCustomer, String date, String price) {
-        this.id = id;
+    public PurchasesDTO(String purchase_id, String idProduct, String idCustomer, String date, String purchase_price) {
+        this.purchase_id = purchase_id;
         this.product_id = idProduct;
         this.customer_id = idCustomer;
         this.date = date;
-        this.price = price;
+        this.purchase_price = purchase_price;
     }
 
     public String getId() {
-        return id;
+        return purchase_id;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setId(String purchase_id) {
+        this.purchase_id = purchase_id;
     }
 
     public String getIdProduct() {
@@ -103,5 +106,13 @@ public class PurchasesDTO {
         }
 
         return finalPrice;
+    }
+
+    public String getPurchase_price() {
+        return purchase_price;
+    }
+
+    public void setPurchase_price(String purchase_price) {
+        this.purchase_price = purchase_price;
     }
 }

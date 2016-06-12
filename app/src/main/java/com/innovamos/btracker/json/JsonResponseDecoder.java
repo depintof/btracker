@@ -283,4 +283,26 @@ public class JsonResponseDecoder {
         }
         return null;
     }
+
+    /**
+     * JSON -> VisitsDTO
+     * @param response Respuesta JSON
+     */
+    public static VisitsDTO visitResponse(JSONObject response) {
+        try {
+            Gson gson = new Gson();
+            String status = response.getString(Cons.STATUS);
+
+            switch (status) {
+                case Cons.STATUS_SUCCESS: // Respuesta exitosa
+                    JSONArray mensaje = response.getJSONArray(Cons.VISITS);
+                    return gson.fromJson(mensaje.getJSONObject(0).toString(), VisitsDTO.class);
+                case Cons.STATUS_FAIL: // Respuesta fallida
+                    return null;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

@@ -137,7 +137,7 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
             // TODO Crear método para obtener detalles del producto asociado al BeaconDTO
             //getProductDetails(beacon);
         }
-        if(getIntent().getParcelableExtra("Customer") != null){
+        if(getIntent().getExtras().getParcelable("Customer") != null){
             customerId = getIntent().getParcelableExtra("Customer");
         }
     }
@@ -223,9 +223,14 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
         zone = JsonResponseDecoder.zoneResponse(jsonResult);
         if (zone != null) {
             databaseConnectivity.getProductZoneList(this, zone.getId());
-            databaseConnectivity.createVisit(this, customerId, zone.getId());
+            //databaseConnectivity.createVisit(this, customerId, zone.getId());
             toolbar.setTitle(zone.getName());
         }
+    }
+
+    @Override
+    public void zoneVisitResult(JSONObject jsonResult, long currentDate, boolean isEnteringToRegion) {
+
     }
 
     @Override
@@ -349,6 +354,11 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
 
     @Override
     public void customerNotificationsList(JSONObject jsonResult) {
+
+    }
+
+    @Override
+    public void insertVisit(JSONObject jsonResult) {
 
     }
 

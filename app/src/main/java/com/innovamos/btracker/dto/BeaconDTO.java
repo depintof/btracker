@@ -65,6 +65,18 @@ public class BeaconDTO {
                 this.minor.compareTo(beaconDTO.minor) == 0;
     }
 
+    @Override
+    public boolean equals(Object object){
+        BeaconDTO beaconDTO;
+        try {
+            beaconDTO = (BeaconDTO) object;
+        }
+        catch (Exception e) {
+            return false;
+        }
+        return (beaconDTO.getUuid().equalsIgnoreCase(this.uuid) && beaconDTO.getMinor().equals(this.minor) && beaconDTO.getMajor().equals(this.major));
+    }
+
     public Boolean getViewed() {
         return viewed;
     }
