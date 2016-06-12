@@ -45,7 +45,7 @@ public class MyApplication extends Application implements EventListener {
         super.onCreate();
 
         beaconManager = new BeaconManager(getApplicationContext());
-        beaconManager.setBackgroundScanPeriod(1000,1000);
+        beaconManager.setBackgroundScanPeriod(1000,0);
         beaconManager.setMonitoringListener(new BeaconManager.MonitoringListener() {
             @Override
             public void onEnteredRegion(Region identifiedRegion, List<Beacon> list) {
@@ -55,7 +55,8 @@ public class MyApplication extends Application implements EventListener {
                     addVisit(identifiedRegion, Common.UnixTime(), true);
                     showNotification(
                             "Promoción encontrada!",
-                            "Toca para ver detalles"
+                            "M: " + identifiedRegion.getMajor() + ", m: " + identifiedRegion.getMinor() + ", R: " + nearestBeacon.getRssi() + ", P: " + nearestBeacon.getMeasuredPower()
+                            //"Toca para ver detalles"
                     );
                 }
             }
@@ -64,7 +65,8 @@ public class MyApplication extends Application implements EventListener {
             public void onExitedRegion(Region identifiedRegion) {
                 showNotification(
                         "Hasta luego!",
-                        "Recuerda volver para más descuentos");
+                        "M:" + identifiedRegion.getMajor() + ", m: " + identifiedRegion.getMinor());
+//                        "Recuerda volver para más descuentos");
                 addVisit(identifiedRegion, Common.UnixTime(), false);
 
             }
@@ -127,7 +129,7 @@ public class MyApplication extends Application implements EventListener {
             public void onServiceReady() {
                 if (beaconDTOList != null) {
                     for (BeaconDTO iteratorBeaconDTO : beaconDTOList)
-                        if (iteratorBeaconDTO.getUuid().equals("B9407F30-F5F8-466E-AFF9-25556B57FE6D")) {
+                        if (iteratorBeaconDTO.getUuid().equals("B9407F30-F5F8-466E-AFF9-25556B57FE6D")&&iteratorBeaconDTO.getMajor().equals("54167")) {
                             beaconManager.startMonitoring(new Region("BeaconDTO " + iteratorBeaconDTO.getId(),
                                     UUID.fromString(iteratorBeaconDTO.getUuid()), Integer.parseInt(iteratorBeaconDTO.getMajor()), Integer.parseInt(iteratorBeaconDTO.getMinor())));
                         }

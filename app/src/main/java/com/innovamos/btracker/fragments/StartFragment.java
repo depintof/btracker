@@ -82,6 +82,9 @@ public class StartFragment extends Fragment implements FragmentCommunicator {
             @Override
             public void onBeaconsDiscovered(Region region, List<Beacon> list) {
 
+                Log.d("Discovery Data: ", "M: "+list.get(0).getMajor()+", m: "+list.get(0).getMinor()+", P: "+list.get(0).getMeasuredPower()+", Rrsi: "+list.get(0).getRssi());
+
+
                 if (lastLaunch != null) {
                     Date currentDate = Calendar.getInstance().getTime();
                     Long seconds = currentDate.getTime() - lastLaunch.getTime();
