@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.estimote.sdk.Beacon;
 import com.innovamos.btracker.async.EventListener;
+import com.innovamos.btracker.data.BtrackerContract;
 import com.innovamos.btracker.dto.BeaconDTO;
 import com.innovamos.btracker.dto.CustomerProductsDTO;
 import com.innovamos.btracker.dto.ProductDTO;
@@ -36,7 +37,8 @@ import org.json.JSONObject;
 
 import java.util.Random;
 
-public class ProductActivity extends AppCompatActivity implements EventListener{
+public class ProductActivity extends AppCompatActivity implements EventListener {
+    public static final String LOG_TAG = BtrackerContract.ProductsEntry.class.getSimpleName();
 
     //private Integer images[] = {R.drawable.gafas, R.drawable.gorra, R.drawable.pantalon,R.drawable.pic4};
 
@@ -137,8 +139,14 @@ public class ProductActivity extends AppCompatActivity implements EventListener{
             // TODO Crear método para obtener detalles del producto asociado al BeaconDTO
             //getProductDetails(beacon);
         }
-        if(getIntent().getExtras().getParcelable("Customer") != null){
-            customerId = getIntent().getParcelableExtra("Customer");
+
+        try {
+            if (getIntent().getParcelableExtra("Customer") != null) {
+                customerId = getIntent().getParcelableExtra("Customer");
+            }
+        }
+        catch (Exception e) {
+            Log.e(LOG_TAG, "Error parsing customer ID");
         }
     }
 
