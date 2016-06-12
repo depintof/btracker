@@ -49,25 +49,17 @@ public class MyApplication extends Application implements EventListener {
             @Override
             public void onEnteredRegion(Region identifiedRegion, List<Beacon> list) {
                 if (!list.isEmpty()) {
+
                     nearestBeacon = list.get(0);
 
                     Log.e("Beacon notificacion: ", nearestBeacon.getMacAddress().toString());
                     addVisit(identifiedRegion, Common.UnixTime(), true);
-
-
-                    showNotification(
-                            "Promoción encontrada!",
-                            "M: " + identifiedRegion.getMajor() + ", m: " + identifiedRegion.getMinor() + ", R: " + nearestBeacon.getRssi() + ", P: " + nearestBeacon.getMeasuredPower()
-                            //"Toca para ver detalles"
-                    );
                 }
             }
 
             @Override
             public void onExitedRegion(Region identifiedRegion) {
-                showNotification(
-                        "Hasta luego!",
-                        "M:" + identifiedRegion.getMajor() + ", m: " + identifiedRegion.getMinor());
+
 //                        "Recuerda volver para más descuentos");
                 addVisit(identifiedRegion, Common.UnixTime(), false);
 
@@ -119,7 +111,8 @@ public class MyApplication extends Application implements EventListener {
         if(beaconsList.contains(beaconRegion)){
             beaconRegion = beaconsList.get(beaconsList.indexOf(beaconRegion));
             DatabaseConnectivity databaseConnectivity = new DatabaseConnectivity(MyApplication.this);
-            databaseConnectivity.getZoneVisit(MyApplication.this, beaconRegion.getId(), currentDate, isEnteringToRegion);
+            databaseConnectivity.getZoneVisit(MyApplication.this, beaconRegion, currentDate, isEnteringToRegion);
+
         }
     }
 
@@ -131,7 +124,7 @@ public class MyApplication extends Application implements EventListener {
             public void onServiceReady() {
                 if (beaconDTOList != null) {
                     for (BeaconDTO iteratorBeaconDTO : beaconDTOList)
-                        if (iteratorBeaconDTO.getUuid().equals("B9407F30-F5F8-466E-AFF9-25556B57FE6D")&&iteratorBeaconDTO.getMajor().equals("54167")) {
+                        if (iteratorBeaconDTO.getUuid().equals("B9407F30-F5F8-466E-AFF9-25556B57FE6D")) {
                             beaconManager.startMonitoring(new Region("BeaconDTO " + iteratorBeaconDTO.getId(),
                                     UUID.fromString(iteratorBeaconDTO.getUuid()), Integer.parseInt(iteratorBeaconDTO.getMajor()), Integer.parseInt(iteratorBeaconDTO.getMinor())));
                         }
@@ -153,12 +146,19 @@ public class MyApplication extends Application implements EventListener {
      }
 
     @Override
-    public void zoneVisitResult(JSONObject jsonResult, long currentDate, boolean isEnteringToRegion) {
+    public void zoneVisitResult(JSONObject jsonResult, long currentDate, boolean isEnteringToRegion, BeaconDTO beaconRegion) {
         ZoneDTO zoneDTO = JsonResponseDecoder.zoneResponse(jsonResult);
         if(zoneDTO!=null){
             if(isEnteringToRegion) {
-                VisitsDTO visitsDTO = new VisitsDTO(null,String.valueOf(currentDate),customerDTO.getId(),zoneDTO.getId());
-                visitsList.add(visitsDTO);
+                if(((int)Common.getDistance(nearestBeacon.getRssi(),nearestBeacon.getMeasuredPower()))<=Integer.parseInt(beaconRegion.getDetectionRange())){
+                    VisitsDTO visitsDTO = new VisitsDTO(null,String.valueOf(currentDate),customerDTO.getId(),zoneDTO.getId());
+                    visitsList.add(visitsDTO);
+                    showNotification(
+                            "Promoción encontrada!",
+                            "M: " + beaconRegion.getMajor() + ", m: " + beaconRegion.getMinor() + ", R: " + nearestBeacon.getRssi() + ", P: " + nearestBeacon.getMeasuredPower()
+                            //"Toca para ver detalles"
+                    );
+                }
             }
             else{
                 VisitsDTO visitsDTO = new VisitsDTO(null,customerDTO.getId(),zoneDTO.getId());
@@ -168,6 +168,10 @@ public class MyApplication extends Application implements EventListener {
                     visitsDTO.setViewed("0");
                     DatabaseConnectivity databaseConnectivity = new DatabaseConnectivity(MyApplication.this);
                     databaseConnectivity.createVisit(MyApplication.this,visitsDTO);
+
+                    showNotification(
+                            "Hasta luego!",
+                            "M:" + beaconRegion.getMajor() + ", m: " + beaconRegion.getMinor());
                 }
             }
         }

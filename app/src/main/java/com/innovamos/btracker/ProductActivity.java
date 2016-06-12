@@ -227,7 +227,7 @@ public class ProductActivity extends AppCompatActivity implements EventListener 
     }
 
     @Override
-    public void zoneVisitResult(JSONObject jsonResult, long currentDate, boolean isEnteringToRegion) {
+    public void zoneVisitResult(JSONObject jsonResult, long currentDate, boolean isEnteringToRegion, BeaconDTO beaconRegion) {
 
     }
 
