@@ -35,6 +35,15 @@ public class BtrackerContract {
         public static final String COLUMN_CREATED = "created";
         public static final String COLUMN_MODIFIED = "modified";
 
+        public static final int COL_ID = 0;
+        public static final int COL_UUID = 1;
+        public static final int COL_MAJOR = 2;
+        public static final int COL_NAME = 3;
+        public static final int COL_MINOR = 4;
+        public static final int COL_DETECTION_RANGE = 5;
+        public static final int COL_CREATED = 6;
+        public static final int COL_MODIFIED = 7;
+
         public static final Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_BEACONS).build();
 

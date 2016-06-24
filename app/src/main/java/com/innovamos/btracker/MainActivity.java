@@ -197,17 +197,17 @@ public class MainActivity extends AppCompatActivity implements EventListener, Lo
 
     private void setupDrawerContent(NavigationView navigationView) {
         navigationView.setNavigationItemSelectedListener(
-            new NavigationView.OnNavigationItemSelectedListener() {
-                @Override
-                public boolean onNavigationItemSelected(MenuItem menuItem) {
-                    // Marcar item presionado
-                    menuItem.setChecked(true);
-                    // Crear nuevo fragmento
-                    String title = menuItem.getTitle().toString();
-                    selectItem(title);
-                    return true;
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(MenuItem menuItem) {
+                        // Marcar item presionado
+                        menuItem.setChecked(true);
+                        // Crear nuevo fragmento
+                        String title = menuItem.getTitle().toString();
+                        selectItem(title);
+                        return true;
+                    }
                 }
-            }
         );
     }
 
@@ -448,7 +448,24 @@ public class MainActivity extends AppCompatActivity implements EventListener, Lo
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         //loades y data deberían contner la info recuperada de la base de datos local (que a su vez)
         // se sincroniza con la BD del servidor. Toca ver cómo manipular estos objetos
-        Log.v("MainActivity", " !!! Load completed: " + data.toString() + "      " + loader.toString());
+        Log.v("MainActivity", " !!! Load completed: " + data.getCount() + "  " +  data.toString() + "      " + loader.toString());
+
+        int i = 0;
+        if(data.moveToFirst()){
+            do{
+                Log.v("MainActivity", ". - -.--. at: " + (i++) + " "
+                                + data.getString(BtrackerContract.BeaconsEntry.COL_ID) + "  "
+                                + data.getString(BtrackerContract.BeaconsEntry.COL_UUID) + "  "
+                                + data.getString(BtrackerContract.BeaconsEntry.COL_MAJOR) + "  "
+                                + data.getString(BtrackerContract.BeaconsEntry.COL_NAME) + "  "
+                                + data.getString(BtrackerContract.BeaconsEntry.COL_MINOR) + "  "
+                                + data.getString(BtrackerContract.BeaconsEntry.COL_DETECTION_RANGE) + "  "
+                                + data.getString(BtrackerContract.BeaconsEntry.COL_CREATED) + "  "
+                                + data.getString(BtrackerContract.BeaconsEntry.COL_MODIFIED) + "  "
+                );
+                //data.moveToNext();
+            }while(data.moveToNext());
+        }
     }
 
     @Override
