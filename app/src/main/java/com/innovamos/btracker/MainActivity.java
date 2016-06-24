@@ -463,7 +463,6 @@ public class MainActivity extends AppCompatActivity implements EventListener, Lo
                                 + data.getString(BtrackerContract.BeaconsEntry.COL_CREATED) + "  "
                                 + data.getString(BtrackerContract.BeaconsEntry.COL_MODIFIED) + "  "
                 );
-                //data.moveToNext();
             }while(data.moveToNext());
         }
     }
