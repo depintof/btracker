@@ -55,7 +55,17 @@ public class MainActivity extends AppCompatActivity implements EventListener, Lo
     private NavigationView navigationView;
 
     // Interfaz de comunicación con el fragmento principal
-    public FragmentCommunicator fc ;
+    public FragmentCommunicator fc = new FragmentCommunicator() {
+        @Override
+        public void setBeaconList(BeaconDTO[] beaconsList) {
+
+        }
+
+        @Override
+        public void setCustomer(CustomerDTO customerDTO) {
+
+        }
+    };
 
     private Fragment mainFragment;
     private Fragment messageFragment;
@@ -304,7 +314,8 @@ public class MainActivity extends AppCompatActivity implements EventListener, Lo
                         break;
                 }
 
-                fragmentManager.beginTransaction().replace(R.id.main_container, mainFragment).commit();
+                fragmentManager.beginTransaction().replace(R.id.main_container, mainFragment).commitAllowingStateLoss();
+
             }
         }
     };
