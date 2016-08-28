@@ -14,7 +14,7 @@ public class Cons {
     /**
      * Dirección IP de Webservices
      */
-    private static final String IP = "http://btrackerws.exeamedia.com:";
+    private static final String IP = "http://btrackerws.innovaciones.co:";
 
     /***** URL´s *****/
     /**
@@ -25,7 +25,7 @@ public class Cons {
     /**
      * URLs del Web Service: Obtener Dispositivo
      */
-    public static final String GET_CUSTOMER = IP + PUERTO_HOST + "/get_customer.php";
+    public static final String  GET_CUSTOMER = IP + PUERTO_HOST + "/get_customer.php";
 
     /**
      * URLs del Web Service: Obtener la Zona Asociada a un Beacon

@@ -150,7 +150,7 @@ public class MyApplication extends Application implements EventListener {
         ZoneDTO zoneDTO = JsonResponseDecoder.zoneResponse(jsonResult);
         if(zoneDTO!=null){
             if(isEnteringToRegion) {
-                if(((int)Common.getDistance(nearestBeacon.getRssi(),nearestBeacon.getMeasuredPower()))<=Integer.parseInt(beaconRegion.getDetectionRange())){
+                //if(((int)Common.getDistance(nearestBeacon.getRssi(),nearestBeacon.getMeasuredPower()))<=Integer.parseInt(beaconRegion.getDetectionRange())){
                     VisitsDTO visitsDTO = new VisitsDTO(null,String.valueOf(currentDate),customerDTO.getId(),zoneDTO.getId());
                     visitsList.add(visitsDTO);
                     showNotification(
@@ -158,7 +158,7 @@ public class MyApplication extends Application implements EventListener {
                             "M: " + beaconRegion.getMajor() + ", m: " + beaconRegion.getMinor() + ", R: " + nearestBeacon.getRssi() + ", P: " + nearestBeacon.getMeasuredPower()
                             //"Toca para ver detalles"
                     );
-                }
+                //}
             }
             else{
                 VisitsDTO visitsDTO = new VisitsDTO(null,customerDTO.getId(),zoneDTO.getId());
